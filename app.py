@@ -229,14 +229,15 @@ with c3:
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
-    f1, f2, f3 = st.columns(3)
+    f1, f2, f3, f4 = st.columns(4)
     with f1:
         area_sel = st.selectbox("Área Curricular:", cneb.obtener_lista_areas(), index=0)
     with f2:
         tema_titulo = st.text_input("Título del Tema / Sesión:", "Leemos un afiche sobre el cuidado del agua")
     with f3:
         fecha_sugerida = st.text_input("Fecha:", "05 de mayo de 2026")
-        duracion_semanas = 1
+    with f4:
+        duracion_sesion = st.selectbox("Duración de la Sesión:", ["45 minutos", "90 minutos", "135 minutos"], index=1)
     
     situacion_significativa = st.text_area(
         "Propósito o Contexto de la Clase:",
@@ -252,6 +253,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         fechas_duracion = st.text_input("Fechas / Duración:", "Del 11 de marzo al 12 de abril de 2026 (4 Semanas)")
         duracion_semanas = st.slider("Número de Semanas del Proyecto:", min_value=2, max_value=5, value=4)
         area_sel = "Multidisciplinar"
+        duracion_sesion = "90 minutos"
 
     situacion_significativa = st.text_area(
         "Situación Significativa del Proyecto:",
@@ -267,6 +269,7 @@ else:  # Unidad SARA
         fechas_duracion = st.text_input("Fechas / Duración:", "Del 01 de abril al 03 de mayo de 2026 (5 Semanas)")
         duracion_semanas = st.slider("Número de Semanas de la Unidad:", min_value=2, max_value=5, value=5)
         area_sel = "Multidisciplinar"
+        duracion_sesion = "90 minutos"
 
     situacion_significativa = st.text_area(
         "Situación Significativa de la Unidad SARA:",
@@ -278,46 +281,51 @@ else:  # Unidad SARA
 # PROMPTS
 # ==============================================================================
 def generar_prompt_sesion():
+    # Cálculo de tiempos pedagógicos según la duración seleccionada
+    if "45" in duracion_sesion:
+        t_inicio, t_desarrollo, t_cierre = "10 min", "30 min", "5 min"
+    elif "135" in duracion_sesion:
+        t_inicio, t_desarrollo, t_cierre = "20 min", "100 min", "15 min"
+    else: # 90 min por defecto
+        t_inicio, t_desarrollo, t_cierre = "15 min", "65 min", "10 min"
+
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa según el modelo CNEB.
+Elabora una Sesión de Aprendizaje completa y estructurada en CUADROS/TABLAS estrictas según el modelo CNEB.
 
-DATOS: Grado: {grado_seccion} | Área: {area_sel} | Tema: {tema_titulo} | Fecha: {fecha_sugerida} | IE: {ie_nombre} | Docente: {docente}
+DATOS: Grado: {grado_seccion} | Área: {area_sel} | Tema: {tema_titulo} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion} | IE: {ie_nombre} | Docente: {docente}
 Contexto: {situacion_significativa}
 
-REGLAS OBLIGATORIAS DE FORMATO Y NEGRITAS:
+REGLAS OBLIGATORIAS DE FORMATO Y CUADROS:
 1. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
 2. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
-3. FORMATO OBLIGATORIO DE DESEMPEÑO PRECISADO EN LA TABLA II:
-   - Copia el desempeño del CNEB para {grado_seccion} y OBLIGATORIAMENTE RESALTA EN **NEGRITA** la parte específica que se está abordando y evaluando en esta sesión de aprendizaje.
-   - Ejemplo: "Participa en la elaboración de acuerdos de convivencia, **teniendo en cuenta los deberes y derechos del niño**, y escucha a sus compañeros."
-4. FORMATO OBLIGATORIO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
-   - Resalta en **NEGRITA** los títulos de los momentos principales (**INICIO**, **DESARROLLO**, **CIERRE**) y cada uno de los procesos pedagógicos/didácticos.
-   - Cada actividad, pregunta o consigna dentro de Inicio, Desarrollo y Cierre DEBE INICIAR OBLIGATORIAMENTE CON SU SUBTÍTULO EN NEGRITA Y LUEGO VIÑETA (`•`).
-   - Ejemplo de formato:
-     • **Problematización:** Presentamos a los estudiantes un caso cotidiano sobre el agua...
-     • **Propósito y Organización:** Comunicamos que hoy aprenderemos a...
-5. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos", "Preguntamos", "Repartimos").
-6. Tablas obligatorias para: 
-   - I: Datos Informativos
-   - II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS (Columnas: ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO [con la parte trabajada en **negrita**] | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA | INSTRUMENTO)
-   - III: Enfoques Transversales
-   - IV: Competencia Transversal ("Gestiona su aprendizaje de manera autónoma")
-   - V: Meta de Aprendizaje
-   - VI: Preparación de la Sesión
-   - VII: Escala de Valoración (10 alumnos ficticios peruanos)
-7. Estructura de Actividades en los Momentos:
-   - **INICIO (20 min):**
-     • **Problematización:** [Actividad en viñeta]
-     • **Propósito y Organización:** [Actividad en viñeta]
-     • **Motivación / Interés:** [Actividad en viñeta]
-     • **Saberes Previos:** [Actividad en viñeta]
-     • **Criterios de Evaluación:** [Actividad en viñeta]
-     • **Normas de Convivencia:** [Actividad en viñeta]
-   - **DESARROLLO (60 min):** Aplicar los Procesos Didácticos Específicos del Área {area_sel} con subtítulos de procesos en **NEGRITA** y viñetas (`•`).
-   - **CIERRE (10 min):**
-     • **Metacognición:** [Preguntas en viñeta]
-     • **Reflexión y Evaluación:** [Actividad en viñeta]
+3. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
+   - Tabla I: DATOS INFORMATIVOS (DRE/UGEL, IE, Director, Subdirector, Docente, Grado, Área, Fecha, Duración).
+   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
+     ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo del ciclo) | DESEMPEÑO PRECISADO (copiar del CNEB y resaltar en **negrita** la parte trabajada en la sesión) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
+   - Tabla III: ENFOQUES TRANSVERSALES (Enfoque, Valores, Actitudes observables).
+   - Tabla IV: COMPETENCIA TRANSVERSAL ("Gestiona su aprendizaje de manera autónoma" con sus desempeños).
+   - Tabla V: META DE APRENDIZAJE (Protección de la vida / Habilidades para la vida).
+   - Tabla VI: PREPARACIÓN DE LA SESIÓN (¿Qué necesitamos hacer antes?, ¿Qué recursos/materiales?).
+   - Tabla VII: ESCALA DE VALORACIÓN (Cuadro final para 10 estudiantes ficticios peruanos con columnas: Inicio, En proceso, Lo logró por cada criterio).
+
+4. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
+   - Resalta en **NEGRITA** los títulos de los momentos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
+   - Cada actividad, pregunta o consigna dentro de los momentos DEBE INICIAR OBLIGATORIAMENTE CON SU SUBTÍTULO EN NEGRITA Y LUEGO VIÑETA (`•`).
+   - Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos a los niños", "Preguntamos a los estudiantes", "Repartimos los materiales").
+
+5. ESTRUCTURA DE LOS MOMENTOS:
+   - **INICIO ({t_inicio}):**
+     • **Problematización:** [Actividad detallada con viñeta]
+     • **Propósito y Organización:** [Actividad detallada con viñeta]
+     • **Motivación / Interés:** [Actividad detallada con viñeta]
+     • **Saberes Previos:** [Actividad detallada con viñeta]
+     • **Criterios de Evaluación:** [Actividad detallada con viñeta]
+     • **Normas de Convivencia:** [Actividad detallada con viñeta]
+   - **DESARROLLO ({t_desarrollo}):** Aplicar los Procesos Didácticos Específicos del Área {area_sel} con subtítulos de procesos en **NEGRITA** y actividades en viñetas (`•`).
+   - **CIERRE ({t_cierre}):**
+     • **Metacognición:** [Preguntas reflexivas en viñeta]
+     • **Reflexión y Evaluación:** [Actividad final en viñeta]
 """
 
 def generar_prompt_ficha_trabajo():
@@ -333,52 +341,52 @@ DATOS DE LA FICHA:
 • Tema: {tema_titulo}
 • Estudiante: _____________________________________ Fecha: {fecha_sugerida}
 
-ESTRUCTURA DE LA FICHA EN MARKDOWN:
-1. Encabezado llamativo con título de la ficha y propósito para el niño.
+ESTRUCTURA DE LA FICHA EN MARKDOWN (INCLUIR TABLAS PARA EJERCICIOS Y AUTOEVALUACIÓN):
+1. Encabezado llamativo en un cuadro con título de la ficha y propósito para el niño.
 2. Breve texto/resumen ilustrativo o caso práctico adaptado a niños de {grado_seccion}.
 3. Sección 1: "Comprendo lo que leí / lo que aprendí" (3 preguntas de respuesta libre o verdadero/falso).
 4. Sección 2: "Aplico lo aprendido" (3 actividades prácticas: unir con líneas, marcar la opción correcta, completar tablas o esquemas).
 5. Sección 3: "Reto Creativo / Mi Compromiso" (Una actividad de dibujo o redacción personal corta).
-6. Sección de Autoevaluación para el niño (*Caritas o semáforo de aprendizaje* con 2 criterios sencillos).
+6. Tabla de Autoevaluación para el niño (*Caritas o semáforo de aprendizaje* con 2 criterios sencillos).
 """
 
 def generar_prompt_proyecto():
     return f"""
 Actúa como un docente especialista de Primaria MINEDU Perú. Elabora un PROYECTO DE APRENDIZAJE completo.
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
 DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
 Situación Significativa: {situacion_significativa}
 
 Estructura:
-1. Datos Informativos (Tabla)
-2. Situación Significativa
+1. Tabla de Datos Informativos
+2. Situación Significativa (Redacción)
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?)
-4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas (Tablas completas por semana para todas las áreas con estándar completo, desempeño con parte trabajada en **negrita**, criterios, evidencia e instrumento).
-5. Enfoques Transversales (Tabla)
+4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas (Tablas completas por semana para todas las áreas con estándar completo, desempeño con la parte trabajada en **negrita**, criterios, evidencia e instrumento).
+5. Tabla de Enfoques Transversales
 6. Producto Final Tangible
-7. Secuencia de Actividades diarias por semana (Lunes a Viernes en 1ra persona plural)
-8. Materiales y Recursos (Clasificados)
-9. Reflexiones sobre los aprendizajes
+7. Secuencia de Actividades diarias por semana (Tablas de Lunes a Viernes en 1ra persona plural)
+8. Lista Clasificada de Materiales y Recursos
+9. Tabla de Reflexiones sobre los aprendizajes
 """
 
 def generar_prompt_unidad_sara():
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
 DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
 Situación Significativa: {situacion_significativa}
 
 Estructura:
-I. Datos Informativos (Tabla)
-II. Situación Significativa
+I. Tabla de Datos Informativos
+II. Situación Significativa (Redacción)
 III. Matriz de Aprendizajes por Área (Tabla por área con estándar completo en fila superior, columnas: Actividad en 1ra persona plural, Competencia/Capacidad, Desempeño con parte específica en **negrita**, Criterios de Evaluación Acción+Contenido+Condición, Evidencia, Lista de cotejo).
-IV. Enfoques Transversales (Tabla)
+IV. Tabla de Enfoques Transversales
 V. Producto de la Unidad
-VI. Actividades Propuestas semanales (Lunes a Viernes) cerrando con la pregunta: ¿Qué productos lograré en esta experiencia?
-VII. Materiales y Recursos
-VIII. Reflexiones sobre los Aprendizajes
+VI. Tablas de Actividades Propuestas semanales (Lunes a Viernes) cerrando con la pregunta: ¿Qué productos lograré en esta experiencia?
+VII. Lista Clasificada de Materiales y Recursos
+VIII. Tabla de Reflexiones sobre los Aprendizajes
 """
 
 # ==============================================================================
@@ -407,7 +415,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas, subtítulos en negrita y resaltando la parte evaluada del desempeño en negrita.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables estructurados en TABLAS Y CUADROS en Markdown, subtítulos en negrita y resaltando la parte evaluada del desempeño en negrita.",
                     temperature=0.2
                 )
                 
