@@ -1,4 +1,4 @@
-iimport streamlit as st
+import streamlit as st
 from google import genai
 from google.genai import types
 import docx
@@ -302,7 +302,7 @@ def generar_prompt_sesion():
     else:
         t_inicio, t_desarrollo, t_cierre = "15 min", "65 min", "10 min"
 
-    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador automático basado en el problema.'
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador basado en el problema.'
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
