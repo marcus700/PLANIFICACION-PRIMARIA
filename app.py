@@ -92,8 +92,8 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Salida editable en Word (.docx)
-• Cuadro reservado para insignia de la I.E.
+• 2 Sesiones diarias (10 por semana)
+• Tablas formateadas en Tonos Pasteles (.docx)
 """)
 
 # ==============================================================================
@@ -110,7 +110,7 @@ def add_formatted_text(paragraph, text):
             paragraph.add_run(part)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON FORMATEO PROFESIONAL DE TABLAS Y TITULOS
+# CONVERTIDOR A WORD (.DOCX) CON TABLAS EN TONOS PASTELES Y ESPACIO PARA INSIGNIA
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
@@ -139,7 +139,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
         line_str = re.sub(r'<br\s*/?>', ' ', line_str)
         line_str = re.sub(r'</?[a-zA-Z0-9]+\s*/>', ' ', line_str)
         
-        # Procesamiento de Tablas Markdown
+        # Procesamiento de Tablas Markdown con encabezados en TONO PASTEL
         if line_str.startswith('|') and line_str.endswith('|'):
             in_table = True
             if re.match(r'^\|[\s\:\-\|]+\|$', line_str):
@@ -162,15 +162,16 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
                                 p_cell.text = ""  # Limpiar
                                 add_formatted_text(p_cell, cell_value)
                                 
+                                # ENCABEZADO DE TABLA CON FONDO PASTEL AZUL SUAVE (D9E1F2)
                                 if r_idx == 0:
                                     shading_elm = OxmlElement('w:shd')
                                     shading_elm.set(qn('w:val'), 'clear')
                                     shading_elm.set(qn('w:color'), 'auto')
-                                    shading_elm.set(qn('w:fill'), '1E3A8A')
+                                    shading_elm.set(qn('w:fill'), 'D9E1F2')  # Tono Pastel Azul Suave
                                     cell._tc.get_or_add_tcPr().append(shading_elm)
                                     for paragraph in cell.paragraphs:
                                         for run in paragraph.runs:
-                                            run.font.color.rgb = RGBColor(255, 255, 255)
+                                            run.font.color.rgb = RGBColor(30, 58, 138)  # Azul Marino Oscuro
                                             run.font.bold = True
             in_table = False
             table_data = []
@@ -187,12 +188,12 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
                 run = p.add_run(title_text.replace('**', ''))
                 run.font.size = Pt(14)
                 run.font.bold = True
-                run.font.color.rgb = RGBColor(30, 58, 138)  # Azul oscuro
+                run.font.color.rgb = RGBColor(30, 58, 138)
             elif level in [3, 4]:
                 run = p.add_run(title_text.replace('**', ''))
                 run.font.size = Pt(12)
                 run.font.bold = True
-                run.font.color.rgb = RGBColor(30, 58, 138)  # Azul medio
+                run.font.color.rgb = RGBColor(30, 58, 138)
             else:
                 add_formatted_text(p, title_text)
             continue
@@ -231,72 +232,78 @@ with c3:
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
     f1, f2, f3, f4 = st.columns(4)
     with f1:
-        area_sel = st.selectbox("Área Curricular:", cneb.obtener_lista_areas(), index=0)
+        num_doc = st.text_input("N.° de Sesión:", "01")
     with f2:
-        tema_titulo = st.text_input("Título del Tema / Sesión:", "Leemos un afiche sobre el cuidado del agua")
+        area_sel = st.selectbox("Área Curricular:", cneb.obtener_lista_areas(), index=0)
     with f3:
         fecha_sugerida = st.text_input("Fecha:", "05 de mayo de 2026")
     with f4:
-        duracion_sesion = st.selectbox("Duración de la Sesión:", ["45 minutos", "90 minutos", "135 minutos"], index=1)
+        duracion_sesion = st.selectbox("Duración:", ["45 minutos", "90 minutos", "135 minutos"], index=1)
     
-    situacion_significativa = st.text_area(
-        "Propósito o Contexto de la Clase:",
-        height=90,
-        value="Los estudiantes del 3er grado necesitan comprender la estructura y función de los afiches para identificar información explícita e implícita sobre la conservación del agua en la escuela."
-    )
+    fechas_duracion = fecha_sugerida
+    duracion_semanas = 1
 
 elif tipo_documento == "Proyecto de Aprendizaje":
-    f1, f2 = st.columns(2)
+    f1, f2, f3 = st.columns(3)
     with f1:
-        tema_titulo = st.text_input("Título del Proyecto:", "Nos organizamos y celebramos con alegría nuestro aniversario escolar")
+        num_doc = st.text_input("N.° de Proyecto:", "01")
     with f2:
         fechas_duracion = st.text_input("Fechas / Duración:", "Del 11 de marzo al 12 de abril de 2026 (4 Semanas)")
+    with f3:
         duracion_semanas = st.slider("Número de Semanas del Proyecto:", min_value=2, max_value=5, value=4)
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
 
-    situacion_significativa = st.text_area(
-        "Situación Significativa del Proyecto:",
-        height=100,
-        value="Los estudiantes del 3er grado están próximos a celebrar el aniversario de su escuela. Se plantea el reto: ¿Cómo nos organizamos para celebrar nuestro aniversario cuidando el ambiente escolar? Los estudiantes elaborarán un periódico mural y organizarán un festival de talentos."
-    )
-
 else:  # Unidad SARA
-    f1, f2 = st.columns(2)
+    f1, f2, f3 = st.columns(3)
     with f1:
-        tema_titulo = st.text_input("Título de la Unidad SARA:", "Desarrollamos actividades ecoeficientes para mejorar nuestro ambiente escolar")
+        num_doc = st.text_input("N.° de Unidad:", "01")
     with f2:
         fechas_duracion = st.text_input("Fechas / Duración:", "Del 01 de abril al 03 de mayo de 2026 (5 Semanas)")
+    with f3:
         duracion_semanas = st.slider("Número de Semanas de la Unidad:", min_value=2, max_value=5, value=5)
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
 
-    situacion_significativa = st.text_area(
-        "Situación Significativa de la Unidad SARA:",
-        height=100,
-        value="En la comunidad se evidencia aumento de residuos plásticos. Los niños se preguntan: ¿Qué acciones ecoeficientes podemos poner en práctica? Elaborarán tachos de reciclaje, carteles ecológicos y un huerto escolar."
-    )
+# CAMPO SIMPLIFICADO: El docente solo ingresa el Problema del Contexto
+problema_contexto = st.text_area(
+    "🚨 Problema o Interés del Contexto (Único dato requerido para que la IA cree el Título y la Situación Significativa automáticamente):",
+    height=100,
+    value="Poco hábito de recolección de residuos sólidos y acumulación de botellas de plástico en el patio durante el recreo por parte de los estudiantes de 3er grado."
+)
+
+# Título Opcional
+titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático a partir del problema):", value="")
 
 # ==============================================================================
 # PROMPTS
 # ==============================================================================
 def generar_prompt_sesion():
-    # Cálculo de tiempos pedagógicos según la duración seleccionada
     if "45" in duracion_sesion:
         t_inicio, t_desarrollo, t_cierre = "10 min", "30 min", "5 min"
     elif "135" in duracion_sesion:
         t_inicio, t_desarrollo, t_cierre = "20 min", "100 min", "15 min"
-    else: # 90 min por defecto
+    else:
         t_inicio, t_desarrollo, t_cierre = "15 min", "65 min", "10 min"
+
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador automático basado en el problema.'
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada en CUADROS/TABLAS estrictas según el modelo CNEB.
+Elabora una Sesión de Aprendizaje completa y estructurada en CUADROS/TABLAS estrictas según el CNEB.
 
-DATOS: Grado: {grado_seccion} | Área: {area_sel} | Tema: {tema_titulo} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion} | IE: {ie_nombre} | Docente: {docente}
-Contexto: {situacion_significativa}
+A PARTIR DEL PROBLEMA PROPIUESTO DE FORMA OBLIGATORIA:
+Problema del Contexto: {problema_contexto}
+Instrucción de Título: {val_titulo}
+Instrucción de Situación Significativa: Redacta una Situación Significativa o Contexto de la Clase estructurado a partir del problema (Contexto + Reto + Propósito).
 
-REGLAS OBLIGATORIAS DE FORMATO Y CUADROS:
+ENCABEZADO DE SALIDA OBLIGATORIO:
+# **SESIÓN DE APRENDIZAJE N.º {num_doc}**
+## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
+
+DATOS: Grado: {grado_seccion} | Área: {area_sel} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion} | IE: {ie_nombre} | Docente: {docente}
+
+REGLAS OBLIGATORIAS DE FORMATO, TABLAS Y NEGRITAS:
 1. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
 2. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
 3. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
@@ -329,16 +336,25 @@ REGLAS OBLIGATORIAS DE FORMATO Y CUADROS:
 """
 
 def generar_prompt_ficha_trabajo():
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador basado en el problema.'
+
     return f"""
 Actúa como un Docente de Primaria experto del MINEDU Perú.
 Crea una FICHA DE APLICACIÓN / TRABAJO PARA EL ESTUDIANTE lista para imprimir.
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y cuadros.
+
+A PARTIR DEL PROBLEMA DEL CONTEXTO:
+{problema_contexto}
+Instrucción de Título: {val_titulo}
+
+ENCABEZADO DE SALIDA OBLIGATORIO:
+# **FICHA DE TRABAJO N.º {num_doc}**
+## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
 DATOS DE LA FICHA:
 • Institución Educativa: {ie_nombre}
 • Grado y Sección: {grado_seccion}
 • Área: {area_sel}
-• Tema: {tema_titulo}
 • Estudiante: _____________________________________ Fecha: {fecha_sugerida}
 
 ESTRUCTURA DE LA FICHA EN MARKDOWN (INCLUIR TABLAS PARA EJERCICIOS Y AUTOEVALUACIÓN):
@@ -351,42 +367,72 @@ ESTRUCTURA DE LA FICHA EN MARKDOWN (INCLUIR TABLAS PARA EJERCICIOS Y AUTOEVALUAC
 """
 
 def generar_prompt_proyecto():
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO innovador y creativo para el proyecto basado en el problema.'
+
     return f"""
 Actúa como un docente especialista de Primaria MINEDU Perú. Elabora un PROYECTO DE APRENDIZAJE completo.
 PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
-DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
-Situación Significativa: {situacion_significativa}
+A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
+{problema_contexto}
 
-Estructura:
-1. Tabla de Datos Informativos
-2. Situación Significativa (Redacción)
-3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?)
+OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
+1. Genera un TÍTULO del proyecto: {val_titulo}
+2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos:
+   - Parrafo 1: Contexto y descripción detallada del problema en {grado_seccion} de la IE {ie_nombre}.
+   - Parrafo 2: Preguntas retadoras y desafiantes (*¿Cómo podemos...? ¿De qué manera...?*).
+   - Parrafo 3: Propósito pedagógico y Producto final tangible que elaborarán los estudiantes.
+
+ENCABEZADO DE SALIDA OBLIGATORIO:
+# **PROYECTO DE APRENDIZAJE N.º {num_doc}**
+## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
+
+ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
+1. Tabla de Datos Informativos (DRE, IE, Director, Subdirector, Docente, Grado, Duración).
+2. Situación Significativa Generada (Redacción completa).
+3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas (Tablas completas por semana para todas las áreas con estándar completo, desempeño con la parte trabajada en **negrita**, criterios, evidencia e instrumento).
-5. Tabla de Enfoques Transversales
-6. Producto Final Tangible
-7. Secuencia de Actividades diarias por semana (Tablas de Lunes a Viernes en 1ra persona plural)
-8. Lista Clasificada de Materiales y Recursos
-9. Tabla de Reflexiones sobre los aprendizajes
+5. Tabla de Enfoques Transversales.
+6. Producto Final Tangible del Proyecto.
+7. SECUENCIA DE ACTIVIDADES (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
+   - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA (Bloque Mañana y Bloque Tarde) indicando Área y Actividad redactada en 1ra persona del plural ("Nosotros...").
+   - Total por semana: 10 sesiones pedagógicas organizadas día por día.
+8. Lista Clasificada de Materiales y Recursos.
+9. Tabla de Reflexiones sobre los aprendizajes.
 """
 
 def generar_prompt_unidad_sara():
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO motivador para la Unidad SARA basado en el problema.'
+
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
 PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
-DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
-Situación Significativa: {situacion_significativa}
+A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
+{problema_contexto}
 
-Estructura:
-I. Tabla de Datos Informativos
-II. Situación Significativa (Redacción)
+OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
+1. Genera un TÍTULO de la unidad: {val_titulo}
+2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos:
+   - Parrafo 1: Contexto y descripción del problema en {grado_seccion} de la IE {ie_nombre}.
+   - Parrafo 2: Preguntas retadoras y desafiantes (*¿Qué acciones podemos...? ¿Cómo afectaría...?*).
+   - Parrafo 3: Propósito y Productos tangibles que lograrán los estudiantes.
+
+ENCABEZADO DE SALIDA OBLIGATORIO:
+# **UNIDAD DE APRENDIZAJE N.º {num_doc}**
+## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
+
+ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
+I. Tabla de Datos Informativos.
+II. Situación Significativa Generada (Redacción completa).
 III. Matriz de Aprendizajes por Área (Tabla por área con estándar completo en fila superior, columnas: Actividad en 1ra persona plural, Competencia/Capacidad, Desempeño con parte específica en **negrita**, Criterios de Evaluación Acción+Contenido+Condición, Evidencia, Lista de cotejo).
-IV. Tabla de Enfoques Transversales
-V. Producto de la Unidad
-VI. Tablas de Actividades Propuestas semanales (Lunes a Viernes) cerrando con la pregunta: ¿Qué productos lograré en esta experiencia?
-VII. Lista Clasificada de Materiales y Recursos
-VIII. Tabla de Reflexiones sobre los Aprendizajes
+IV. Tabla de Enfoques Transversales.
+V. Producto de la Unidad.
+VI. ACTIVIDADES PROPUESTAS (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
+    - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA (Sesión 1 y Sesión 2) en 1ra persona del plural ("Nosotros...").
+    - Cierra la sección respondiendo obligatoriamente a la pregunta: ¿Qué productos lograré en esta experiencia?
+VII. Lista Clasificada de Materiales y Recursos.
+VIII. Tabla de Reflexiones sobre los Aprendizajes.
 """
 
 # ==============================================================================
@@ -397,8 +443,8 @@ st.markdown("---")
 if st.button(f"✨ Generar {tipo_documento} en Word"):
     if not api_key:
         st.error("⚠️ Ingresa tu API Key de Google AI Studio en la barra lateral izquierda o en los Secrets.")
-    elif not situacion_significativa or not tema_titulo:
-        st.warning("⚠️ Completa los campos obligatorios del formulario.")
+    elif not problema_contexto:
+        st.warning("⚠️ Completa el campo del Problema o Interés del Contexto.")
     else:
         try:
             client = genai.Client(api_key=api_key)
@@ -412,10 +458,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está generando tu {tipo_documento} para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema y generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables estructurados en TABLAS Y CUADROS en Markdown, subtítulos en negrita y resaltando la parte evaluada del desempeño en negrita.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas Títulos creativos y Situaciones Significativas automáticas a partir del problema propuesto, estructurando el documento en TABLAS Y CUADROS con 2 sesiones diarias (10 semanales).",
                     temperature=0.2
                 )
                 
@@ -446,7 +492,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                     st.markdown(resultado_md)
                     
                 with tab_download:
-                    fname_clean = f"{tipo_documento.replace(' ', '_')}_{grado_seccion.replace(' ', '_')}.docx"
+                    fname_clean = f"{tipo_documento.replace(' ', '_')}_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx"
                     buffer_doc = markdown_to_docx(resultado_md, ie_nombre=ie_nombre)
                     
                     st.download_button(
@@ -455,7 +501,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                         file_name=fname_clean,
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     )
-                    st.info(f"💡 **Nota:** El archivo Word descargado incluye el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]` en la parte superior para que el docente pegue manualmente la insignia de su colegio.")
+                    st.info(f"💡 **Nota:** El archivo Word descargado incluye el Título y Situación Significativa generados automáticamente, tablas en tonos pasteles y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]` en la parte superior.")
 
         except Exception as e:
             err_str = str(e)
