@@ -1,4 +1,4 @@
-import streamlit as st
+iimport streamlit as st
 from google import genai
 from google.genai import types
 import docx
@@ -91,10 +91,9 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
-• Estándares y Desempeños Íntegros
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• 2 Sesiones diarias (10 por semana)
-• Tablas formateadas en Tonos Pasteles (.docx)
+• Días de la semana como Columnas
+• Tablas en Colores Pasteles Variados
 """)
 
 # ==============================================================================
@@ -111,10 +110,21 @@ def add_formatted_text(paragraph, text):
             paragraph.add_run(part)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON TABLAS EN TONOS PASTELES Y ESPACIO PARA INSIGNIA
+# CONVERTIDOR A WORD (.DOCX) CON COLORES PASTELES VARIADOS EN CADA TABLA
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
+    
+    # Paleta de colores pasteles rotativos para los encabezados de tablas
+    PASTEL_COLORS = [
+        'D9E1F2',  # Azul Pastel
+        'E2EFDA',  # Verde Menta Pastel
+        'FFF2CC',  # Amarillo Pastel
+        'E8D8F8',  # Lavanda Pastel
+        'E0F2FE',  # Celeste Pastel
+        'FCE4D6'   # Rosa/Coral Pastel
+    ]
+    table_count = 0
     
     for section in doc.sections:
         section.top_margin = Inches(0.8)
@@ -140,7 +150,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
         line_str = re.sub(r'<br\s*/?>', ' ', line_str)
         line_str = re.sub(r'</?[a-zA-Z0-9]+\s*/>', ' ', line_str)
         
-        # Procesamiento de Tablas Markdown con encabezados en TONO PASTEL
+        # Procesamiento de Tablas Markdown
         if line_str.startswith('|') and line_str.endswith('|'):
             in_table = True
             if re.match(r'^\|[\s\:\-\|]+\|$', line_str):
@@ -155,6 +165,11 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
                 if rows > 0 and cols > 0:
                     t = doc.add_table(rows=rows, cols=cols)
                     t.style = 'Table Grid'
+                    
+                    # Seleccionar color pastel diferente para cada tabla
+                    table_count += 1
+                    header_color = PASTEL_COLORS[(table_count - 1) % len(PASTEL_COLORS)]
+                    
                     for r_idx, row_cells in enumerate(table_data):
                         for c_idx, cell_value in enumerate(row_cells):
                             if c_idx < cols:
@@ -163,12 +178,12 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
                                 p_cell.text = ""  # Limpiar
                                 add_formatted_text(p_cell, cell_value)
                                 
-                                # ENCABEZADO DE TABLA CON FONDO PASTEL AZUL SUAVE (D9E1F2)
+                                # APLICAR COLOR PASTEL EN EL ENCABEZADO
                                 if r_idx == 0:
                                     shading_elm = OxmlElement('w:shd')
                                     shading_elm.set(qn('w:val'), 'clear')
                                     shading_elm.set(qn('w:color'), 'auto')
-                                    shading_elm.set(qn('w:fill'), 'D9E1F2')  # Tono Pastel Azul Suave
+                                    shading_elm.set(qn('w:fill'), header_color)
                                     cell._tc.get_or_add_tcPr().append(shading_elm)
                                     for paragraph in cell.paragraphs:
                                         for run in paragraph.runs:
@@ -277,7 +292,7 @@ problema_contexto = st.text_area(
 titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático a partir del problema):", value="")
 
 # ==============================================================================
-# PROMPTS MAESTROS CON INSTRUCCIÓN ÍNTEGRA DE ESTÁNDARES Y DESEMPEÑOS CNEB
+# PROMPTS
 # ==============================================================================
 def generar_prompt_sesion():
     if "45" in duracion_sesion:
@@ -291,12 +306,12 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS según el CNEB.
+Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS.
 
-A PARTIR DEL PROBLEMA PROPIUESTO DE FORMA OBLIGATORIA:
-Problema del Contexto: {problema_contexto}
+A PARTIR DEL PROBLEMA DEL CONTEXTO:
+{problema_contexto}
 Instrucción de Título: {val_titulo}
-Instrucción de Situación Significativa: Redacta una Situación Significativa estructurada a partir del problema (Contexto + Reto + Propósito).
+Instrucción de Situación Significativa: Redacta una Situación Significativa estructurada a partir del problema.
 
 ENCABEZADO DE SALIDA OBLIGATORIO:
 # **SESIÓN DE APRENDIZAJE N.º {num_doc}**
@@ -304,38 +319,26 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 
 DATOS: Grado: {grado_seccion} | Área: {area_sel} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion} | IE: {ie_nombre} | Docente: {docente}
 
-REGLAS OBLIGATORIAS DE ESTÁNDAR Y DESEMPEÑO DEL CNEB:
-1. **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** En la Tabla II, copia el Estándar de Aprendizaje oficial del CNEB (RM N.º 649-2016-MINEDU) correspondiente al ciclo de {grado_seccion} DE MANERA ÍNTEGRA, COMPLETA Y LITERAL, SIN RESUMIR, ACORTAR NI OMITIR NINGUNA ORACIÓN.
-2. **DESEMPEÑO ÍNTEGRO Y PRECISADO:** Copia el desempeño oficial del CNEB para {grado_seccion} DE MANERA ÍNTEGRA Y COMPLETA, y OBLIGATORIAMENTE RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se aborda y evalúa en la sesión**`).
-3. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
-4. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
-5. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
-   - Tabla I: DATOS INFORMATIVOS (DRE/UGEL, IE, Director, Subdirector, Docente, Grado, Área, Fecha, Duración).
+REGLAS OBLIGATORIAS DE ESTÁNDAR, COMPETENCIA Y DESEMPEÑO DEL CNEB:
+1. **UNA SOLA COMPETENCIA:** Coloca ÚNICAMENTE la competencia específica que se aborda en la actividad (NO listes todas las competencias del área).
+2. **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** En la Tabla II, copia el Estándar de Aprendizaje oficial del CNEB de manera ÍNTEGRA Y LITERAL, y RESALTA EN **NEGRITA** (`**la parte específica del estándar que se moviliza en la sesión**`).
+3. **DESEMPEÑO ÍNTEGRO Y PRECISADO:** Copia el desempeño oficial del CNEB de manera ÍNTEGRA y RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se evalúa en la sesión**`).
+4. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
+5. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
+6. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
+   - Tabla I: DATOS INFORMATIVOS
    - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
-     ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Texto íntegro oficial del CNEB del ciclo) | DESEMPEÑO PRECISADO (Texto íntegro oficial del CNEB resaltando en **negrita** la parte trabajada) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
-   - Tabla III: ENFOQUES TRANSVERSALES (Enfoque, Valores, Actitudes observables).
-   - Tabla IV: COMPETENCIA TRANSVERSAL ("Gestiona su aprendizaje de manera autónoma" con sus desempeños).
-   - Tabla V: META DE APRENDIZAJE (Protección de la vida / Habilidades para la vida).
-   - Tabla VI: PREPARACIÓN DE LA SESIÓN (¿Qué necesitamos hacer antes?, ¿Qué recursos/materiales?).
-   - Tabla VII: ESCALA DE VALORACIÓN (Cuadro final para 10 estudiantes ficticios peruanos con columnas: Inicio, En proceso, Lo logró por cada criterio).
+     ÁREA | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo con parte trabajada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
+   - Tabla III: ENFOQUES TRANSVERSALES
+   - Tabla IV: COMPETENCIA TRANSVERSAL ("Gestiona su aprendizaje de manera autónoma")
+   - Tabla V: META DE APRENDIZAJE
+   - Tabla VI: PREPARACIÓN DE LA SESIÓN
+   - Tabla VII: ESCALA DE VALORACIÓN (Cuadro para 10 estudiantes ficticios peruanos)
 
-6. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
-   - Resalta en **NEGRITA** los títulos de los momentos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
-   - Cada actividad, pregunta o consigna dentro de los momentos DEBE INICIAR OBLIGATORIAMENTE CON SU SUBTÍTULO EN NEGRITA Y LUEGO VIÑETA (`•`).
-   - Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos a los niños", "Preguntamos a los estudiantes", "Repartimos los materiales").
-
-7. ESTRUCTURA DE LOS MOMENTOS:
-   - **INICIO ({t_inicio}):**
-     • **Problematización:** [Actividad detallada con viñeta]
-     • **Propósito y Organización:** [Actividad detallada con viñeta]
-     • **Motivación / Interés:** [Actividad detallada con viñeta]
-     • **Saberes Previos:** [Actividad detallada con viñeta]
-     • **Criterios de Evaluación:** [Actividad detallada con viñeta]
-     • **Normas de Convivencia:** [Actividad detallada con viñeta]
-   - **DESARROLLO ({t_desarrollo}):** Aplicar los Procesos Didácticos Específicos del Área {area_sel} con subtítulos de procesos en **NEGRITA** y actividades en viñetas (`•`).
-   - **CIERRE ({t_cierre}):**
-     • **Metacognición:** [Preguntas reflexivas en viñeta]
-     • **Reflexión y Evaluación:** [Actividad final en viñeta]
+7. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
+   - Resalta en **NEGRITA** los títulos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
+   - Cada actividad, pregunta o consigna DEBE INICIAR OBLIGATORIAMENTE CON SU SUBTÍTULO EN NEGRITA Y LUEGO VIÑETA (`•`).
+   - Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos a los niños", "Preguntamos a los estudiantes").
 """
 
 def generar_prompt_ficha_trabajo():
@@ -363,10 +366,10 @@ DATOS DE LA FICHA:
 ESTRUCTURA DE LA FICHA EN MARKDOWN (INCLUIR TABLAS PARA EJERCICIOS Y AUTOEVALUACIÓN):
 1. Encabezado llamativo en un cuadro con título de la ficha y propósito para el niño.
 2. Breve texto/resumen ilustrativo o caso práctico adaptado a niños de {grado_seccion}.
-3. Sección 1: "Comprendo lo que leí / lo que aprendí" (3 preguntas de respuesta libre o verdadero/falso).
-4. Sección 2: "Aplico lo aprendido" (3 actividades prácticas: unir con líneas, marcar la opción correcta, completar tablas o esquemas).
-5. Sección 3: "Reto Creativo / Mi Compromiso" (Una actividad de dibujo o redacción personal corta).
-6. Tabla de Autoevaluación para el niño (*Caritas o semáforo de aprendizaje* con 2 criterios sencillos).
+3. Sección 1: "Comprendo lo que leí / lo que aprendí" (3 preguntas).
+4. Sección 2: "Aplico lo aprendido" (3 actividades prácticas en tablas/cuadros).
+5. Sección 3: "Reto Creativo / Mi Compromiso".
+6. Tabla de Autoevaluación para el niño.
 """
 
 def generar_prompt_proyecto():
@@ -381,7 +384,7 @@ A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 
 OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
 1. Genera un TÍTULO del proyecto: {val_titulo}
-2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos (Contexto, Preguntas Retadoras y Producto Tangible).
+2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos.
 
 ENCABEZADO DE SALIDA OBLIGATORIO:
 # **PROYECTO DE APRENDIZAJE N.º {num_doc}**
@@ -389,15 +392,19 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 
 ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
 1. Tabla de Datos Informativos.
-2. Situación Significativa Generada (Redacción completa).
+2. Situación Significativa Generada.
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas:
-   - En las tablas semanales, incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO Y COMPLETO DEL CNEB** sin resumir ni acortar.
-   - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** la parte trabajada en la semana.
+   - Coloca ÚNICAMENTE la competencia específica trabajada en cada área/actividad.
+   - Incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** resaltando en **negrita** la parte movilizada.
+   - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** la parte trabajada.
 5. Tabla de Enfoques Transversales.
 6. Producto Final Tangible del Proyecto.
-7. SECUENCIA DE ACTIVIDADES (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-   - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA (Bloque Mañana y Bloque Tarde) indicando Área y Actividad en 1ra persona del plural ("Nosotros...").
+7. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
+   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
+     | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+   - Fila 1 (Sesión 1 / Mañana): [Área - Competencia específica - Actividad en 1ª persona plural]
+   - Fila 2 (Sesión 2 / Tarde): [Área - Competencia específica - Actividad en 1ª persona plural]
 8. Lista Clasificada de Materiales y Recursos.
 9. Tabla de Reflexiones sobre los aprendizajes.
 """
@@ -414,7 +421,7 @@ A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 
 OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
 1. Genera un TÍTULO de la unidad: {val_titulo}
-2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos (Contexto, Preguntas Retadoras y Producto Tangible).
+2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos.
 
 ENCABEZADO DE SALIDA OBLIGATORIO:
 # **UNIDAD DE APRENDIZAJE N.º {num_doc}**
@@ -422,14 +429,17 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 
 ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
 I. Tabla de Datos Informativos.
-II. Situación Significativa Generada (Redacción completa).
+II. Situación Significativa Generada.
 III. Matriz de Aprendizajes por Área:
-    - Fila superior: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO Y COMPLETO DEL CNEB** para {grado_seccion} sin recortar ni resumir.
-    - Columnas: Actividad en 1ra persona plural | Competencia/Capacidad | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación Acción+Contenido+Condición | Evidencia | Lista de cotejo.
+    - Fila superior: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
+    - Columnas: Actividad en 1ra persona plural | Competencia Trabajada (Solo una) y Capacidades | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación | Evidencia | Lista de cotejo.
 IV. Tabla de Enfoques Transversales.
 V. Producto de la Unidad.
-VI. ACTIVIDADES PROPUESTAS (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-    - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA en 1ra persona del plural ("Nosotros...").
+VI. ACTIVIDADES PROPUESTAS CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
+    - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
+      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+    - Fila 1 (Sesión 1): [Área - Competencia específica - Actividad]
+    - Fila 2 (Sesión 2): [Área - Competencia específica - Actividad]
     - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 VII. Lista Clasificada de Materiales y Recursos.
 VIII. Tabla de Reflexiones sobre los Aprendizajes.
@@ -458,10 +468,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema y transcribiendo los Estándares/Desempeños del CNEB ÍNTEGRAMENTE para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando los días en columnas y aplicando colores pasteles para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Copias ÍNTEGRAMENTE los Estándares de Aprendizaje y Desempeños oficiales del CNEB sin recortar ni resumir el texto oficial, resaltando la parte evaluada en negrita y estructurando todo en TABLAS Y CUADROS con 2 sesiones diarias (10 semanales).",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas las semanas con días como columnas y todo en TABLAS Y CUADROS en Markdown.",
                     temperature=0.2
                 )
                 
@@ -501,7 +511,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                         file_name=fname_clean,
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     )
-                    st.info(f"💡 **Nota:** El archivo Word descargado incluye los Estándares y Desempeños transcritos ÍNTEGRAMENTE del CNEB, Título/Situación Significativa automáticos, tablas en tonos pasteles y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]`.")
+                    st.info(f"💡 **Nota:** El archivo Word descargado incluye tablas con encabezados en tonos pasteles variados, días de la semana organizados por columnas y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]`.")
 
         except Exception as e:
             err_str = str(e)
