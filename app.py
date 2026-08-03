@@ -104,7 +104,8 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Vista previa permanente en pantalla
+• Incluye Educación Física, Religión, Arte
+• Columna explícita de ÁREA Curricular
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
@@ -123,7 +124,7 @@ def add_formatted_text(paragraph, text):
             paragraph.add_run(part)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON COLORES PASTELES VARIADOS EN CADA TABLA
+# CONVERTIDOR A WORD (.DOCX) CON PROCESAMIENTO GARANTIZADO DE LA ÚLTIMA TABLA
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
@@ -155,7 +156,33 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     lines = md_text.split('\n')
     in_table = False
     table_data = []
-    
+
+    def render_table(t_data, color_hex):
+        rows = len(t_data)
+        cols = max(len(r) for r in t_data) if rows > 0 else 0
+        if rows > 0 and cols > 0:
+            t = doc.add_table(rows=rows, cols=cols)
+            t.style = 'Table Grid'
+            for r_idx, row_cells in enumerate(t_data):
+                for c_idx, cell_value in enumerate(row_cells):
+                    if c_idx < cols:
+                        cell = t.cell(r_idx, c_idx)
+                        p_cell = cell.paragraphs[0]
+                        p_cell.text = ""  # Limpiar
+                        add_formatted_text(p_cell, cell_value)
+                        
+                        # APLICAR COLOR PASTEL EN EL ENCABEZADO
+                        if r_idx == 0:
+                            shading_elm = OxmlElement('w:shd')
+                            shading_elm.set(qn('w:val'), 'clear')
+                            shading_elm.set(qn('w:color'), 'auto')
+                            shading_elm.set(qn('w:fill'), color_hex)
+                            cell._tc.get_or_add_tcPr().append(shading_elm)
+                            for paragraph in cell.paragraphs:
+                                for run in paragraph.runs:
+                                    run.font.color.rgb = RGBColor(30, 58, 138)  # Azul Marino
+                                    run.font.bold = True
+
     for line in lines:
         line_str = line.strip()
         
@@ -173,35 +200,9 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
             continue
         elif in_table:
             if table_data:
-                rows = len(table_data)
-                cols = max(len(r) for r in table_data) if rows > 0 else 0
-                if rows > 0 and cols > 0:
-                    t = doc.add_table(rows=rows, cols=cols)
-                    t.style = 'Table Grid'
-                    
-                    # Seleccionar color pastel diferente para cada tabla
-                    table_count += 1
-                    header_color = PASTEL_COLORS[(table_count - 1) % len(PASTEL_COLORS)]
-                    
-                    for r_idx, row_cells in enumerate(table_data):
-                        for c_idx, cell_value in enumerate(row_cells):
-                            if c_idx < cols:
-                                cell = t.cell(r_idx, c_idx)
-                                p_cell = cell.paragraphs[0]
-                                p_cell.text = ""  # Limpiar
-                                add_formatted_text(p_cell, cell_value)
-                                
-                                # APLICAR COLOR PASTEL EN EL ENCABEZADO
-                                if r_idx == 0:
-                                    shading_elm = OxmlElement('w:shd')
-                                    shading_elm.set(qn('w:val'), 'clear')
-                                    shading_elm.set(qn('w:color'), 'auto')
-                                    shading_elm.set(qn('w:fill'), header_color)
-                                    cell._tc.get_or_add_tcPr().append(shading_elm)
-                                    for paragraph in cell.paragraphs:
-                                        for run in paragraph.runs:
-                                            run.font.color.rgb = RGBColor(30, 58, 138)  # Azul Marino Oscuro
-                                            run.font.bold = True
+                table_count += 1
+                header_color = PASTEL_COLORS[(table_count - 1) % len(PASTEL_COLORS)]
+                render_table(table_data, header_color)
             in_table = False
             table_data = []
 
@@ -235,6 +236,14 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
         elif line_str != "":
             p = doc.add_paragraph()
             add_formatted_text(p, line_str)
+
+    # GARANTIZAR QUE LA ÚLTIMA TABLA (EJ. TABLA DE REFLEXIONES) SE PROCESE E IMPRIMA EN WORD
+    if in_table and table_data:
+        table_count += 1
+        header_color = PASTEL_COLORS[(table_count - 1) % len(PASTEL_COLORS)]
+        render_table(table_data, header_color)
+        in_table = False
+        table_data = []
             
     buffer = io.BytesIO()
     doc.save(buffer)
@@ -315,7 +324,7 @@ def generar_prompt_sesion():
     else:
         t_inicio, t_desarrollo, t_cierre = "15 min", "65 min", "10 min"
 
-    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador automático basado en el problema.'
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador basado en el problema.'
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
@@ -333,12 +342,13 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 DATOS: Grado: {grado_seccion} | Área: {area_sel} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion} | IE: {ie_nombre} | Docente: {docente}
 
 REGLAS OBLIGATORIAS DE ESTÁNDAR, COMPETENCIA Y DESEMPEÑO DEL CNEB:
-1. **UNA SOLA COMPETENCIA:** Coloca ÚNICAMENTE la competencia específica que se aborda en la actividad (NO listes todas las competencias del área).
-2. **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** En la Tabla II, copia el Estándar de Aprendizaje oficial del CNEB de manera ÍNTEGRA Y LITERAL, y RESALTA EN **NEGRITA** (`**la parte específica del estándar que se moviliza en la sesión**`).
-3. **DESEMPEÑO ÍNTEGRO Y PRECISADO:** Copia el desempeño oficial del CNEB de manera ÍNTEGRA y RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se evalúa en la sesión**`).
-4. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
-5. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
-6. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
+1. **COLUMNA DE ÁREA:** Incluye la columna **ÁREA** explícitamente en las tablas.
+2. **UNA SOLA COMPETENCIA:** Coloca ÚNICAMENTE la competencia específica que se aborda en la actividad (NO listes todas las competencias del área).
+3. **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** En la Tabla II, copia el Estándar de Aprendizaje oficial del CNEB de manera ÍNTEGRA Y LITERAL, y RESALTA EN **NEGRITA** (`**la parte específica del estándar que se moviliza en la sesión**`).
+4. **DESEMPEÑO ÍNTEGRO Y PRECISADO:** Copia el desempeño oficial del CNEB de manera ÍNTEGRA y RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se evalúa en la sesión**`).
+5. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
+6. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
+7. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
    - Tabla I: DATOS INFORMATIVOS
    - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
      ÁREA | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo con parte trabajada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
@@ -348,7 +358,7 @@ REGLAS OBLIGATORIAS DE ESTÁNDAR, COMPETENCIA Y DESEMPEÑO DEL CNEB:
    - Tabla VI: PREPARACIÓN DE LA SESIÓN
    - Tabla VII: ESCALA DE VALORACIÓN (Cuadro para 10 estudiantes ficticios peruanos)
 
-7. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
+8. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
    - Resalta en **NEGRITA** los títulos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
    - Cada actividad, pregunta o consigna DEBE INICIAR OBLIGATORIAMENTE CON SU SUBTÍTULO EN NEGRITA Y LUEGO VIÑETA (`•`).
    - Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos a los niños", "Preguntamos a los estudiantes").
@@ -408,19 +418,21 @@ ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
 2. Situación Significativa Generada.
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas:
-   - Cobertura Curricular Obligatoria: Distribuye sistemáticamente las **4 competencias de Matemática** y las **3 competencias de Comunicación**, además de **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales**.
+   - En la Matriz de Aprendizajes, la primera columna OBLIGATORIA debe ser **ÁREA CURRICULAR**.
+   - Cobertura Curricular Obligatoria: Distribuye sistemáticamente las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
    - Coloca ÚNICAMENTE la competencia específica trabajada en cada área/actividad.
    - Incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica movilizada**`).
    - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica trabajada**`).
 5. Tabla de Enfoques Transversales.
 6. Producto Final Tangible del Proyecto.
 7. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA con los días como columnas:
+   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - Fila 1 (Sesión 1 / Mañana): [Área - Competencia específica - Actividad en 1ª persona plural]
-   - Fila 2 (Sesión 2 / Tarde): [Área - Competencia específica - Actividad en 1ª persona plural]
+   - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
+     • Fila 1 (Sesión 1 / Mañana): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+     • Fila 2 (Sesión 2 / Tarde): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
 8. Lista Clasificada de Materiales y Recursos.
-9. Tabla de Reflexiones sobre los aprendizajes.
+9. Tabla de Reflexiones sobre los aprendizajes (Estructurada obligatoriamente en Cuadro/Tabla final).
 """
 
 def generar_prompt_unidad_sara():
@@ -428,7 +440,7 @@ def generar_prompt_unidad_sara():
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
@@ -445,19 +457,21 @@ ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
 I. Tabla de Datos Informativos.
 II. Situación Significativa Generada.
 III. Matriz de Aprendizajes por Área:
-    - Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales**.
-    - Fila superior: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
-    - Columnas: Actividad en 1ra persona plural | Competencia Trabajada (Solo una) y Capacidades | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación Acción+Contenido+Condición | Evidencia | Lista de cotejo.
+    - La primera columna OBLIGATORIA de la matriz debe ser **ÁREA CURRICULAR**.
+    - Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
+    - Fila superior por área: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
+    - Columnas: ÁREA | Actividad en 1ra persona plural | Competencia Trabajada (Solo una) y Capacidades | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación Acción+Contenido+Condición | Evidencia | Lista de cotejo.
 IV. Tabla de Enfoques Transversales.
 V. Producto de la Unidad.
 VI. ACTIVIDADES PROPUESTAS CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
     - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
       | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-    - Fila 1 (Sesión 1): [Área - Competencia específica - Actividad en 1ª persona plural]
-    - Fila 2 (Sesión 2): [Área - Competencia específica - Actividad en 1ª persona plural]
+    - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
+      • Fila 1 (Sesión 1): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+      • Fila 2 (Sesión 2): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
     - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 VII. Lista Clasificada de Materiales y Recursos.
-VIII. Tabla de Reflexiones sobre los Aprendizajes.
+VIII. Tabla de Reflexiones sobre los Aprendizajes (Estructurada obligatoriamente en Cuadro/Tabla final).
 """
 
 # ==============================================================================
@@ -483,10 +497,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema y generando tu {tipo_documento} para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando Educación Física, días en columnas y aplicando colores pasteles para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en tablas.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras la columna ÁREA de forma explícita, incluyes Educación Física, transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir ninguna al final.",
                     temperature=0.2
                 )
                 
@@ -547,4 +561,4 @@ if st.session_state['resultado_md'] is not None:
             file_name=st.session_state['fname_clean'],
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua aunque hagas clic en descargar o interactúes con la aplicación.")
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua y la tabla de Reflexiones al final se descargará 100% completa en Word.")
