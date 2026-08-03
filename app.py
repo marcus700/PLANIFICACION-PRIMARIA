@@ -299,13 +299,13 @@ REGLAS OBLIGATORIAS DE FORMATO Y NEGRITAS:
      • **Propósito y Organización:** Comunicamos que hoy aprenderemos a...
 5. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos", "Preguntamos", "Repartimos").
 6. Tablas obligatorias para: 
-   - Tabla I: Datos Informativos
-   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS (Columnas: ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO [con la parte trabajada en **negrita**] | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA | INSTRUMENTO)
-   - Tabla III: Enfoques Transversales
-   - Tabla IV: Competencia Transversal ("Gestiona su aprendizaje de manera autónoma")
-   - Tabla V: Meta de Aprendizaje
-   - Tabla VI: Preparación de la Sesión
-   - Tabla VII: Escala de Valoración (10 alumnos ficticios peruanos)
+   - I: Datos Informativos
+   - II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS (Columnas: ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO [con la parte trabajada en **negrita**] | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA | INSTRUMENTO)
+   - III: Enfoques Transversales
+   - IV: Competencia Transversal ("Gestiona su aprendizaje de manera autónoma")
+   - V: Meta de Aprendizaje
+   - VI: Preparación de la Sesión
+   - VII: Escala de Valoración (10 alumnos ficticios peruanos)
 7. Estructura de Actividades en los Momentos:
    - **INICIO (20 min):**
      • **Problematización:** [Actividad en viñeta]
