@@ -4,6 +4,7 @@ from google.genai import types
 import docx
 from docx.shared import Pt, Inches, RGBColor
 from docx.enum.text import WD_ALIGN_PARAGRAPH
+from docx.enum.section import WD_ORIENT
 from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 import io
@@ -103,8 +104,8 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
-• Estándar en Columna Dedicada de Matriz
-• Nivel Educación Primaria (1.° a 6.° Grado)
+• Unidades y Proyectos en Orientación HORIZONTAL
+• Columna explícita de ÁREA Curricular
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
@@ -123,9 +124,9 @@ def add_formatted_text(paragraph, text):
             paragraph.add_run(part)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON PROCESAMIENTO GARANTIZADO DE LA ÚLTIMA TABLA
+# CONVERTIDOR A WORD (.DOCX) CON SOPORTE PARA ORIENTACIÓN HORIZONTAL
 # ==============================================================================
-def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
+def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     doc = docx.Document()
     
     # Paleta de colores pasteles rotativos para los encabezados de tablas
@@ -139,11 +140,21 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     ]
     table_count = 0
     
+    # Configurar Márgenes y Orientación (Horizontal para Unidades y Proyectos)
     for section in doc.sections:
         section.top_margin = Inches(0.8)
         section.bottom_margin = Inches(0.8)
         section.left_margin = Inches(0.8)
         section.right_margin = Inches(0.8)
+        
+        if es_horizontal:
+            section.orientation = WD_ORIENT.LANDSCAPE
+            section.page_width = Inches(11.69)   # A4 Horizontal
+            section.page_height = Inches(8.27)
+        else:
+            section.orientation = WD_ORIENT.PORTRAIT
+            section.page_width = Inches(8.27)    # A4 Vertical
+            section.page_height = Inches(11.69)
         
     p_box = doc.add_paragraph()
     p_box.alignment = WD_ALIGN_PARAGRAPH.CENTER
@@ -327,7 +338,7 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS.
+Elabora una Sesión de Aprendizaje completa y estructurada strictly en CUADROS/TABLAS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO:
 {problema_contexto}
@@ -496,7 +507,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando la columna ÁREA, Estándares en columna dedicada, días en columnas y aplicando colores pasteles para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Creas columnas explícitas para ÁREA y ESTÁNDAR DE APRENDIZAJE en la matriz, transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras la columna ÁREA de forma explícita, incluyes Educación Física, transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
@@ -546,9 +557,13 @@ if st.session_state['resultado_md'] is not None:
         st.markdown(st.session_state['resultado_md'])
         
     with tab_download:
+        # Determinar si el documento debe ser HORIZONTAL (Unidades y Proyectos) o VERTICAL (Sesiones y Fichas)
+        es_horizontal_doc = st.session_state['tipo_doc_generado'] in ["Proyecto de Aprendizaje", "Unidad de Aprendizaje (Modelo SARA)"]
+        
         buffer_doc = markdown_to_docx(
             st.session_state['resultado_md'], 
-            ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre)
+            ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre),
+            es_horizontal=es_horizontal_doc
         )
         
         st.download_button(
@@ -557,4 +572,4 @@ if st.session_state['resultado_md'] is not None:
             file_name=st.session_state['fname_clean'],
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua y la tabla de Reflexiones al final se descargará 100% completa en Word.")
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua y el archivo Word descargado incluye la orientación HORIZONTAL para Unidades y Proyectos, garantizando la impresión completa de todas las tablas.")
