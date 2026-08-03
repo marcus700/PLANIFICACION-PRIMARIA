@@ -92,7 +92,9 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Días de la semana como Columnas
+• 4 Comp. Matemática y 3 Comp. Comunicación
+• Religión, Arte y Competencias Transversales
+• 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
 
@@ -292,7 +294,7 @@ problema_contexto = st.text_area(
 titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático a partir del problema):", value="")
 
 # ==============================================================================
-# PROMPTS
+# PROMPTS MAESTROS ALINEADOS AL CNEB COMPLETO
 # ==============================================================================
 def generar_prompt_sesion():
     if "45" in duracion_sesion:
@@ -302,7 +304,7 @@ def generar_prompt_sesion():
     else:
         t_inicio, t_desarrollo, t_cierre = "15 min", "65 min", "10 min"
 
-    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador basado en el problema.'
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador automático basado en el problema.'
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
@@ -395,13 +397,14 @@ ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
 2. Situación Significativa Generada.
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas:
+   - Cobertura Curricular Obligatoria: Distribuye sistemáticamente las **4 competencias de Matemática** (Cantidad; Regularidad, equivalencia y cambio; Forma, movimiento y localización; Gestión de datos) y las **3 competencias de Comunicación** (Oralidad, Lectura, Escritura), además de **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales**.
    - Coloca ÚNICAMENTE la competencia específica trabajada en cada área/actividad.
-   - Incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** resaltando en **negrita** la parte movilizada.
-   - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** la parte trabajada.
+   - Incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica movilizada**`).
+   - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica trabajada**`).
 5. Tabla de Enfoques Transversales.
 6. Producto Final Tangible del Proyecto.
 7. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
+   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA con los días como columnas:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
    - Fila 1 (Sesión 1 / Mañana): [Área - Competencia específica - Actividad en 1ª persona plural]
    - Fila 2 (Sesión 2 / Tarde): [Área - Competencia específica - Actividad en 1ª persona plural]
@@ -431,15 +434,16 @@ ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
 I. Tabla de Datos Informativos.
 II. Situación Significativa Generada.
 III. Matriz de Aprendizajes por Área:
-    - Fila superior: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
-    - Columnas: Actividad en 1ra persona plural | Competencia Trabajada (Solo una) y Capacidades | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación | Evidencia | Lista de cotejo.
+    - Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales** ("Gestiona su aprendizaje de manera autónoma" y "Se desenvuelve en entornos virtuales").
+    - Fila superior por área: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
+    - Columnas: Actividad en 1ra persona plural | Competencia Trabajada (Solo una) y Capacidades | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación Acción+Contenido+Condición | Evidencia | Lista de cotejo.
 IV. Tabla de Enfoques Transversales.
 V. Producto de la Unidad.
 VI. ACTIVIDADES PROPUESTAS CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
     - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
       | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-    - Fila 1 (Sesión 1): [Área - Competencia específica - Actividad]
-    - Fila 2 (Sesión 2): [Área - Competencia específica - Actividad]
+    - Fila 1 (Sesión 1): [Área - Competencia específica - Actividad en 1ª persona plural]
+    - Fila 2 (Sesión 2): [Área - Competencia específica - Actividad en 1ª persona plural]
     - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 VII. Lista Clasificada de Materiales y Recursos.
 VIII. Tabla de Reflexiones sobre los Aprendizajes.
@@ -468,10 +472,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando los días en columnas y aplicando colores pasteles para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, transcribiendo las 4 competencias de Matemática, 3 de Comunicación, Religión y Arte con días en columnas y tonos pasteles para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas las semanas con días como columnas y todo en TABLAS Y CUADROS en Markdown.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, abordas las 4 competencias de Matemática y 3 de Comunicación, organizas los días en columnas y aplicas tonos pasteles en tablas.",
                     temperature=0.2
                 )
                 
@@ -511,7 +515,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                         file_name=fname_clean,
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     )
-                    st.info(f"💡 **Nota:** El archivo Word descargado incluye tablas con encabezados en tonos pasteles variados, días de la semana organizados por columnas y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]`.")
+                    st.info(f"💡 **Nota:** El archivo Word descargado incluye tablas con encabezados en tonos pasteles variados, las 4 comp. de Matemática y 3 de Comunicación distribuidas, días de la semana organizados por columnas y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]`.")
 
         except Exception as e:
             err_str = str(e)
