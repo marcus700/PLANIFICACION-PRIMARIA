@@ -103,9 +103,8 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
+• Estándar en Columna Dedicada de Matriz
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Incluye Educación Física, Religión, Arte
-• Columna explícita de ÁREA Curricular
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
@@ -344,14 +343,14 @@ DATOS: Grado: {grado_seccion} | Área: {area_sel} | Fecha: {fecha_sugerida} | Du
 REGLAS OBLIGATORIAS DE ESTÁNDAR, COMPETENCIA Y DESEMPEÑO DEL CNEB:
 1. **COLUMNA DE ÁREA:** Incluye la columna **ÁREA** explícitamente en las tablas.
 2. **UNA SOLA COMPETENCIA:** Coloca ÚNICAMENTE la competencia específica que se aborda en la actividad (NO listes todas las competencias del área).
-3. **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** En la Tabla II, copia el Estándar de Aprendizaje oficial del CNEB de manera ÍNTEGRA Y LITERAL, y RESALTA EN **NEGRITA** (`**la parte específica del estándar que se moviliza en la sesión**`).
+3. **COLUMNA DEDICADA PARA EL ESTÁNDAR:** En la Tabla II, el **ESTÁNDAR DE APRENDIZAJE** debe tener su propia COLUMNA DEDICADA, copiando el texto oficial del CNEB de manera ÍNTEGRA Y LITERAL, y RESALTANDO EN **NEGRITA** (`**la parte específica del estándar que se moviliza en la sesión**`).
 4. **DESEMPEÑO ÍNTEGRO Y PRECISADO:** Copia el desempeño oficial del CNEB de manera ÍNTEGRA y RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se evalúa en la sesión**`).
 5. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
 6. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
 7. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
    - Tabla I: DATOS INFORMATIVOS
    - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
-     ÁREA | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo con parte trabajada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
+     ÁREA | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Columna dedicada con CNEB completo y parte trabajada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
    - Tabla III: ENFOQUES TRANSVERSALES
    - Tabla IV: COMPETENCIA TRANSVERSAL ("Gestiona su aprendizaje de manera autónoma")
    - Tabla V: META DE APRENDIZAJE
@@ -418,11 +417,9 @@ ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
 2. Situación Significativa Generada.
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas:
-   - En la Matriz de Aprendizajes, la primera columna OBLIGATORIA debe ser **ÁREA CURRICULAR**.
-   - Cobertura Curricular Obligatoria: Distribuye sistemáticamente las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
-   - Coloca ÚNICAMENTE la competencia específica trabajada en cada área/actividad.
-   - Incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica movilizada**`).
-   - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica trabajada**`).
+   - En la Matriz de Aprendizajes, incluye OBLIGATORIAMENTE las siguientes columnas:
+     ÁREA | ACTIVIDAD | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Columna dedicada con CNEB completo y parte movilizada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO.
+   - Cobertura Curricular Obligatoria: Distribuye las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
 5. Tabla de Enfoques Transversales.
 6. Producto Final Tangible del Proyecto.
 7. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
@@ -457,10 +454,9 @@ ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
 I. Tabla de Datos Informativos.
 II. Situación Significativa Generada.
 III. Matriz de Aprendizajes por Área:
-    - La primera columna OBLIGATORIA de la matriz debe ser **ÁREA CURRICULAR**.
+    - Incluye OBLIGATORIAMENTE las siguientes columnas en la tabla:
+      ÁREA | ACTIVIDAD en 1ra persona plural | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Columna dedicada con CNEB completo y parte movilizada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | EVIDENCIA | LISTA DE COTEJO.
     - Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
-    - Fila superior por área: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
-    - Columnas: ÁREA | Actividad en 1ra persona plural | Competencia Trabajada (Solo una) y Capacidades | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación Acción+Contenido+Condición | Evidencia | Lista de cotejo.
 IV. Tabla de Enfoques Transversales.
 V. Producto de la Unidad.
 VI. ACTIVIDADES PROPUESTAS CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
@@ -497,10 +493,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando Educación Física, días en columnas y aplicando colores pasteles para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando la columna ÁREA, Estándares en columna dedicada, días en columnas y aplicando colores pasteles para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras la columna ÁREA de forma explícita, incluyes Educación Física, transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir ninguna al final.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Creas columnas explícitas para ÁREA y ESTÁNDAR DE APRENDIZAJE en la matriz, transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
