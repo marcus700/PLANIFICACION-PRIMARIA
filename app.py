@@ -97,7 +97,7 @@ st.sidebar.info("""
 """)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON LIMPIEZA DE ETIQUETAS HTML Y ESPACIO PARA INSIGNIA
+# CONVERTIDOR A WORD (.DOCX) CON ELIMINACIÓN TOTAL DE SÍMBOLOS # Y HTML
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
@@ -122,10 +122,11 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     for line in lines:
         line_str = line.strip()
         
-        # Limpieza de etiquetas HTML indeseadas como <br> o <br/>
+        # Limpieza de etiquetas HTML indeseadas (<br>, <br/>, etc.)
         line_str = re.sub(r'<br\s*/?>', ' ', line_str)
         line_str = re.sub(r'</?[a-zA-Z0-9]+\s*/>', ' ', line_str)
         
+        # Procesamiento de Tablas Markdown
         if line_str.startswith('|') and line_str.endswith('|'):
             in_table = True
             if re.match(r'^\|[\s\:\-\|]+\|$', line_str):
@@ -144,7 +145,9 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
                         for c_idx, cell_value in enumerate(row_cells):
                             if c_idx < cols:
                                 cell = t.cell(r_idx, c_idx)
-                                cell.text = cell_value
+                                # Limpiar asteriscos de negrita en celdas para formato limpio
+                                cell_clean = cell_value.replace('**', '')
+                                cell.text = cell_clean
                                 if r_idx == 0:
                                     shading_elm = OxmlElement('w:shd')
                                     shading_elm.set(qn('w:val'), 'clear')
@@ -158,30 +161,37 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
             in_table = False
             table_data = []
 
-        if line_str.startswith('# '):
+        # DETECCIÓN Y ELIMINACIÓN DE CUALQUIER NIVEL DE ALMOHADILLAS (#, ##, ###, ####, #####, ######)
+        heading_match = re.match(r'^(#{1,6})\s*(.*)$', line_str)
+        if heading_match:
+            hashes = heading_match.group(1)
+            title_text = heading_match.group(2).strip().replace('**', '')
+            level = len(hashes)
+            
             p = doc.add_paragraph()
-            run = p.add_run(line_str[2:])
-            run.font.size = Pt(16)
+            run = p.add_run(title_text)
             run.font.bold = True
-            run.font.color.rgb = RGBColor(30, 58, 138)
-        elif line_str.startswith('## '):
-            p = doc.add_paragraph()
-            run = p.add_run(line_str[3:])
-            run.font.size = Pt(14)
-            run.font.bold = True
-            run.font.color.rgb = RGBColor(30, 58, 138)
-        elif line_str.startswith('### '):
-            p = doc.add_paragraph()
-            run = p.add_run(line_str[4:])
-            run.font.size = Pt(12)
-            run.font.bold = True
-            run.font.color.rgb = RGBColor(55, 65, 81)
-        elif line_str.startswith('• ') or line_str.startswith('- '):
+            
+            if level in [1, 2]:
+                run.font.size = Pt(14)
+                run.font.color.rgb = RGBColor(30, 58, 138)  # Azul oscuro
+            elif level in [3, 4]:
+                run.font.size = Pt(12)
+                run.font.color.rgb = RGBColor(30, 58, 138)  # Azul medio
+            else:
+                run.font.size = Pt(11)
+                run.font.color.rgb = RGBColor(55, 65, 81)   # Gris oscuro
+            continue
+
+        # Procesamiento de Viñetas
+        if line_str.startswith('• ') or line_str.startswith('- '):
             p = doc.add_paragraph(style='List Bullet')
-            p.add_run(line_str[2:])
+            clean_bullet = line_str[2:].replace('**', '')
+            p.add_run(clean_bullet)
         elif line_str != "":
             p = doc.add_paragraph()
-            p.add_run(line_str)
+            clean_text = line_str.replace('**', '')
+            p.add_run(clean_text)
             
     buffer = io.BytesIO()
     doc.save(buffer)
@@ -263,28 +273,38 @@ DATOS: Grado: {grado_seccion} | Área: {area_sel} | Tema: {tema_titulo} | Fecha:
 Contexto: {situacion_significativa}
 
 REGLAS OBLIGATORIAS DE FORMATO Y CONTENIDO:
-1. NO UTILICES etiquetas HTML como <br> ni <br/> ni de ningún otro tipo. Utiliza ÚNICAMENTE saltos de línea estándar en Markdown y texto limpio.
-2. Cuadros/Tablas obligatorios para: 
+1. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos. Utiliza únicamente negritas como **INICIO**, **Problematización**, etc.
+2. NO UTILICES etiquetas HTML como <br> o <br/>. Usa exclusivamente saltos de línea normales.
+3. FORMATO DE LOS MOMENTOS DE LA SESIÓN:
+   - Resalta en **NEGRITA** los títulos de los momentos principales (**INICIO**, **DESARROLLO**, **CIERRE**) y los nombres de los procesos pedagógicos e ideológicos.
+   - Cada acción, pregunta o actividad dentro de Inicio, Desarrollo y Cierre DEBE ESTAR SEPARADA OBLIGATORIAMENTE POR VIÑETAS (`•`).
+4. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos a los niños", "Preguntamos a los estudiantes", "Repartimos los materiales").
+5. Cuadros/Tablas obligatorios para: 
    - Tabla I: Datos Informativos
-   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Esta tabla debe contener OBLIGATORIAMENTE las columnas: 
+   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Esta tabla debe incluir OBLIGATORIAMENTE las columnas: 
      ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo del ciclo correspondiente) | DESEMPEÑO PRECISADO (resaltando en **negrita** la parte trabajada) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
    - Tabla III: Enfoques Transversales
    - Tabla IV: Competencia Transversal ("Gestiona su aprendizaje de manera autónoma")
    - Tabla V: Meta de Aprendizaje
    - Tabla VI: Preparación de la Sesión
-   - Momentos de la Sesión
-   - Tabla VII: Escala de Valoración (10 alumnos ficticios)
-3. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos", "Preguntamos", "Repartimos").
-4. Procesos Pedagógicos en INICIO (20 min): Problematización, Propósito, Motivación, Saberes Previos, Criterios y Normas.
-5. Procesos Didácticos Específicos del Área {area_sel} en DESARROLLO (60 min).
-6. CIERRE (10 min): Metacognición y Reflexión.
+   - Tabla VII: Escala de Valoración (10 alumnos ficticios peruanos)
+6. Estructura de Actividades en los Momentos:
+   - **INICIO (20 min):**
+     • **Problematización:** [Actividad detallada con viñeta]
+     • **Propósito y Organización:** [Actividad detallada con viñeta]
+     • **Motivación / Interés:** [Actividad detallada con viñeta]
+     • **Saberes Previos:** [Actividad detallada con viñeta]
+     • **Criterios de Evaluación:** [Actividad detallada con viñeta]
+     • **Normas de Convivencia:** [Actividad detallada con viñeta]
+   - **DESARROLLO (60 min):** Aplicar los Procesos Didácticos Específicos del Área {area_sel} organizando cada paso obligatoriamente con viñetas (`•`).
+   - **CIERRE (10 min):** Metacognición, Reflexión y Evaluación organizadas obligatoriamente con viñetas (`•`).
 """
 
 def generar_prompt_ficha_trabajo():
     return f"""
 Actúa como un Docente de Primaria experto del MINEDU Perú.
 Crea una FICHA DE APLICACIÓN / TRABAJO PARA EL ESTUDIANTE lista para imprimir.
-NO UTILICES etiquetas HTML como <br> o <br/>. Usa formato Markdown limpio.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio.
 
 DATOS DE LA FICHA:
 • Institución Educativa: {ie_nombre}
@@ -305,7 +325,7 @@ ESTRUCTURA DE LA FICHA EN MARKDOWN:
 def generar_prompt_proyecto():
     return f"""
 Actúa como un docente especialista de Primaria MINEDU Perú. Elabora un PROYECTO DE APRENDIZAJE completo.
-NO UTILICES etiquetas HTML como <br> o <br/>. Usa Markdown totalmente limpio.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio.
 
 DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
 Situación Significativa: {situacion_significativa}
@@ -325,7 +345,7 @@ Estructura:
 def generar_prompt_unidad_sara():
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-NO UTILICES etiquetas HTML como <br> o <br/>. Usa Markdown limpio.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio.
 
 DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
 Situación Significativa: {situacion_significativa}
@@ -367,7 +387,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas y sin etiquetas HTML.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas, sin símbolos #### o ##### y sin etiquetas HTML.",
                     temperature=0.2
                 )
                 
