@@ -69,7 +69,7 @@ else:
         help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
     )
 
-# Modelos oficiales vigentes de Google AI Studio (Incluye Gemini 3.6 Flash)
+# Modelos oficiales vigentes de Google AI Studio
 model_choice = st.sidebar.selectbox(
     "Modelo de Gemini:", 
     ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
@@ -97,7 +97,7 @@ st.sidebar.info("""
 """)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON CUADRO MANUAL PARA INSIGNIA
+# CONVERTIDOR A WORD (.DOCX) CON LIMPIEZA DE ETIQUETAS HTML Y ESPACIO PARA INSIGNIA
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
@@ -121,6 +121,10 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     
     for line in lines:
         line_str = line.strip()
+        
+        # Limpieza de etiquetas HTML indeseadas como <br> o <br/>
+        line_str = re.sub(r'<br\s*/?>', ' ', line_str)
+        line_str = re.sub(r'</?[a-zA-Z0-9]+\s*/>', ' ', line_str)
         
         if line_str.startswith('|') and line_str.endswith('|'):
             in_table = True
@@ -258,19 +262,29 @@ Elabora una Sesión de Aprendizaje completa según el modelo CNEB.
 DATOS: Grado: {grado_seccion} | Área: {area_sel} | Tema: {tema_titulo} | Fecha: {fecha_sugerida} | IE: {ie_nombre} | Docente: {docente}
 Contexto: {situacion_significativa}
 
-REGLAS OBLIGATORIAS:
-1. Cuadros/Tablas para: Datos Informativos, Propósitos CNEB, Enfoques Transversales, Competencia Transversal, Metas de Aprendizaje, Preparación, Momentos y Escala de Valoración.
-2. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos", "Preguntamos", "Repartimos").
-3. Procesos Pedagógicos en INICIO (20 min): Problematización, Propósito, Motivación, Saberes Previos, Criterios y Normas.
-4. Procesos Didácticos Específicos del Área {area_sel} en DESARROLLO (60 min).
-5. CIERRE (10 min): Metacognición y Reflexión.
-6. ESCALA DE VALORACIÓN: Tabla final para 10 estudiantes ficticios peruanos.
+REGLAS OBLIGATORIAS DE FORMATO Y CONTENIDO:
+1. NO UTILICES etiquetas HTML como <br> ni <br/> ni de ningún otro tipo. Utiliza ÚNICAMENTE saltos de línea estándar en Markdown y texto limpio.
+2. Cuadros/Tablas obligatorios para: 
+   - Tabla I: Datos Informativos
+   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Esta tabla debe contener OBLIGATORIAMENTE las columnas: 
+     ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo del ciclo correspondiente) | DESEMPEÑO PRECISADO (resaltando en **negrita** la parte trabajada) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
+   - Tabla III: Enfoques Transversales
+   - Tabla IV: Competencia Transversal ("Gestiona su aprendizaje de manera autónoma")
+   - Tabla V: Meta de Aprendizaje
+   - Tabla VI: Preparación de la Sesión
+   - Momentos de la Sesión
+   - Tabla VII: Escala de Valoración (10 alumnos ficticios)
+3. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos", "Preguntamos", "Repartimos").
+4. Procesos Pedagógicos en INICIO (20 min): Problematización, Propósito, Motivación, Saberes Previos, Criterios y Normas.
+5. Procesos Didácticos Específicos del Área {area_sel} en DESARROLLO (60 min).
+6. CIERRE (10 min): Metacognición y Reflexión.
 """
 
 def generar_prompt_ficha_trabajo():
     return f"""
 Actúa como un Docente de Primaria experto del MINEDU Perú.
 Crea una FICHA DE APLICACIÓN / TRABAJO PARA EL ESTUDIANTE lista para imprimir.
+NO UTILICES etiquetas HTML como <br> o <br/>. Usa formato Markdown limpio.
 
 DATOS DE LA FICHA:
 • Institución Educativa: {ie_nombre}
@@ -291,6 +305,8 @@ ESTRUCTURA DE LA FICHA EN MARKDOWN:
 def generar_prompt_proyecto():
     return f"""
 Actúa como un docente especialista de Primaria MINEDU Perú. Elabora un PROYECTO DE APRENDIZAJE completo.
+NO UTILICES etiquetas HTML como <br> o <br/>. Usa Markdown totalmente limpio.
+
 DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
 Situación Significativa: {situacion_significativa}
 
@@ -309,6 +325,8 @@ Estructura:
 def generar_prompt_unidad_sara():
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
+NO UTILICES etiquetas HTML como <br> o <br/>. Usa Markdown limpio.
+
 DATOS: IE: {ie_nombre} | Docente: {docente} | Grado: {grado_seccion} | Duración: {fechas_duracion} | Título: "{tema_titulo}"
 Situación Significativa: {situacion_significativa}
 
@@ -349,11 +367,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas y sin etiquetas HTML.",
                     temperature=0.2
                 )
                 
-                # Intentar primero con el modelo seleccionado por el usuario
                 try:
                     response = client.models.generate_content(
                         model=model_choice,
@@ -362,7 +379,6 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                     )
                 except Exception as model_err:
                     err_text = str(model_err)
-                    # Respaldo automático si el modelo seleccionado no responde o se agota cuota
                     if "404" in err_text or "NOT_FOUND" in err_text:
                         response = client.models.generate_content(
                             model="gemini-2.0-flash",
