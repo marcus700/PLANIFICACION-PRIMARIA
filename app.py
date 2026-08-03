@@ -97,7 +97,20 @@ st.sidebar.info("""
 """)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON ELIMINACIÓN TOTAL DE SÍMBOLOS # Y HTML
+# PROCESADOR DE TEXTO ENRIQUECIDO PARA WORD (SOPORTE DE NEGRITAS **)
+# ==============================================================================
+def add_formatted_text(paragraph, text):
+    """Agrega texto a un párrafo en Word respetando las marcas de negrita **texto**"""
+    parts = re.split(r'(\*\*.*?\*\*)', text)
+    for part in parts:
+        if part.startswith('**') and part.endswith('**'):
+            run = paragraph.add_run(part[2:-2])
+            run.font.bold = True
+        else:
+            paragraph.add_run(part)
+
+# ==============================================================================
+# CONVERTIDOR A WORD (.DOCX) CON FORMATEO PROFESIONAL DE TABLAS Y TITULOS
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
@@ -145,9 +158,10 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
                         for c_idx, cell_value in enumerate(row_cells):
                             if c_idx < cols:
                                 cell = t.cell(r_idx, c_idx)
-                                # Limpiar asteriscos de negrita en celdas para formato limpio
-                                cell_clean = cell_value.replace('**', '')
-                                cell.text = cell_clean
+                                p_cell = cell.paragraphs[0]
+                                p_cell.text = ""  # Limpiar
+                                add_formatted_text(p_cell, cell_value)
+                                
                                 if r_idx == 0:
                                     shading_elm = OxmlElement('w:shd')
                                     shading_elm.set(qn('w:val'), 'clear')
@@ -161,37 +175,36 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
             in_table = False
             table_data = []
 
-        # DETECCIÓN Y ELIMINACIÓN DE CUALQUIER NIVEL DE ALMOHADILLAS (#, ##, ###, ####, #####, ######)
+        # DETECCIÓN Y ELIMINACIÓN DE CUALQUIER NIVEL DE ALMOHADILLAS (#, ##, ###, ####, #####)
         heading_match = re.match(r'^(#{1,6})\s*(.*)$', line_str)
         if heading_match:
             hashes = heading_match.group(1)
-            title_text = heading_match.group(2).strip().replace('**', '')
+            title_text = heading_match.group(2).strip()
             level = len(hashes)
             
             p = doc.add_paragraph()
-            run = p.add_run(title_text)
-            run.font.bold = True
-            
             if level in [1, 2]:
+                run = p.add_run(title_text.replace('**', ''))
                 run.font.size = Pt(14)
+                run.font.bold = True
                 run.font.color.rgb = RGBColor(30, 58, 138)  # Azul oscuro
             elif level in [3, 4]:
+                run = p.add_run(title_text.replace('**', ''))
                 run.font.size = Pt(12)
+                run.font.bold = True
                 run.font.color.rgb = RGBColor(30, 58, 138)  # Azul medio
             else:
-                run.font.size = Pt(11)
-                run.font.color.rgb = RGBColor(55, 65, 81)   # Gris oscuro
+                add_formatted_text(p, title_text)
             continue
 
         # Procesamiento de Viñetas
         if line_str.startswith('• ') or line_str.startswith('- '):
             p = doc.add_paragraph(style='List Bullet')
-            clean_bullet = line_str[2:].replace('**', '')
-            p.add_run(clean_bullet)
+            clean_bullet = line_str[2:].strip()
+            add_formatted_text(p, clean_bullet)
         elif line_str != "":
             p = doc.add_paragraph()
-            clean_text = line_str.replace('**', '')
-            p.add_run(clean_text)
+            add_formatted_text(p, line_str)
             
     buffer = io.BytesIO()
     doc.save(buffer)
@@ -272,32 +285,39 @@ Elabora una Sesión de Aprendizaje completa según el modelo CNEB.
 DATOS: Grado: {grado_seccion} | Área: {area_sel} | Tema: {tema_titulo} | Fecha: {fecha_sugerida} | IE: {ie_nombre} | Docente: {docente}
 Contexto: {situacion_significativa}
 
-REGLAS OBLIGATORIAS DE FORMATO Y CONTENIDO:
-1. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos. Utiliza únicamente negritas como **INICIO**, **Problematización**, etc.
-2. NO UTILICES etiquetas HTML como <br> o <br/>. Usa exclusivamente saltos de línea normales.
-3. FORMATO DE LOS MOMENTOS DE LA SESIÓN:
-   - Resalta en **NEGRITA** los títulos de los momentos principales (**INICIO**, **DESARROLLO**, **CIERRE**) y los nombres de los procesos pedagógicos e ideológicos.
-   - Cada acción, pregunta o actividad dentro de Inicio, Desarrollo y Cierre DEBE ESTAR SEPARADA OBLIGATORIAMENTE POR VIÑETAS (`•`).
-4. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos a los niños", "Preguntamos a los estudiantes", "Repartimos los materiales").
-5. Cuadros/Tablas obligatorios para: 
+REGLAS OBLIGATORIAS DE FORMATO Y NEGRITAS:
+1. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
+2. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
+3. FORMATO OBLIGATORIO DE DESEMPEÑO PRECISADO EN LA TABLA II:
+   - Copia el desempeño del CNEB para {grado_seccion} y OBLIGATORIAMENTE RESALTA EN **NEGRITA** la parte específica que se está abordando y evaluando en esta sesión de aprendizaje.
+   - Ejemplo: "Participa en la elaboración de acuerdos de convivencia, **teniendo en cuenta los deberes y derechos del niño**, y escucha a sus compañeros."
+4. FORMATO OBLIGATORIO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
+   - Resalta en **NEGRITA** los títulos de los momentos principales (**INICIO**, **DESARROLLO**, **CIERRE**) y cada uno de los procesos pedagógicos/didácticos.
+   - Cada actividad, pregunta o consigna dentro de Inicio, Desarrollo y Cierre DEBE INICIAR OBLIGATORIAMENTE CON SU SUBTÍTULO EN NEGRITA Y LUEGO VIÑETA (`•`).
+   - Ejemplo de formato:
+     • **Problematización:** Presentamos a los estudiantes un caso cotidiano sobre el agua...
+     • **Propósito y Organización:** Comunicamos que hoy aprenderemos a...
+5. Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos", "Preguntamos", "Repartimos").
+6. Tablas obligatorias para: 
    - Tabla I: Datos Informativos
-   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Esta tabla debe incluir OBLIGATORIAMENTE las columnas: 
-     ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo del ciclo correspondiente) | DESEMPEÑO PRECISADO (resaltando en **negrita** la parte trabajada) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
+   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS (Columnas: ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO [con la parte trabajada en **negrita**] | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA | INSTRUMENTO)
    - Tabla III: Enfoques Transversales
    - Tabla IV: Competencia Transversal ("Gestiona su aprendizaje de manera autónoma")
    - Tabla V: Meta de Aprendizaje
    - Tabla VI: Preparación de la Sesión
    - Tabla VII: Escala de Valoración (10 alumnos ficticios peruanos)
-6. Estructura de Actividades en los Momentos:
+7. Estructura de Actividades en los Momentos:
    - **INICIO (20 min):**
-     • **Problematización:** [Actividad detallada con viñeta]
-     • **Propósito y Organización:** [Actividad detallada con viñeta]
-     • **Motivación / Interés:** [Actividad detallada con viñeta]
-     • **Saberes Previos:** [Actividad detallada con viñeta]
-     • **Criterios de Evaluación:** [Actividad detallada con viñeta]
-     • **Normas de Convivencia:** [Actividad detallada con viñeta]
-   - **DESARROLLO (60 min):** Aplicar los Procesos Didácticos Específicos del Área {area_sel} organizando cada paso obligatoriamente con viñetas (`•`).
-   - **CIERRE (10 min):** Metacognición, Reflexión y Evaluación organizadas obligatoriamente con viñetas (`•`).
+     • **Problematización:** [Actividad en viñeta]
+     • **Propósito y Organización:** [Actividad en viñeta]
+     • **Motivación / Interés:** [Actividad en viñeta]
+     • **Saberes Previos:** [Actividad en viñeta]
+     • **Criterios de Evaluación:** [Actividad en viñeta]
+     • **Normas de Convivencia:** [Actividad en viñeta]
+   - **DESARROLLO (60 min):** Aplicar los Procesos Didácticos Específicos del Área {area_sel} con subtítulos de procesos en **NEGRITA** y viñetas (`•`).
+   - **CIERRE (10 min):**
+     • **Metacognición:** [Preguntas en viñeta]
+     • **Reflexión y Evaluación:** [Actividad en viñeta]
 """
 
 def generar_prompt_ficha_trabajo():
@@ -334,7 +354,7 @@ Estructura:
 1. Datos Informativos (Tabla)
 2. Situación Significativa
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?)
-4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas (Tablas completas por semana para todas las áreas con estándar completo, desempeño en negrita, criterios, evidencia e instrumento).
+4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas (Tablas completas por semana para todas las áreas con estándar completo, desempeño con parte trabajada en **negrita**, criterios, evidencia e instrumento).
 5. Enfoques Transversales (Tabla)
 6. Producto Final Tangible
 7. Secuencia de Actividades diarias por semana (Lunes a Viernes en 1ra persona plural)
@@ -353,7 +373,7 @@ Situación Significativa: {situacion_significativa}
 Estructura:
 I. Datos Informativos (Tabla)
 II. Situación Significativa
-III. Matriz de Aprendizajes por Área (Tabla por área con estándar completo en fila superior, columnas: Actividad en 1ra persona plural, Competencia/Capacidad, Desempeño con negrita, Criterios de Evaluación Acción+Contenido+Condición, Evidencia, Lista de cotejo).
+III. Matriz de Aprendizajes por Área (Tabla por área con estándar completo en fila superior, columnas: Actividad en 1ra persona plural, Competencia/Capacidad, Desempeño con parte específica en **negrita**, Criterios de Evaluación Acción+Contenido+Condición, Evidencia, Lista de cotejo).
 IV. Enfoques Transversales (Tabla)
 V. Producto de la Unidad
 VI. Actividades Propuestas semanales (Lunes a Viernes) cerrando con la pregunta: ¿Qué productos lograré en esta experiencia?
@@ -387,7 +407,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas, sin símbolos #### o ##### y sin etiquetas HTML.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas, subtítulos en negrita y resaltando la parte evaluada del desempeño en negrita.",
                     temperature=0.2
                 )
                 
