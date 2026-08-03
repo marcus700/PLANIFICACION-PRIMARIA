@@ -69,8 +69,11 @@ else:
         help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
     )
 
-# Modelos oficiales vigentes de Google AI Studio
-model_choice = st.sidebar.selectbox("Modelo de Gemini:", ["gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-2.5-flash"])
+# Modelos oficiales vigentes de Google AI Studio (Incluye Gemini 3.6 Flash)
+model_choice = st.sidebar.selectbox(
+    "Modelo de Gemini:", 
+    ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
+)
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📋 Herramientas de Aula")
@@ -343,14 +346,14 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini está generando tu {tipo_documento} para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
                     system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas documentos pedagógicos impecables en Markdown con tablas perfeccionadas.",
                     temperature=0.2
                 )
                 
-                # Intento de generación con mecanismo de respaldo si ocurre 404
+                # Intentar primero con el modelo seleccionado por el usuario
                 try:
                     response = client.models.generate_content(
                         model=model_choice,
@@ -358,8 +361,9 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                         config=config
                     )
                 except Exception as model_err:
-                    if "404" in str(model_err) or "NOT_FOUND" in str(model_err):
-                        # Reintento automático con el modelo estándar vigente
+                    err_text = str(model_err)
+                    # Respaldo automático si el modelo seleccionado no responde o se agota cuota
+                    if "404" in err_text or "NOT_FOUND" in err_text:
                         response = client.models.generate_content(
                             model="gemini-2.0-flash",
                             contents=prompt_maestro,
@@ -390,4 +394,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                     st.info(f"💡 **Nota:** El archivo Word descargado incluye el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]` en la parte superior para que el docente pegue manualmente la insignia de su colegio.")
 
         except Exception as e:
-            st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {str(e)}")
+            err_str = str(e)
+            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                st.warning("⏳ **Límite de velocidad del plan gratuito alcanzado.**\n\nPor favor, **espera 60 segundos** y vuelve a hacer clic en el botón de generación, o cambia el **Modelo de Gemini** en la barra lateral por otro modelo disponible.")
+            elif "404" in err_str or "NOT_FOUND" in err_str:
+                st.error("⚠️ El modelo seleccionado no está disponible para tu cuenta de Google AI. Por favor selecciona **gemini-2.0-flash** o **gemini-3.6-flash** en la barra lateral.")
+            else:
+                st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
