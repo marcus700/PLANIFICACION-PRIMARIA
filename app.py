@@ -54,14 +54,20 @@ st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Doce
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# BARRA LATERAL (SIDEBAR)
+# BARRA LATERAL (SIDEBAR) Y LECTURA AUTOMÁTICA DE API KEY DESDE SECRETS
 # ==============================================================================
 st.sidebar.title("⚙️ Configuración")
-api_key = st.sidebar.text_input(
-    "🔑 Google AI Studio API Key:", 
-    type="password", 
-    help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
-)
+
+# Detección inteligente de la API Key (Desde Secrets o Entrada Manual)
+if "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
+    api_key = st.secrets["GEMINI_API_KEY"]
+    st.sidebar.success("🔑 API Key activada desde el servidor.")
+else:
+    api_key = st.sidebar.text_input(
+        "🔑 Google AI Studio API Key:", 
+        type="password", 
+        help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
+    )
 
 model_choice = st.sidebar.selectbox("Modelo de Gemini:", ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"])
 
@@ -83,11 +89,11 @@ st.sidebar.info("""
 • RM N.° 649-2016-MINEDU
 • Nivel Educación Primaria (1.° a 6.° Grado)
 • Salida editable en Word (.docx)
-• Espacio superior para pegar insignia de la I.E.
+• Cuadro reservado para insignia de la I.E.
 """)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON ESPACIO MANUAL PARA INSIGNIA
+# CONVERTIDOR A WORD (.DOCX) CON CUADRO MANUAL PARA INSIGNIA
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
@@ -173,7 +179,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
             p = doc.add_paragraph()
             p.add_run(line_str)
             
-    # Caso de tabla al final del texto
     if in_table and table_data:
         rows = len(table_data)
         cols = max(len(r) for r in table_data) if rows > 0 else 0
@@ -254,7 +259,7 @@ else:  # Unidad SARA
     )
 
 # ==============================================================================
-# PROMPTS
+# PROMPTS MAESTROS
 # ==============================================================================
 def generar_prompt_sesion():
     return f"""
@@ -336,7 +341,7 @@ st.markdown("---")
 
 if st.button(f"✨ Generar {tipo_documento} en Word"):
     if not api_key:
-        st.error("⚠️ Ingresa tu API Key de Google AI Studio en la barra lateral izquierda.")
+        st.error("⚠️ Ingresa tu API Key de Google AI Studio en la barra lateral o en los Secrets.")
     elif not situacion_significativa or not tema_titulo:
         st.warning("⚠️ Completa los campos obligatorios del formulario.")
     else:
