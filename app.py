@@ -69,8 +69,8 @@ else:
         help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
     )
 
-# Modelos oficiales de Google AI Studio / Gemini API
-model_choice = st.sidebar.selectbox("Modelo de Gemini:", ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"])
+# Modelos oficiales vigentes de Google AI Studio
+model_choice = st.sidebar.selectbox("Modelo de Gemini:", ["gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-2.5-flash"])
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📋 Herramientas de Aula")
@@ -350,11 +350,23 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                     temperature=0.2
                 )
                 
-                response = client.models.generate_content(
-                    model=model_choice,
-                    contents=prompt_maestro,
-                    config=config
-                )
+                # Intento de generación con mecanismo de respaldo si ocurre 404
+                try:
+                    response = client.models.generate_content(
+                        model=model_choice,
+                        contents=prompt_maestro,
+                        config=config
+                    )
+                except Exception as model_err:
+                    if "404" in str(model_err) or "NOT_FOUND" in str(model_err):
+                        # Reintento automático con el modelo estándar vigente
+                        response = client.models.generate_content(
+                            model="gemini-2.0-flash",
+                            contents=prompt_maestro,
+                            config=config
+                        )
+                    else:
+                        raise model_err
                 
                 resultado_md = response.text
                 
