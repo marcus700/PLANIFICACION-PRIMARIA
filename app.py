@@ -54,7 +54,7 @@ st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Doce
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
-# BARRA LATERAL (SIDEBAR) Y LECTURA AUTOMÁTICA DE API KEY DESDE SECRETS
+# BARRA LATERAL (SIDEBAR) - LECTURA DE API KEY Y MODELOS
 # ==============================================================================
 st.sidebar.title("⚙️ Configuración")
 
@@ -69,7 +69,8 @@ else:
         help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
     )
 
-model_choice = st.sidebar.selectbox("Modelo de Gemini:", ["gemini-2.5-flash", "gemini-1.5-flash", "gemini-1.5-pro"])
+# Modelos oficiales de Google AI Studio / Gemini API
+model_choice = st.sidebar.selectbox("Modelo de Gemini:", ["gemini-1.5-flash", "gemini-1.5-pro", "gemini-2.0-flash"])
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("### 📋 Herramientas de Aula")
@@ -98,14 +99,12 @@ st.sidebar.info("""
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     doc = docx.Document()
     
-    # Márgenes estándar
     for section in doc.sections:
         section.top_margin = Inches(0.8)
         section.bottom_margin = Inches(0.8)
         section.left_margin = Inches(0.8)
         section.right_margin = Inches(0.8)
         
-    # Cuadro reservado para pegar la insignia manualmente en Word
     p_box = doc.add_paragraph()
     p_box.alignment = WD_ALIGN_PARAGRAPH.CENTER
     run_box = p_box.add_run(f"🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]\n")
@@ -120,7 +119,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
     for line in lines:
         line_str = line.strip()
         
-        # Procesamiento de Tablas Markdown
         if line_str.startswith('|') and line_str.endswith('|'):
             in_table = True
             if re.match(r'^\|[\s\:\-\|]+\|$', line_str):
@@ -153,7 +151,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
             in_table = False
             table_data = []
 
-        # Títulos y Formato de Texto
         if line_str.startswith('# '):
             p = doc.add_paragraph()
             run = p.add_run(line_str[2:])
@@ -179,17 +176,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303"):
             p = doc.add_paragraph()
             p.add_run(line_str)
             
-    if in_table and table_data:
-        rows = len(table_data)
-        cols = max(len(r) for r in table_data) if rows > 0 else 0
-        if rows > 0 and cols > 0:
-            t = doc.add_table(rows=rows, cols=cols)
-            t.style = 'Table Grid'
-            for r_idx, row_cells in enumerate(table_data):
-                for c_idx, cell_value in enumerate(row_cells):
-                    if c_idx < cols:
-                        t.cell(r_idx, c_idx).text = cell_value
-
     buffer = io.BytesIO()
     doc.save(buffer)
     buffer.seek(0)
@@ -259,7 +245,7 @@ else:  # Unidad SARA
     )
 
 # ==============================================================================
-# PROMPTS MAESTROS
+# PROMPTS
 # ==============================================================================
 def generar_prompt_sesion():
     return f"""
@@ -341,7 +327,7 @@ st.markdown("---")
 
 if st.button(f"✨ Generar {tipo_documento} en Word"):
     if not api_key:
-        st.error("⚠️ Ingresa tu API Key de Google AI Studio en la barra lateral o en los Secrets.")
+        st.error("⚠️ Ingresa tu API Key de Google AI Studio en la barra lateral izquierda o en los Secrets.")
     elif not situacion_significativa or not tema_titulo:
         st.warning("⚠️ Completa los campos obligatorios del formulario.")
     else:
