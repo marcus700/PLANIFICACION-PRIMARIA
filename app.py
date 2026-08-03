@@ -12,7 +12,7 @@ import re
 import cneb_primaria_datos as cneb
 
 # ==============================================================================
-# CONFIGURACIÓN DE LA PÁGINA STREAMLIT
+# CONFIGURACIÓN DE PÁGINA Y OCULTAMIENTO DE BARRAS DE DESARROLLADOR DE STREAMLIT
 # ==============================================================================
 st.set_page_config(
     page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
@@ -20,8 +20,29 @@ st.set_page_config(
     layout="wide"
 )
 
+# Estilos CSS avanzados para ocultar Header, Footer, GitHub, Compartir y "Gestionar aplicación"
 st.markdown("""
 <style>
+    /* Ocultar la barra superior (Header, Compartir, GitHub, 3 puntos) */
+    header {visibility: hidden !important;}
+    div[data-testid="stHeader"] {display: none !important;}
+    #MainMenu {visibility: hidden !important;}
+    footer {visibility: hidden !important;}
+    
+    /* Ocultar el banner e icono inferior de 'Gestionar la aplicación' */
+    div[data-testid="stDecoration"] {display: none !important;}
+    div[data-testid="stStatusWidget"] {display: none !important;}
+    div[data-testid="stViewerBadge"] {display: none !important;}
+    .viewerBadge_container__1613n {display: none !important;}
+    .stDeployButton {display: none !important;}
+    
+    /* Ajustar espacios para diseño limpio */
+    .block-container {
+        padding-top: 1.2rem !important;
+        padding-bottom: 1rem !important;
+    }
+    
+    /* Estilos del encabezado principal */
     .main-header {
         font-size: 2.3rem;
         color: #1E3A8A;
@@ -67,28 +88,20 @@ if 'ie_nombre_generado' not in st.session_state:
     st.session_state['ie_nombre_generado'] = None
 
 # ==============================================================================
-# BARRA LATERAL (SIDEBAR) - LECTURA DE API KEY Y MODELOS
+# LECTURA INTERNA DE API KEY Y MODELO (OCULTO A LOS USUARIOS)
 # ==============================================================================
-st.sidebar.title("⚙️ Configuración")
-
-# Detección inteligente de la API Key (Desde Secrets o Entrada Manual)
+# Detección automática de la clave en los Secrets del servidor
 if "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
     api_key = st.secrets["GEMINI_API_KEY"]
-    st.sidebar.success("🔑 API Key activada desde el servidor.")
 else:
-    api_key = st.sidebar.text_input(
-        "🔑 Google AI Studio API Key:", 
-        type="password", 
-        help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
-    )
+    api_key = None
 
-# Modelos oficiales vigentes de Google AI Studio
-model_choice = st.sidebar.selectbox(
-    "Modelo de Gemini:", 
-    ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
-)
+# Modelo predeterminado rápido de alta definición
+model_choice = "gemini-3.6-flash"
 
-st.sidebar.markdown("---")
+# ==============================================================================
+# BARRA LATERAL (SIDEBAR) - INTERFAZ EXCLUSIVA PARA DOCENTES
+# ==============================================================================
 st.sidebar.markdown("### 📋 Herramientas de Aula")
 tipo_documento = st.sidebar.radio(
     "Selecciona la herramienta:",
@@ -104,6 +117,7 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
+• Nivel Educación Primaria (1.° a 6.° Grado)
 • Unidades y Proyectos en Orientación HORIZONTAL
 • Columna explícita de ÁREA Curricular
 • 2 Sesiones diarias (10 por semana)
@@ -338,7 +352,7 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada strictly en CUADROS/TABLAS.
+Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO:
 {problema_contexto}
@@ -572,4 +586,4 @@ if st.session_state['resultado_md'] is not None:
             file_name=st.session_state['fname_clean'],
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua y el archivo Word descargado incluye la orientación HORIZONTAL para Unidades y Proyectos, garantizando la impresión completa de todas las tablas.")
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua y el archivo Word descargado incluye la orientación HORIZONTAL para Unidades y Proyectos, garantizando la impresión completa de todas las tablas y la sección final de reflexiones.")
