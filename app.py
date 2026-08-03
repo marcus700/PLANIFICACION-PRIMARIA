@@ -54,6 +54,18 @@ st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Doce
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
+# INICIALIZACIÓN DE MEMORIA PERSISTENTE (st.session_state)
+# ==============================================================================
+if 'resultado_md' not in st.session_state:
+    st.session_state['resultado_md'] = None
+if 'tipo_doc_generado' not in st.session_state:
+    st.session_state['tipo_doc_generado'] = None
+if 'fname_clean' not in st.session_state:
+    st.session_state['fname_clean'] = None
+if 'ie_nombre_generado' not in st.session_state:
+    st.session_state['ie_nombre_generado'] = None
+
+# ==============================================================================
 # BARRA LATERAL (SIDEBAR) - LECTURA DE API KEY Y MODELOS
 # ==============================================================================
 st.sidebar.title("⚙️ Configuración")
@@ -92,8 +104,7 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• 4 Comp. Matemática y 3 Comp. Comunicación
-• Religión, Arte y Competencias Transversales
+• Vista previa permanente en pantalla
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
@@ -397,7 +408,7 @@ ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
 2. Situación Significativa Generada.
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas:
-   - Cobertura Curricular Obligatoria: Distribuye sistemáticamente las **4 competencias de Matemática** (Cantidad; Regularidad, equivalencia y cambio; Forma, movimiento y localización; Gestión de datos) y las **3 competencias de Comunicación** (Oralidad, Lectura, Escritura), además de **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales**.
+   - Cobertura Curricular Obligatoria: Distribuye sistemáticamente las **4 competencias de Matemática** y las **3 competencias de Comunicación**, además de **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales**.
    - Coloca ÚNICAMENTE la competencia específica trabajada en cada área/actividad.
    - Incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica movilizada**`).
    - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica trabajada**`).
@@ -417,7 +428,7 @@ def generar_prompt_unidad_sara():
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
@@ -434,8 +445,8 @@ ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
 I. Tabla de Datos Informativos.
 II. Situación Significativa Generada.
 III. Matriz de Aprendizajes por Área:
-    - Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales** ("Gestiona su aprendizaje de manera autónoma" y "Se desenvuelve en entornos virtuales").
-    - Fila superior por área: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
+    - Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura** y las **Competencias Transversales**.
+    - Fila superior: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** con la parte movilizada en **negrita**.
     - Columnas: Actividad en 1ra persona plural | Competencia Trabajada (Solo una) y Capacidades | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación Acción+Contenido+Condición | Evidencia | Lista de cotejo.
 IV. Tabla de Enfoques Transversales.
 V. Producto de la Unidad.
@@ -472,10 +483,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, transcribiendo las 4 competencias de Matemática, 3 de Comunicación, Religión y Arte con días en columnas y tonos pasteles para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema y generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, abordas las 4 competencias de Matemática y 3 de Comunicación, organizas los días en columnas y aplicas tonos pasteles en tablas.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en tablas.",
                     temperature=0.2
                 )
                 
@@ -496,26 +507,13 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                     else:
                         raise model_err
                 
-                resultado_md = response.text
+                # GUARDAR RESULTADO EN SESSION STATE (MEMORIA PERMANENTE)
+                st.session_state['resultado_md'] = response.text
+                st.session_state['tipo_doc_generado'] = tipo_documento
+                st.session_state['fname_clean'] = f"{tipo_documento.replace(' ', '_')}_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx"
+                st.session_state['ie_nombre_generado'] = ie_nombre
                 
-                st.success(f"✅ ¡{tipo_documento} generado con éxito!")
-                
-                tab_preview, tab_download = st.tabs(["📄 Vista Previa", "📥 Descargar Word (.docx)"])
-                
-                with tab_preview:
-                    st.markdown(resultado_md)
-                    
-                with tab_download:
-                    fname_clean = f"{tipo_documento.replace(' ', '_')}_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx"
-                    buffer_doc = markdown_to_docx(resultado_md, ie_nombre=ie_nombre)
-                    
-                    st.download_button(
-                        label=f"💾 Descargar {tipo_documento} en Word (.docx)",
-                        data=buffer_doc,
-                        file_name=fname_clean,
-                        mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-                    )
-                    st.info(f"💡 **Nota:** El archivo Word descargado incluye tablas con encabezados en tonos pasteles variados, las 4 comp. de Matemática y 3 de Comunicación distribuidas, días de la semana organizados por columnas y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]`.")
+                st.success(f"✅ ¡{tipo_documento} generado con éxito y guardado en memoria!")
 
         except Exception as e:
             err_str = str(e)
@@ -525,3 +523,28 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                 st.error("⚠️ El modelo seleccionado no está disponible para tu cuenta de Google AI. Por favor selecciona **gemini-2.0-flash** o **gemini-3.6-flash** en la barra lateral.")
             else:
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
+
+# ==============================================================================
+# DESPLIEGUE DE VISTA PREVIA Y DESCARGA PERMANENTE (NUNCA DESAPARECE)
+# ==============================================================================
+if st.session_state['resultado_md'] is not None:
+    st.markdown("---")
+    
+    tab_preview, tab_download = st.tabs(["📄 Vista Previa (Permanente)", "📥 Descargar Word (.docx)"])
+    
+    with tab_preview:
+        st.markdown(st.session_state['resultado_md'])
+        
+    with tab_download:
+        buffer_doc = markdown_to_docx(
+            st.session_state['resultado_md'], 
+            ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre)
+        )
+        
+        st.download_button(
+            label=f"💾 Descargar {st.session_state['tipo_doc_generado']} en Word (.docx)",
+            data=buffer_doc,
+            file_name=st.session_state['fname_clean'],
+            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+        )
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua aunque hagas clic en descargar o interactúes con la aplicación.")
