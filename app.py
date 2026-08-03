@@ -91,6 +91,7 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
+• Estándares y Desempeños Íntegros
 • Nivel Educación Primaria (1.° a 6.° Grado)
 • 2 Sesiones diarias (10 por semana)
 • Tablas formateadas en Tonos Pasteles (.docx)
@@ -276,7 +277,7 @@ problema_contexto = st.text_area(
 titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático a partir del problema):", value="")
 
 # ==============================================================================
-# PROMPTS
+# PROMPTS MAESTROS CON INSTRUCCIÓN ÍNTEGRA DE ESTÁNDARES Y DESEMPEÑOS CNEB
 # ==============================================================================
 def generar_prompt_sesion():
     if "45" in duracion_sesion:
@@ -290,12 +291,12 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada en CUADROS/TABLAS estrictas según el CNEB.
+Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS según el CNEB.
 
 A PARTIR DEL PROBLEMA PROPIUESTO DE FORMA OBLIGATORIA:
 Problema del Contexto: {problema_contexto}
 Instrucción de Título: {val_titulo}
-Instrucción de Situación Significativa: Redacta una Situación Significativa o Contexto de la Clase estructurado a partir del problema (Contexto + Reto + Propósito).
+Instrucción de Situación Significativa: Redacta una Situación Significativa estructurada a partir del problema (Contexto + Reto + Propósito).
 
 ENCABEZADO DE SALIDA OBLIGATORIO:
 # **SESIÓN DE APRENDIZAJE N.º {num_doc}**
@@ -303,25 +304,27 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 
 DATOS: Grado: {grado_seccion} | Área: {area_sel} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion} | IE: {ie_nombre} | Docente: {docente}
 
-REGLAS OBLIGATORIAS DE FORMATO, TABLAS Y NEGRITAS:
-1. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
-2. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
-3. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
+REGLAS OBLIGATORIAS DE ESTÁNDAR Y DESEMPEÑO DEL CNEB:
+1. **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** En la Tabla II, copia el Estándar de Aprendizaje oficial del CNEB (RM N.º 649-2016-MINEDU) correspondiente al ciclo de {grado_seccion} DE MANERA ÍNTEGRA, COMPLETA Y LITERAL, SIN RESUMIR, ACORTAR NI OMITIR NINGUNA ORACIÓN.
+2. **DESEMPEÑO ÍNTEGRO Y PRECISADO:** Copia el desempeño oficial del CNEB para {grado_seccion} DE MANERA ÍNTEGRA Y COMPLETA, y OBLIGATORIAMENTE RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se aborda y evalúa en la sesión**`).
+3. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
+4. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
+5. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
    - Tabla I: DATOS INFORMATIVOS (DRE/UGEL, IE, Director, Subdirector, Docente, Grado, Área, Fecha, Duración).
    - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
-     ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo del ciclo) | DESEMPEÑO PRECISADO (copiar del CNEB y resaltar en **negrita** la parte trabajada en la sesión) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
+     ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Texto íntegro oficial del CNEB del ciclo) | DESEMPEÑO PRECISADO (Texto íntegro oficial del CNEB resaltando en **negrita** la parte trabajada) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
    - Tabla III: ENFOQUES TRANSVERSALES (Enfoque, Valores, Actitudes observables).
    - Tabla IV: COMPETENCIA TRANSVERSAL ("Gestiona su aprendizaje de manera autónoma" con sus desempeños).
    - Tabla V: META DE APRENDIZAJE (Protección de la vida / Habilidades para la vida).
    - Tabla VI: PREPARACIÓN DE LA SESIÓN (¿Qué necesitamos hacer antes?, ¿Qué recursos/materiales?).
    - Tabla VII: ESCALA DE VALORACIÓN (Cuadro final para 10 estudiantes ficticios peruanos con columnas: Inicio, En proceso, Lo logró por cada criterio).
 
-4. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
+6. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
    - Resalta en **NEGRITA** los títulos de los momentos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
    - Cada actividad, pregunta o consigna dentro de los momentos DEBE INICIAR OBLIGATORIAMENTE CON SU SUBTÍTULO EN NEGRITA Y LUEGO VIÑETA (`•`).
    - Redacción de actividades en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE ("Saludamos a los niños", "Preguntamos a los estudiantes", "Repartimos los materiales").
 
-5. ESTRUCTURA DE LOS MOMENTOS:
+7. ESTRUCTURA DE LOS MOMENTOS:
    - **INICIO ({t_inicio}):**
      • **Problematización:** [Actividad detallada con viñeta]
      • **Propósito y Organización:** [Actividad detallada con viñeta]
@@ -378,25 +381,23 @@ A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 
 OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
 1. Genera un TÍTULO del proyecto: {val_titulo}
-2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos:
-   - Parrafo 1: Contexto y descripción detallada del problema en {grado_seccion} de la IE {ie_nombre}.
-   - Parrafo 2: Preguntas retadoras y desafiantes (*¿Cómo podemos...? ¿De qué manera...?*).
-   - Parrafo 3: Propósito pedagógico y Producto final tangible que elaborarán los estudiantes.
+2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos (Contexto, Preguntas Retadoras y Producto Tangible).
 
 ENCABEZADO DE SALIDA OBLIGATORIO:
 # **PROYECTO DE APRENDIZAJE N.º {num_doc}**
 ## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
 ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
-1. Tabla de Datos Informativos (DRE, IE, Director, Subdirector, Docente, Grado, Duración).
+1. Tabla de Datos Informativos.
 2. Situación Significativa Generada (Redacción completa).
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
-4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas (Tablas completas por semana para todas las áreas con estándar completo, desempeño con la parte trabajada en **negrita**, criterios, evidencia e instrumento).
+4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas:
+   - En las tablas semanales, incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO Y COMPLETO DEL CNEB** sin resumir ni acortar.
+   - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** la parte trabajada en la semana.
 5. Tabla de Enfoques Transversales.
 6. Producto Final Tangible del Proyecto.
 7. SECUENCIA DE ACTIVIDADES (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-   - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA (Bloque Mañana y Bloque Tarde) indicando Área y Actividad redactada en 1ra persona del plural ("Nosotros...").
-   - Total por semana: 10 sesiones pedagógicas organizadas día por día.
+   - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA (Bloque Mañana y Bloque Tarde) indicando Área y Actividad en 1ra persona del plural ("Nosotros...").
 8. Lista Clasificada de Materiales y Recursos.
 9. Tabla de Reflexiones sobre los aprendizajes.
 """
@@ -413,10 +414,7 @@ A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 
 OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
 1. Genera un TÍTULO de la unidad: {val_titulo}
-2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos:
-   - Parrafo 1: Contexto y descripción del problema en {grado_seccion} de la IE {ie_nombre}.
-   - Parrafo 2: Preguntas retadoras y desafiantes (*¿Qué acciones podemos...? ¿Cómo afectaría...?*).
-   - Parrafo 3: Propósito y Productos tangibles que lograrán los estudiantes.
+2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos (Contexto, Preguntas Retadoras y Producto Tangible).
 
 ENCABEZADO DE SALIDA OBLIGATORIO:
 # **UNIDAD DE APRENDIZAJE N.º {num_doc}**
@@ -425,12 +423,14 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
 I. Tabla de Datos Informativos.
 II. Situación Significativa Generada (Redacción completa).
-III. Matriz de Aprendizajes por Área (Tabla por área con estándar completo en fila superior, columnas: Actividad en 1ra persona plural, Competencia/Capacidad, Desempeño con parte específica en **negrita**, Criterios de Evaluación Acción+Contenido+Condición, Evidencia, Lista de cotejo).
+III. Matriz de Aprendizajes por Área:
+    - Fila superior: **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO Y COMPLETO DEL CNEB** para {grado_seccion} sin recortar ni resumir.
+    - Columnas: Actividad en 1ra persona plural | Competencia/Capacidad | Desempeño Íntegro del CNEB con parte específica en **negrita** | Criterios de Evaluación Acción+Contenido+Condición | Evidencia | Lista de cotejo.
 IV. Tabla de Enfoques Transversales.
 V. Producto de la Unidad.
 VI. ACTIVIDADES PROPUESTAS (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-    - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA (Sesión 1 y Sesión 2) en 1ra persona del plural ("Nosotros...").
-    - Cierra la sección respondiendo obligatoriamente a la pregunta: ¿Qué productos lograré en esta experiencia?
+    - Para cada semana (Semana 1 a {duracion_semanas}), crea una tabla de Lunes a Viernes con 2 SESIONES POR DÍA en 1ra persona del plural ("Nosotros...").
+    - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 VII. Lista Clasificada de Materiales y Recursos.
 VIII. Tabla de Reflexiones sobre los Aprendizajes.
 """
@@ -458,10 +458,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema y generando tu {tipo_documento} para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema y transcribiendo los Estándares/Desempeños del CNEB ÍNTEGRAMENTE para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas Títulos creativos y Situaciones Significativas automáticas a partir del problema propuesto, estructurando el documento en TABLAS Y CUADROS con 2 sesiones diarias (10 semanales).",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Copias ÍNTEGRAMENTE los Estándares de Aprendizaje y Desempeños oficiales del CNEB sin recortar ni resumir el texto oficial, resaltando la parte evaluada en negrita y estructurando todo en TABLAS Y CUADROS con 2 sesiones diarias (10 semanales).",
                     temperature=0.2
                 )
                 
@@ -501,7 +501,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                         file_name=fname_clean,
                         mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
                     )
-                    st.info(f"💡 **Nota:** El archivo Word descargado incluye el Título y Situación Significativa generados automáticamente, tablas en tonos pasteles y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]` en la parte superior.")
+                    st.info(f"💡 **Nota:** El archivo Word descargado incluye los Estándares y Desempeños transcritos ÍNTEGRAMENTE del CNEB, Título/Situación Significativa automáticos, tablas en tonos pasteles y el cuadro `🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]`.")
 
         except Exception as e:
             err_str = str(e)
