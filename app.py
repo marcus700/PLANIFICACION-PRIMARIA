@@ -124,9 +124,9 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
+• Estándares y Desempeños CNEB Íntegros
+• Parte de Estándar trabajada en NEGRITA
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Todas las Áreas en CADA Semana
-• Unidades y Proyectos en HORIZONTAL
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
@@ -381,25 +381,25 @@ DATOS INFORMATIVOS (MUESTRA ESTOS DATOS EXACTOS EN LA TABLA I):
 • Fecha: {fecha_sugerida}
 • Duración Total: {duracion_sesion}
 
-REGLAS OBLIGATORIAS DE LA MATRIZ DE PROPÓSITOS (TABLA II):
-Estructura estrictamente la Tabla II en estas 8 COLUMNAS EXACTAS:
-| ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
-- **ÁREA:** Muestra explícitamente el área.
-- **ACTIVIDAD:** Redactada en 1ra persona del plural ("Nosotros...").
-- **COMPETENCIA Y CAPACIDADES:** Coloca ÚNICAMENTE la competencia específica abordada (no listes otras).
-- **ESTÁNDAR DE APRENDIZAJE:** Copia el Estándar de Aprendizaje del CNEB de manera ÍNTEGRA Y LITERAL, resaltando en **negrita** (`**la parte específica movilizada**`).
-- **DESEMPEÑO PRECISADO:** Copia el desempeño oficial del CNEB de manera ÍNTEGRA, resaltando en **negrita** (`**la parte específica evaluada**`).
-- **CRITERIOS DE EVALUACIÓN:** Acción + Contenido + Condición.
-- **EVIDENCIA:** Producto o actuación concreta.
-- **INSTRUMENTO DE EVALUACIÓN:** Lista de cotejo o Escala de valoración.
+REGLAS OBLIGATORIAS DE ESTÁNDAR Y DESEMPEÑO DEL CNEB:
+1. **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO CON NEGRITA:** Copia el Estándar de Aprendizaje oficial del CNEB (RM N.º 649-2016-MINEDU) correspondiente al ciclo de {grado_seccion} DE MANERA 100% ÍNTEGRA, COMPLETA Y LITERAL, SIN RESUMIR NI CORTAR. DENTRO de ese texto completo, OBLIGATORIAMENTE RESALTA EN **NEGRITA** (`**únicamente la parte específica del estándar que se moviliza en la sesión**`).
+2. **DESEMPEÑO PRECISADO ÍNTEGRO CON NEGRITA:** Copia el desempeño oficial del CNEB para {grado_seccion} DE MANERA ÍNTEGRA Y COMPLETA, y RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se evalúa en la sesión**`).
+3. **COLUMNA DE ÁREA Y COMPETENCIA ÚNICA:** Muestra la columna ÁREA y coloca una sola competencia abordada.
+4. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### y etiquetas HTML.
+5. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
+   - Tabla I: DATOS INFORMATIVOS
+   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
+     ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo con parte trabajada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
+   - Tabla III: ENFOQUES TRANSVERSALES
+   - Tabla IV: COMPETENCIA TRANSVERSAL ("Gestiona su aprendizaje de manera autónoma")
+   - Tabla V: META DE APRENDIZAJE
+   - Tabla VI: PREPARACIÓN DE LA SESIÓN
+   - Tabla VII: ESCALA DE VALORACIÓN (Cuadro para 10 estudiantes ficticios peruanos)
 
-PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### y etiquetas HTML.
-
-MOMENTOS Y PROCESOS DE LA SESIÓN:
-- Resalta en **NEGRITA** los títulos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
-- Cada actividad debe iniciar obligatoriamente con su subtítulo en **NEGRITA** y luego viñeta (`•`).
-- Redacción en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE.
-- Incluye Tabla III (Enfoques Transversales), Tabla IV (Competencia Transversal), Tabla V (Meta de Aprendizaje), Tabla VI (Preparación) y Tabla VII (Escala de Valoración para 10 alumnos).
+6. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
+   - Resalta en **NEGRITA** los títulos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
+   - Cada actividad debe iniciar obligatoriamente con su subtítulo en **NEGRITA** y luego viñeta (`•`).
+   - Redacción en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE.
 """
 
 def generar_prompt_ficha_trabajo():
@@ -457,11 +457,12 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
    - Columnas estrictas de la Matriz:
      | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
-   - Copia el ESTÁNDAR e DESEMPEÑO ÍNTEGROS del CNEB resaltando en **negrita** la parte trabajada.
+   - **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** Copia el Estándar de Aprendizaje oficial del CNEB de manera 100% ÍNTEGRA Y LITERAL, SIN CORTAR NI RESUMIR, y RESALTA EN **NEGRITA** (`**la parte específica movilizada en la actividad**`).
+   - **DESEMPEÑO ÍNTEGRO:** Copia el Desempeño oficial del CNEB de manera 100% ÍNTEGRA y RESALTA EN **NEGRITA** (`**la parte específica trabajada**`).
 
 5. SECUENCIA DE ACTIVIDADES (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE PROPÓSITOS.
-   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (Lunes a Viernes con 2 sesiones diarias = 10 sesiones por semana), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
+   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (Lunes a Viernes con 2 sesiones diarias = 10 sesiones por semana), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
    - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
    - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
@@ -499,11 +500,12 @@ III. MATRIZ DE APRENDIZAJES POR ÁREA (SECCIÓN CONTINUA COMPLETA DESDE LA SEMAN
     - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
     - Columnas estrictas de la Matriz:
       | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
-    - Copia el ESTÁNDAR e DESEMPEÑO ÍNTEGROS del CNEB resaltando en **negrita** la parte trabajada.
+    - **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO:** Copia el Estándar de Aprendizaje oficial del CNEB de manera 100% ÍNTEGRA Y LITERAL, SIN CORTAR NI RESUMIR, y RESALTA EN **NEGRITA** (`**la parte específica movilizada en la actividad**`).
+    - **DESEMPEÑO ÍNTEGRO:** Copia el Desempeño oficial del CNEB de manera 100% ÍNTEGRA y RESALTA EN **NEGRITA** (`**la parte específica trabajada**`).
 
 IV. SECUENCIA DE ACTIVIDADES PROPUESTAS (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
     - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE APRENDIZAJES.
-    - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (Lunes a Viernes con 2 sesiones diarias = 10 sesiones por semana), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
+    - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (Lunes a Viernes con 2 sesiones diarias = 10 sesiones por semana), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
     - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
       | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
     - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
@@ -540,10 +542,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando TODAS las áreas en CADA semana (en la Matriz y en la Secuencia), datos informativos completos y la tabla de reflexiones para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, transcribiendo Estándares y Desempeños del CNEB ÍNTEGRAMENTE con resaltado en negrita para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras los Datos Informativos completos, la Situación Significativa debajo, luego la Matriz de Propósitos de 8 columnas continua de Semana 1 a 5 abarcando TODAS las áreas en cada semana, seguida al término de la Secuencia de Actividades de Semana 1 a 5 abarcando también TODAS las áreas en cada semana con días como columnas y tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes el Estándar de Aprendizaje y Desempeños del CNEB 100% completos e íntegros, resaltando en negrita únicamente la parte movilizada en la actividad. Muestras Datos Informativos completos, Situación Significativa debajo, Matriz de 8 columnas continua de Semana 1 a 5, Secuencia de Actividades con días como columnas y tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
@@ -608,4 +610,4 @@ if st.session_state['resultado_md'] is not None:
             file_name=st.session_state['fname_clean'],
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua, los datos informativos figuran completos y la tabla de Reflexiones al final se descargará 100% completa en Word.")
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua, los Estándares y Desempeños figuran transcritos ÍNTEGRAMENTE del CNEB con su parte trabajada en negrita y el archivo Word descargado incluye la orientación HORIZONTAL para Unidades y Proyectos.")
