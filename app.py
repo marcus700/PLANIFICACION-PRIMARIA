@@ -125,9 +125,9 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Matriz Completa de Semana 1 a 5
-• Secuencia de Actividades de Semana 1 a 5
+• Todas las Áreas en CADA Semana
 • Unidades y Proyectos en HORIZONTAL
+• 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
 
@@ -454,17 +454,19 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 
 4. MATRIZ DE PROPÓSITOS DE APRENDIZAJE (SECCIÓN CONTINUA COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
    - Presenta aquí de forma continua toda la Matriz de Propósitos abarcando desde la Semana 1 hasta la Semana {duracion_semanas}.
+   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
    - Columnas estrictas de la Matriz:
      | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
-   - En cada semana, la matriz DEBE INCLUIR OBLIGATORIAMENTE FILAS PARA TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Personal Social, Comunicación (3 comp.), Matemática (4 comp.), Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
    - Copia el ESTÁNDAR e DESEMPEÑO ÍNTEGROS del CNEB resaltando en **negrita** la parte trabajada.
 
 5. SECUENCIA DE ACTIVIDADES (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE PROPÓSITOS.
-   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA con los días como columnas:
+   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (Lunes a Viernes con 2 sesiones diarias = 10 sesiones por semana), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
+   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - Fila 1 (Sesión 1 / Mañana): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-   - Fila 2 (Sesión 2 / Tarde): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
+     • Fila 1 (Sesión 1 / Mañana): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+     • Fila 2 (Sesión 2 / Tarde): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
 
 6. TABLA DE ENFOQUES TRANSVERSALES.
 7. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
@@ -494,17 +496,19 @@ II. SITUACIÓN SIGNIFICATIVA GENERADA (Ubicada OBLIGATORIAMENTE justo debajo de 
 
 III. MATRIZ DE APRENDIZAJES POR ÁREA (SECCIÓN CONTINUA COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
     - Presenta aquí toda la Matriz de Aprendizajes de forma continua abarcando desde la Semana 1 hasta la Semana {duracion_semanas}.
+    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
     - Columnas estrictas de la Matriz:
       | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
-    - En cada semana, la matriz DEBE INCLUIR OBLIGATORIAMENTE FILAS PARA TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Personal Social, Comunicación (3 comp.), Matemática (4 comp.), Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
     - Copia el ESTÁNDAR e DESEMPEÑO ÍNTEGROS del CNEB resaltando en **negrita** la parte trabajada.
 
 IV. SECUENCIA DE ACTIVIDADES PROPUESTAS (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
     - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE APRENDIZAJES.
-    - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA con los días como columnas:
+    - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (Lunes a Viernes con 2 sesiones diarias = 10 sesiones por semana), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
+    - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
       | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-    - Fila 1 (Sesión 1): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-    - Fila 2 (Sesión 2): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+    - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
+      • Fila 1 (Sesión 1): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+      • Fila 2 (Sesión 2): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
     - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 
 V. TABLA DE ENFOQUES TRANSVERSALES.
@@ -536,10 +540,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está generando tu {tipo_documento} con la Matriz de 8 columnas de Semana 1 a {duracion_semanas}, seguida de la Secuencia de Actividades para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando TODAS las áreas en CADA semana (en la Matriz y en la Secuencia), datos informativos completos y la tabla de reflexiones para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras los Datos Informativos completos, la Situación Significativa debajo, luego la Matriz de Propósitos continua de Semana 1 a 5 con 8 columnas exactamente en este orden: ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN, abarcando TODAS las áreas en cada semana, seguida al término de la Secuencia de Actividades de Semana 1 a 5 con días como columnas y tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras los Datos Informativos completos, la Situación Significativa debajo, luego la Matriz de Propósitos de 8 columnas continua de Semana 1 a 5 abarcando TODAS las áreas en cada semana, seguida al término de la Secuencia de Actividades de Semana 1 a 5 abarcando también TODAS las áreas en cada semana con días como columnas y tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
