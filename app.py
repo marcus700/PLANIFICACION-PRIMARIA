@@ -125,7 +125,8 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Matriz Estricta de 8 Columnas
-• 4 Comp. Matemática y 3 Comp. Comunicación Obligatorias
+• Datos del Formulario 100% Reflejados
+• Todas las Áreas en CADA Semana
 • Unidades y Proyectos en HORIZONTAL
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
@@ -457,18 +458,16 @@ TABLA I: DATOS INFORMATIVOS (MUESTRA ESTOS DATOS EXACTOS EN LA TABLA):
 • Grado y Sección: {grado_seccion}
 • Duración: {fechas_duracion}
 
-REGLA ESTRICTA Y OBLIGATORIA DE COBERTURA DE COMPETENCIAS POR SEMANA:
-EN EL DESARROLLO DEL PROYECTO, DEBES INCLUIR SÍ O SÍ LAS SIGUIENTES COMPETENCIAS DE CADA ÁREA:
-1. MATEMÁTICA (Las 4 competencias completas):
-   - Resuelve problemas de cantidad.
-   - Resuelve problemas de regularidad, equivalencia y cambio.
-   - Resuelve problemas de forma, movimiento y localización.
-   - Resuelve problemas de gestión de datos e incertidumbre.
-2. COMUNICACIÓN (Las 3 competencias completas):
-   - Se comunica oralmente en su lengua materna.
-   - Lee diversos tipos de textos escritos en su lengua materna.
-   - Escribe diversos tipos de textos en su lengua materna.
-3. PERSONAL SOCIAL, CIENCIA Y TECNOLOGÍA, EDUCACIÓN RELIGIOSA, ARTE Y CULTURA, EDUCACIÓN FÍSICA Y TUTORÍA / COMPETENCIAS TRANSVERSALES.
+REGLA ESTRICTA DE COBERTURA DE ÁREAS POR SEMANA:
+EN CADA UNA DE LAS {duracion_semanas} SEMANAS DEL PROYECTO, DEBES INCLUIR OBLIGATORIAMENTE FILAS/ACTIVIDADES PARA TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN:
+1. Comunicación (3 competencias)
+2. Matemática (4 competencias)
+3. Personal Social
+4. Ciencia y Tecnología
+5. Educación Religiosa
+6. Arte y Cultura
+7. Educación Física
+8. Tutoría / Competencias Transversales
 
 REGLAS OBLIGATORIAS DE LA MATRIZ DE PROPÓSITOS DE APRENDIZAJE POR SEMANA:
 Para cada una de las {duracion_semanas} semanas, crea la Matriz de Propósitos estructurada ESTRICTAMENTE en estas 8 COLUMNAS EXACTAS:
@@ -516,18 +515,16 @@ TABLA I: DATOS INFORMATIVOS (MUESTRA ESTOS DATOS EXACTOS EN LA TABLA):
 • Grado y Sección: {grado_seccion}
 • Duración: {fechas_duracion}
 
-REGLA ESTRICTA Y OBLIGATORIA DE COBERTURA DE COMPETENCIAS POR SEMANA:
-EN EL DESARROLLO DE LA UNIDAD, DEBES INCLUIR SÍ O SÍ LAS SIGUIENTES COMPETENCIAS DE CADA ÁREA:
-1. MATEMÁTICA (Las 4 competencias completas):
-   - Resuelve problemas de cantidad.
-   - Resuelve problemas de regularidad, equivalencia y cambio.
-   - Resuelve problemas de forma, movimiento y localización.
-   - Resuelve problemas de gestión de datos e incertidumbre.
-2. COMUNICACIÓN (Las 3 competencias completas):
-   - Se comunica oralmente en su lengua materna.
-   - Lee diversos tipos de textos escritos en su lengua materna.
-   - Escribe diversos tipos de textos en su lengua materna.
-3. PERSONAL SOCIAL, CIENCIA Y TECNOLOGÍA, EDUCACIÓN RELIGIOSA, ARTE Y CULTURA, EDUCACIÓN FÍSICA Y TUTORÍA / COMPETENCIAS TRANSVERSALES.
+REGLA ESTRICTA DE COBERTURA DE ÁREAS POR SEMANA:
+EN CADA UNA DE LAS {duracion_semanas} SEMANAS DE LA UNIDAD, DEBES INCLUIR OBLIGATORIAMENTE FILAS/ACTIVIDADES PARA TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN:
+1. Comunicación (3 competencias)
+2. Matemática (4 competencias)
+3. Personal Social
+4. Ciencia y Tecnología
+5. Educación Religiosa
+6. Arte y Cultura
+7. Educación Física
+8. Tutoría / Competencias Transversales
 
 REGLAS OBLIGATORIAS DE LA MATRIZ DE APRENDIZAJES POR ÁREA:
 Estructura la Matriz de Aprendizajes de la Unidad ESTRICTAMENTE en estas 8 COLUMNAS EXACTAS:
@@ -572,10 +569,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, incluyendo las 4 comp. de Matemática y 3 de Comunicación, los datos informativos completos y la Matriz de 8 columnas para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, incluyendo todos los datos informativos, todas las áreas por semana y la Matriz de 8 columnas para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras todos los datos informativos del usuario, trabajas SÍ O SÍ las 4 competencias de Matemática y las 3 de Comunicación, incluyes Educación Física, muestras la columna ÁREA y ESTÁNDAR de forma explícita en la Matriz de 8 columnas, transcribes CNEB en negrita, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras todos los datos informativos del usuario, trabajas todas las áreas en cada semana sin excepción, muestras la columna ÁREA y ESTÁNDAR de forma explícita en la Matriz de 8 columnas, transcribes CNEB en negrita, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
@@ -640,4 +637,4 @@ if st.session_state['resultado_md'] is not None:
             file_name=st.session_state['fname_clean'],
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua, la Matriz contiene exactamente las 8 columnas requeridas y el archivo Word descargado incluye la orientación HORIZONTAL para Unidades y Proyectos.")
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua, los datos informativos figuran completos y la tabla de Reflexiones al final se descargará 100% completa en Word.")
