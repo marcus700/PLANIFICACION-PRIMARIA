@@ -125,7 +125,8 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Matriz Estricta de 8 Columnas
-• Nivel Educación Primaria (1.° a 6.° Grado)
+• Datos del Formulario 100% Reflejados
+• Todas las Áreas en CADA Semana
 • Unidades y Proyectos en HORIZONTAL
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
@@ -370,8 +371,16 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 # **SESIÓN DE APRENDIZAJE N.º {num_doc}**
 ## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
-DATOS INFORMATIVOS (DEBEN FIGURAR EN LA TABLA I):
-• DRE / UGEL: {dre_ugel} | IE: {ie_nombre} | Director: {director} | Subdirector: {subdirector} | Docente: {docente} | Grado/Sección: {grado_seccion} | Área: {area_sel} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion}
+DATOS INFORMATIVOS (MUESTRA ESTOS DATOS EXACTOS EN LA TABLA I):
+• DRE / UGEL: {dre_ugel}
+• Institución Educativa: {ie_nombre}
+• Director: {director}
+• Subdirector(es): {subdirector}
+• Docente de Aula: {docente}
+• Grado y Sección: {grado_seccion}
+• Área Curricular: {area_sel}
+• Fecha: {fecha_sugerida}
+• Duración Total: {duracion_sesion}
 
 REGLAS OBLIGATORIAS DE LA MATRIZ DE PROPÓSITOS (TABLA II):
 Estructura estrictamente la Tabla II en estas 8 COLUMNAS EXACTAS:
@@ -384,6 +393,8 @@ Estructura estrictamente la Tabla II en estas 8 COLUMNAS EXACTAS:
 - **CRITERIOS DE EVALUACIÓN:** Acción + Contenido + Condición.
 - **EVIDENCIA:** Producto o actuación concreta.
 - **INSTRUMENTO DE EVALUACIÓN:** Lista de cotejo o Escala de valoración.
+
+PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### y etiquetas HTML.
 
 MOMENTOS Y PROCESOS DE LA SESIÓN:
 - Resalta en **NEGRITA** los títulos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
@@ -438,6 +449,26 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 # **PROYECTO DE APRENDIZAJE N.º {num_doc}**
 ## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
+TABLA I: DATOS INFORMATIVOS (MUESTRA ESTOS DATOS EXACTOS EN LA TABLA):
+• DRE / UGEL: {dre_ugel}
+• Institución Educativa: {ie_nombre}
+• Director: {director}
+• Subdirector(es): {subdirector}
+• Docente de Aula: {docente}
+• Grado y Sección: {grado_seccion}
+• Duración: {fechas_duracion}
+
+REGLA ESTRICTA DE COBERTURA DE ÁREAS POR SEMANA:
+EN CADA UNA DE LAS {duracion_semanas} SEMANAS DEL PROYECTO, DEBES TRABAJAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN:
+1. Comunicación (3 competencias)
+2. Matemática (4 competencias)
+3. Personal Social
+4. Ciencia y Tecnología
+5. Educación Religiosa
+6. Arte y Cultura
+7. Educación Física
+8. Tutoría / Competencias Transversales
+
 REGLAS OBLIGATORIAS DE LA MATRIZ DE PROPÓSITOS DE APRENDIZAJE POR SEMANA:
 Para cada una de las {duracion_semanas} semanas, crea la Matriz de Propósitos estructurada ESTRICTAMENTE en estas 8 COLUMNAS EXACTAS:
 | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
@@ -446,7 +477,6 @@ Para cada una de las {duracion_semanas} semanas, crea la Matriz de Propósitos e
 - **COMPETENCIA Y CAPACIDADES:** Coloca ÚNICAMENTE la competencia específica trabajada (no listes otras).
 - **ESTÁNDAR DE APRENDIZAJE:** Copia el Estándar completo del CNEB en su columna dedicada con la parte movilizada en **negrita**.
 - **DESEMPEÑO PRECISADO:** Copia el Desempeño completo del CNEB con la parte trabajada en **negrita**.
-- Cobertura Curricular Obligatoria: Distribuye las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
 
 SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
 - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
@@ -455,7 +485,7 @@ SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIA
   • Fila 1 (Sesión 1 / Mañana): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
   • Fila 2 (Sesión 2 / Tarde): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
 
-INCLUIR ADEMÁS: Tabla de Datos Informativos completos, Planificación del Proyecto para el estudiante, Tabla de Enfoques Transversales, Producto Final Tangible, Lista de Materiales y Recursos, y la Tabla final de Reflexiones sobre los aprendizajes.
+INCLUIR ADEMÁS: Planificación del Proyecto para el estudiante, Tabla de Enfoques Transversales, Producto Final Tangible, Lista de Materiales y Recursos, y la Tabla VIII de Reflexiones sobre los aprendizajes.
 """
 
 def generar_prompt_unidad_sara():
@@ -476,6 +506,26 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 # **UNIDAD DE APRENDIZAJE N.º {num_doc}**
 ## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
+TABLA I: DATOS INFORMATIVOS (MUESTRA ESTOS DATOS EXACTOS EN LA TABLA):
+• DRE / UGEL: {dre_ugel}
+• Institución Educativa: {ie_nombre}
+• Director: {director}
+• Subdirector(es): {subdirector}
+• Docente de Aula: {docente}
+• Grado y Sección: {grado_seccion}
+• Duración: {fechas_duracion}
+
+REGLA ESTRICTA DE COBERTURA DE ÁREAS POR SEMANA:
+EN CADA UNA DE LAS {duracion_semanas} SEMANAS DE LA UNIDAD, DEBES TRABAJAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN:
+1. Comunicación (3 competencias)
+2. Matemática (4 competencias)
+3. Personal Social
+4. Ciencia y Tecnología
+5. Educación Religiosa
+6. Arte y Cultura
+7. Educación Física
+8. Tutoría / Competencias Transversales
+
 REGLAS OBLIGATORIAS DE LA MATRIZ DE APRENDIZAJES POR ÁREA:
 Estructura la Matriz de Aprendizajes de la Unidad ESTRICTAMENTE en estas 8 COLUMNAS EXACTAS:
 | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
@@ -484,7 +534,6 @@ Estructura la Matriz de Aprendizajes de la Unidad ESTRICTAMENTE en estas 8 COLUM
 - **COMPETENCIA Y CAPACIDADES:** Coloca ÚNICAMENTE la competencia específica trabajada (no listes otras).
 - **ESTÁNDAR DE APRENDIZAJE:** Copia el Estándar completo del CNEB en su columna dedicada con la parte movilizada en **negrita**.
 - **DESEMPEÑO PRECISADO:** Copia el Desempeño completo del CNEB con la parte trabajada en **negrita**.
-- Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
 
 SECUENCIA DE ACTIVIDADES PROPUESTAS CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
 - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
@@ -494,7 +543,7 @@ SECUENCIA DE ACTIVIDADES PROPUESTAS CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESI
   • Fila 2 (Sesión 2): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
 - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 
-INCLUIR ADEMÁS: Tabla I de Datos Informativos completos, Tabla de Enfoques Transversales, Producto de la Unidad, Lista de Materiales y Recursos, y la Tabla final VIII de Reflexiones sobre los aprendizajes.
+INCLUIR ADEMÁS: Tabla IV de Enfoques Transversales, Producto de la Unidad, Lista de Materiales y Recursos, y la Tabla VIII de Reflexiones sobre los Aprendizajes.
 """
 
 # ==============================================================================
@@ -520,10 +569,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, estructurando la Matriz de 8 Columnas (con Estándar dedicado), días en columnas y tonos pasteles para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, estructurando la Matriz de 8 Columnas (con Estándar dedicado), días en columnas y aplicando colores pasteles para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Generas matrices de 8 columnas exactamente en este orden: ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN. Transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras todos los datos informativos del usuario, trabajas todas las áreas en cada semana, generas matrices de 8 columnas exactamente en este orden: ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN. Transcribes Estándares y Desempeños en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
