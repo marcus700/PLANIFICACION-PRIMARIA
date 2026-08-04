@@ -12,7 +12,7 @@ import re
 import cneb_primaria_datos as cneb
 
 # ==============================================================================
-# CONFIGURACIÓN DE LA PÁGINA STREAMLIT Y ESTILOS
+# CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
     page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
@@ -20,7 +20,6 @@ st.set_page_config(
     layout="wide"
 )
 
-# Estilos CSS avanzados para diseño limpio
 st.markdown("""
 <style>
     /* Ocultar la barra superior predeterminada de Streamlit */
@@ -88,22 +87,22 @@ if 'ie_nombre_generado' not in st.session_state:
     st.session_state['ie_nombre_generado'] = None
 
 # ==============================================================================
-# BARRA LATERAL (SIDEBAR) - PANEL DE CONFIGURACIÓN RESTAURADO
+# BARRA LATERAL (SIDEBAR) - LECTURA DE API KEY Y MODELOS
 # ==============================================================================
 st.sidebar.title("⚙️ Configuración")
 
-# Lectura de clave por defecto desde Secrets si existe
-default_key = st.secrets["GEMINI_API_KEY"] if "GEMINI_API_KEY" in st.secrets else ""
+# Detección inteligente de la API Key (Desde Secrets o Entrada Manual)
+if "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
+    api_key = st.secrets["GEMINI_API_KEY"]
+    st.sidebar.success("🔑 API Key activada desde el servidor.")
+else:
+    api_key = st.sidebar.text_input(
+        "🔑 Google AI Studio API Key:", 
+        type="password", 
+        help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
+    )
 
-# Entrada de API Key (Muestra la clave guardada en el servidor o permite ingresar una propia)
-api_key = st.sidebar.text_input(
-    "🔑 Google AI Studio API Key:", 
-    value=default_key,
-    type="password", 
-    help="Puedes usar la clave del servidor o ingresar tu propia clave de https://aistudio.google.com/app/apikey"
-)
-
-# Selector de modelo de Gemini restaurado
+# Modelos oficiales vigentes de Google AI Studio
 model_choice = st.sidebar.selectbox(
     "Modelo de Gemini:", 
     ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
@@ -126,8 +125,8 @@ st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Nivel Educación Primaria (1.° a 6.° Grado)
+• Todas las Áreas en CADA Semana
 • Unidades y Proyectos en Orientación HORIZONTAL
-• Columna explícita de ÁREA Curricular
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
@@ -146,7 +145,7 @@ def add_formatted_text(paragraph, text):
             paragraph.add_run(part)
 
 # ==============================================================================
-# CONVERTIDOR A WORD (.DOCX) CON SOPORTE PARA ORIENTACIÓN HORIZONTAL
+# CONVERTIDOR A WORD (.DOCX) CON PROCESAMIENTO GARANTIZADO DE LA ÚLTIMA TABLA
 # ==============================================================================
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     doc = docx.Document()
@@ -371,7 +370,16 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 # **SESIÓN DE APRENDIZAJE N.º {num_doc}**
 ## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
-DATOS: Grado: {grado_seccion} | Área: {area_sel} | Fecha: {fecha_sugerida} | Duración Total: {duracion_sesion} | IE: {ie_nombre} | Docente: {docente}
+DATOS INFORMATIVOS (DEBEN FIGURAR OBLIGATORIAMENTE EN LA TABLA I CON ESTOS DATOS EXACTOS):
+• DRE / UGEL: {dre_ugel}
+• Institución Educativa: {ie_nombre}
+• Director: {director}
+• Subdirector(es): {subdirector}
+• Docente de Aula: {docente}
+• Grado y Sección: {grado_seccion}
+• Área Curricular: {area_sel}
+• Fecha: {fecha_sugerida}
+• Duración Total: {duracion_sesion}
 
 REGLAS OBLIGATORIAS DE ESTÁNDAR, COMPETENCIA Y DESEMPEÑO DEL CNEB:
 1. **COLUMNA DE ÁREA:** Incluye la columna **ÁREA** explícitamente en las tablas.
@@ -381,7 +389,7 @@ REGLAS OBLIGATORIAS DE ESTÁNDAR, COMPETENCIA Y DESEMPEÑO DEL CNEB:
 5. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### o ###### para títulos.
 6. NO UTILICES etiquetas HTML como <br> o <br/>. Usa únicamente saltos de línea normales.
 7. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
-   - Tabla I: DATOS INFORMATIVOS
+   - Tabla I: DATOS INFORMATIVOS (Incluir todos los datos suministrados).
    - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
      ÁREA | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Columna dedicada con CNEB completo y parte trabajada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
    - Tabla III: ENFOQUES TRANSVERSALES
@@ -416,6 +424,7 @@ DATOS DE LA FICHA:
 • Institución Educativa: {ie_nombre}
 • Grado y Sección: {grado_seccion}
 • Área: {area_sel}
+• Docente: {docente}
 • Estudiante: _____________________________________ Fecha: {fecha_sugerida}
 
 ESTRUCTURA DE LA FICHA EN MARKDOWN (INCLUIR TABLAS PARA EJERCICIOS Y AUTOEVALUACIÓN):
@@ -445,24 +454,37 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 # **PROYECTO DE APRENDIZAJE N.º {num_doc}**
 ## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
+REGLA ESTRICTA DE COBERTURA DE ÁREAS POR SEMANA:
+EN CADA UNA DE LAS {duracion_semanas} SEMANAS DEL PROYECTO, DEBES TRABAJAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN:
+1. Comunicación
+2. Matemática (4 competencias distribuidas)
+3. Personal Social
+4. Ciencia y Tecnología
+5. Educación Religiosa
+6. Arte y Cultura
+7. Educación Física
+8. Tutoría / Competencias Transversales
+
 ESTRUCTURA DEL PROYECTO DE APRENDIZAJE:
-1. Tabla de Datos Informativos.
-2. Situación Significativa Generada.
+1. Tabla I: DATOS INFORMATIVOS (Incluir exactamente: DRE/UGEL: {dre_ugel}, IE: {ie_nombre}, Director: {director}, Subdirector: {subdirector}, Docente: {docente}, Grado/Sección: {grado_seccion}, Duración: {fechas_duracion}).
+2. Situación Significativa Generada (Redacción completa).
 3. Planificación del Proyecto (Tabla para el estudiante: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 4. Propósitos de Aprendizaje por cada una de las {duracion_semanas} semanas:
-   - En la Matriz de Aprendizajes, incluye OBLIGATORIAMENTE las siguientes columnas:
-     ÁREA | ACTIVIDAD | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Columna dedicada con CNEB completo y parte movilizada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO.
-   - Cobertura Curricular Obligatoria: Distribuye las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
+   - En la Matriz de Aprendizajes, la primera columna OBLIGATORIA debe ser **ÁREA CURRICULAR**.
+   - Coloca ÚNICAMENTE la competencia específica trabajada en cada área/actividad.
+   - Incluye el **ESTÁNDAR DE APRENDIZAJE ÍNTEGRO DEL CNEB** en su columna dedicada resaltando en **negrita** (`**la parte específica movilizada**`).
+   - Incluye el **DESEMPEÑO ÍNTEGRO DEL CNEB** resaltando en **negrita** (`**la parte específica trabajada**`).
 5. Tabla de Enfoques Transversales.
 6. Producto Final Tangible del Proyecto.
 7. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-   - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
+   - Para CADA semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
    - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
      • Fila 1 (Sesión 1 / Mañana): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
      • Fila 2 (Sesión 2 / Tarde): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   - *Nota:* Asegúrate de cubrir TODAS las áreas en las 10 sesiones de cada semana.
 8. Lista Clasificada de Materiales y Recursos.
-9. Tabla de Reflexiones sobre los aprendizajes (Estructurada obligatoriamente en Cuadro/Tabla final).
+9. Tabla VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Estructurada obligatoriamente en Cuadro/Tabla final).
 """
 
 def generar_prompt_unidad_sara():
@@ -483,24 +505,34 @@ ENCABEZADO DE SALIDA OBLIGATORIO:
 # **UNIDAD DE APRENDIZAJE N.º {num_doc}**
 ## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
 
+REGLA ESTRICTA DE COBERTURA DE ÁREAS POR SEMANA:
+EN CADA UNA DE LAS {duracion_semanas} SEMANAS DE LA UNIDAD, DEBES TRABAJAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN:
+1. Comunicación (3 competencias)
+2. Matemática (4 competencias)
+3. Personal Social
+4. Ciencia y Tecnología
+5. Educación Religiosa
+6. Arte y Cultura
+7. Educación Física
+8. Tutoría / Competencias Transversales
+
 ESTRUCTURA DE LA UNIDAD DE APRENDIZAJE SARA:
-I. Tabla de Datos Informativos.
-II. Situación Significativa Generada.
+I. Tabla I: DATOS INFORMATIVOS (Incluir exactamente: DRE/UGEL: {dre_ugel}, IE: {ie_nombre}, Director: {director}, Subdirector: {subdirector}, Docente: {docente}, Grado/Sección: {grado_seccion}, Duración: {fechas_duracion}).
+II. Situación Significativa Generada (Redacción completa).
 III. Matriz de Aprendizajes por Área:
-    - Incluye OBLIGATORIAMENTE las siguientes columnas en la tabla:
-      ÁREA | ACTIVIDAD en 1ra persona plural | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (Columna dedicada con CNEB completo y parte movilizada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | EVIDENCIA | LISTA DE COTEJO.
-    - Cobertura Curricular Obligatoria: Integra las **4 competencias de Matemática**, las **3 competencias de Comunicación**, **Educación Religiosa**, **Arte y Cultura**, **Educación Física** y **Competencias Transversales**.
+    - La primera columna OBLIGATORIA de la matriz debe ser **ÁREA CURRICULAR**.
+    - Columnas estrictas: ÁREA | Actividad en 1ra persona plural | Competencia Trabajada (Solo una) Y Capacidades | ESTÁNDAR DE APRENDIZAJE (Columna dedicada con CNEB completo y parte movilizada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | EVIDENCIA | LISTA DE COTEJO.
 IV. Tabla de Enfoques Transversales.
 V. Producto de la Unidad.
 VI. ACTIVIDADES PROPUESTAS CON LOS DÍAS COMO COLUMNAS DE TABLA (2 SESIONES DIARIAS - 10 SESIONES POR SEMANA):
-    - Para cada semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
+    - Para CADA semana (Semana 1 a {duracion_semanas}), crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
       | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
     - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
       • Fila 1 (Sesión 1): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
       • Fila 2 (Sesión 2): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
     - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 VII. Lista Clasificada de Materiales y Recursos.
-VIII. Tabla de Reflexiones sobre los Aprendizajes (Estructurada obligatoriamente en Cuadro/Tabla final).
+VIII. Tabla VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Estructurada obligatoriamente en Cuadro/Tabla final).
 """
 
 # ==============================================================================
@@ -526,10 +558,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, organizando la columna ÁREA, Estándares en columna dedicada, días en columnas y aplicando colores pasteles para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está organizando TODAS las áreas por semana, datos informativos completos y la tabla de reflexiones para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Muestras la columna ÁREA de forma explícita, incluyes Educación Física, transcribes Estándares y Desempeños del CNEB en negrita, colocas una sola competencia por actividad, organizas los días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Incluyes todos los datos informativos del usuario, trabajas todas las áreas en cada semana sin excepción, muestras la columna ÁREA y ESTÁNDAR de forma explícita, transcribes CNEB en negrita, organizas días en columnas y aplicas tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
@@ -594,4 +626,4 @@ if st.session_state['resultado_md'] is not None:
             file_name=st.session_state['fname_clean'],
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua y el archivo Word descargado incluye la orientación HORIZONTAL para Unidades y Proyectos, garantizando la impresión completa de todas las tablas y la sección final de reflexiones.")
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua, los datos informativos figuran completos y la tabla de Reflexiones al final se descargará 100% completa en Word.")
