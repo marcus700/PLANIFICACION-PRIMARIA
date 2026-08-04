@@ -12,7 +12,7 @@ import re
 import cneb_primaria_datos as cneb
 
 # ==============================================================================
-# CONFIGURACIÓN DE PÁGINA Y OCULTAMIENTO DE BARRAS DE DESARROLLADOR DE STREAMLIT
+# CONFIGURACIÓN DE LA PÁGINA STREAMLIT Y ESTILOS
 # ==============================================================================
 st.set_page_config(
     page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
@@ -20,10 +20,10 @@ st.set_page_config(
     layout="wide"
 )
 
-# Estilos CSS avanzados para ocultar Header, Footer, GitHub, Compartir y "Gestionar aplicación"
+# Estilos CSS avanzados para diseño limpio
 st.markdown("""
 <style>
-    /* Ocultar la barra superior (Header, Compartir, GitHub, 3 puntos) */
+    /* Ocultar la barra superior predeterminada de Streamlit */
     header {visibility: hidden !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
@@ -88,20 +88,28 @@ if 'ie_nombre_generado' not in st.session_state:
     st.session_state['ie_nombre_generado'] = None
 
 # ==============================================================================
-# LECTURA INTERNA DE API KEY Y MODELO (OCULTO A LOS USUARIOS)
+# BARRA LATERAL (SIDEBAR) - PANEL DE CONFIGURACIÓN RESTAURADO
 # ==============================================================================
-# Detección automática de la clave en los Secrets del servidor
-if "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
-    api_key = st.secrets["GEMINI_API_KEY"]
-else:
-    api_key = None
+st.sidebar.title("⚙️ Configuración")
 
-# Modelo predeterminado rápido de alta definición
-model_choice = "gemini-3.6-flash"
+# Lectura de clave por defecto desde Secrets si existe
+default_key = st.secrets["GEMINI_API_KEY"] if "GEMINI_API_KEY" in st.secrets else ""
 
-# ==============================================================================
-# BARRA LATERAL (SIDEBAR) - INTERFAZ EXCLUSIVA PARA DOCENTES
-# ==============================================================================
+# Entrada de API Key (Muestra la clave guardada en el servidor o permite ingresar una propia)
+api_key = st.sidebar.text_input(
+    "🔑 Google AI Studio API Key:", 
+    value=default_key,
+    type="password", 
+    help="Puedes usar la clave del servidor o ingresar tu propia clave de https://aistudio.google.com/app/apikey"
+)
+
+# Selector de modelo de Gemini restaurado
+model_choice = st.sidebar.selectbox(
+    "Modelo de Gemini:", 
+    ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
+)
+
+st.sidebar.markdown("---")
 st.sidebar.markdown("### 📋 Herramientas de Aula")
 tipo_documento = st.sidebar.radio(
     "Selecciona la herramienta:",
