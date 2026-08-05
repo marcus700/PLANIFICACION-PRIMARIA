@@ -940,7 +940,7 @@ CURRICULO_NACIONAL_PRIMARIA = {
             }
         }
     },
-    "AREA_MATEMATICA = {
+    "AREA_MATEMATICA" = {
     "Resuelve problemas de cantidad": {
         "capacidades": [
             "Traduce cantidades a expresiones numéricas.",
@@ -1309,7 +1309,7 @@ CURRICULO_NACIONAL_PRIMARIA = {
         }
     }
 },
-"Ciencia y Tecnología “: {
+"Ciencia y Tecnología": {
     "Indaga mediante métodos científicos para construir sus conocimientos": {
         "capacidades": [
             "Problematiza situaciones para hacer indagación.",
@@ -1551,7 +1551,7 @@ CURRICULO_NACIONAL_PRIMARIA = {
     }
 },
 
-"Educación  Religiosa : {
+"Educación  Religiosa": {
     "Construye su identidad como persona humana, amada por Dios, digna, libre y trascendente, comprendiendo la doctrina de su propia religión, abierto al diálogo con las que le son cercanas": {
         "capacidades": [
             "Conoce a Dios y asume su identidad religiosa y espiritual como persona digna, libre y trascendente.",
@@ -1682,7 +1682,7 @@ CURRICULO_NACIONAL_PRIMARIA = {
     }
 },
 
-"Educación física " : {
+"Educación física" : {
     "Se desenvuelve de manera autónoma a través de su motricidad": {
         "capacidades": [
             "Comprende su cuerpo.",
