@@ -6,7 +6,7 @@ Base de Datos Oficial del Currículo Nacional de la Educación Básica (CNEB)
 Nivel Educación Primaria - RM N.º 649-2016-MINEDU / Ministerio de Educación del Perú.
 Contiene la transcripción ÍNTEGRA Y COMPLETA de Áreas, Competencias, Capacidades, 
 Estándares por Ciclo (III, IV, V) y Desempeños por Grado (1.° a 6.°) sin ningún recorte.
-"""
+
 
 def obtener_ciclo_por_grado(grado: str) -> str:
     """Devuelve el ciclo (III, IV o V) según el grado ingresado."""
