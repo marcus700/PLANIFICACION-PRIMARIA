@@ -124,9 +124,10 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
-• Estándares y Desempeños CNEB Íntegros
-• Turno Único: 2 a 3 Sesiones diarias de 90 min
 • Nivel Educación Primaria (1.° a 6.° Grado)
+• Todas las Áreas en CADA Semana
+• Unidades y Proyectos en HORIZONTAL
+• 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
 """)
 
@@ -358,7 +359,7 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS.
+Elabora una Sesión de Aprendizaje completa y estructurada strictly en CUADROS/TABLAS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO:
 {problema_contexto}
@@ -434,7 +435,7 @@ def generar_prompt_proyecto():
 
     return f"""
 Actúa como un docente especialista de Primaria MINEDU Perú. Elabora un PROYECTO DE APRENDIZAJE completo.
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
@@ -459,15 +460,15 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
    - Copia el DESEMPEÑO ÍNTEGRO del CNEB con la parte trabajada en **negrita**.
    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
-5. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 A 3 SESIONES DIARIAS DE 90 MINUTOS EN TURNO ÚNICO - 10 A 15 SESIONES POR SEMANA):
+5. SECUENCIA DE ACTIVIDADES (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE PROPÓSITOS.
+   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (2 a 3 sesiones de 90 min por día = 10 a 15 sesiones por semana en turno único), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único (sin dividir en mañana/tarde), indicando el **ÁREA CURRICULAR DESTACADA**:
+   - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
      • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
      • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
      • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades, DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
 
 6. TABLA DE ENFOQUES TRANSVERSALES.
 7. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
@@ -505,13 +506,13 @@ III. MATRIZ DE APRENDIZAJES POR ÁREA (SECCIÓN CONTINUA COMPLETA DESDE LA SEMAN
 
 IV. SECUENCIA DE ACTIVIDADES PROPUESTAS (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
     - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE APRENDIZAJES.
+    - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (2 a 3 sesiones de 90 min por día = 10 a 15 sesiones por semana en turno único), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
     - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
       | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-    - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único (sin dividir en mañana/tarde), indicando el **ÁREA CURRICULAR DESTACADA**:
+    - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
       • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
       • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
       • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-    - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades, DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
     - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
 
 V. TABLA DE ENFOQUES TRANSVERSALES.
@@ -521,7 +522,7 @@ VIII. TABLA VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
 """
 
 # ==============================================================================
-# EJECUCIÓN CON GOOGLE AI STUDIO (GEMINI API)
+# EJECUCIÓN CON GOOGLE AI STUDIO (GEMINI API) CON BUCLE DE RESPALDO ANTE 503 / 404
 # ==============================================================================
 st.markdown("---")
 
@@ -546,26 +547,33 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, transcribiendo Estándares en su TOTALIDAD del CNEB con negrita y generando títulos semanales para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes el Estándar de Aprendizaje del CNEB EN SU TOTALIDAD Y DE MANERA ÍNTEGRA sin ningún corte ni resumen, resaltando en negrita únicamente la parte movilizada. Muestras Datos Informativos completos, Situación Significativa debajo, Títulos de la semana, Matriz de 8 columnas continua de Semana 1 a 5, Secuencia de Actividades con 2 a 3 sesiones de 90 min por día en turno único con días como columnas y tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes el Estándar de Aprendizaje del CNEB EN SU TOTALIDAD Y DE MANERA ÍNTEGRA sin ningún corte ni resumen, resaltando en negrita únicamente la parte movilizada. Muestras Datos Informativos completos, Situación Significativa debajo, Títulos de la semana, Matriz de 8 columnas continua de Semana 1 a 5, Secuencia de Actividades con 2 a 3 sesiones de 90 min por día en turno único con días como columnas abarcarndo TODAS las áreas cada semana y tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
                     temperature=0.2
                 )
                 
-                try:
-                    response = client.models.generate_content(
-                        model=model_choice,
-                        contents=prompt_maestro,
-                        config=config
-                    )
-                except Exception as model_err:
-                    err_text = str(model_err)
-                    if "404" in err_text or "NOT_FOUND" in err_text:
+                # Lista de modelos a probar automáticamente en caso de sobrecarga 503 o no encontrado 404
+                modelos_a_probar = [model_choice, "gemini-2.0-flash", "gemini-1.5-flash-latest", "gemini-2.5-flash"]
+                response = None
+                ultimo_error = None
+                
+                for mod in modelos_a_probar:
+                    try:
                         response = client.models.generate_content(
-                            model="gemini-2.0-flash",
+                            model=mod,
                             contents=prompt_maestro,
                             config=config
                         )
-                    else:
-                        raise model_err
+                        if response and response.text:
+                            break
+                    except Exception as e_mod:
+                        ultimo_error = str(e_mod)
+                        if "503" in ultimo_error or "404" in ultimo_error or "UNAVAILABLE" in ultimo_error or "NOT_FOUND" in ultimo_error:
+                            continue
+                        else:
+                            raise e_mod
+                
+                if not response or not response.text:
+                    raise Exception(f"No se pudo completar la generación: {ultimo_error}")
                 
                 # GUARDAR RESULTADO EN SESSION STATE (MEMORIA PERMANENTE)
                 st.session_state['resultado_md'] = response.text
@@ -579,8 +587,8 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             err_str = str(e)
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
                 st.warning("⏳ **Límite de velocidad del plan gratuito alcanzado.**\n\nPor favor, **espera 60 segundos** y vuelve a hacer clic en el botón de generación, o cambia el **Modelo de Gemini** en la barra lateral por otro modelo disponible.")
-            elif "404" in err_str or "NOT_FOUND" in err_str:
-                st.error("⚠️ El modelo seleccionado no está disponible para tu cuenta de Google AI. Por favor selecciona **gemini-2.0-flash** o **gemini-3.6-flash** en la barra lateral.")
+            elif "503" in err_str or "UNAVAILABLE" in err_str:
+                st.warning("⏳ **Alta demanda temporal en los servidores de Google AI.**\n\nPor favor, espera unos segundos y vuelve a hacer clic en **Generar**, o selecciona **gemini-2.0-flash** en la barra lateral.")
             else:
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
 
