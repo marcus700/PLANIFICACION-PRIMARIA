@@ -105,7 +105,7 @@ else:
 # Modelos oficiales vigentes de Google AI Studio
 model_choice = st.sidebar.selectbox(
     "Modelo de Gemini:", 
-    ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
+    ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
 )
 
 st.sidebar.markdown("---")
@@ -267,7 +267,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
             p = doc.add_paragraph()
             add_formatted_text(p, line_str)
 
-    # GARANTIZAR QUE LA ÚLTIMA TABLA (EJ. TABLA DE REFLEXIONES) SE PROCESE E IMPRIMA EN WORD
+    # GARANTIZAR QUE LA ÚLTIMA TABLA SE PROCESE E IMPRIMA EN WORD
     if in_table and table_data:
         table_count += 1
         header_color = PASTEL_COLORS[(table_count - 1) % len(PASTEL_COLORS)]
@@ -333,18 +333,23 @@ else:  # Unidad SARA
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
 
-# CAMPO SIMPLIFICADO: El docente solo ingresa el Problema del Contexto
-problema_contexto = st.text_area(
-    "🚨 Problema o Interés del Contexto (Único dato requerido para que la IA cree el Título y la Situación Significativa automáticamente):",
-    height=100,
-    value="Poco hábito de recolección de residuos sólidos y acumulación de botellas de plástico en el patio durante el recreo por parte de los estudiantes de 3er grado."
-)
-
-# Título Opcional
-titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático a partir del problema):", value="")
+# CAMPO DE TEMA/PROBLEMA SEGÚN EL TIPO DE DOCUMENTO
+if tipo_documento == "Sesión de Aprendizaje":
+    problema_contexto = st.text_input(
+        "📌 Tema / Título de la Sesión o Actividad a realizar:",
+        value="Mis derechos y deberes"
+    )
+    titulo_opcional = ""
+else:
+    problema_contexto = st.text_area(
+        "🚨 Problema o Interés del Contexto (Único dato requerido para que la IA cree el Título y la Situación Significativa automáticamente):",
+        height=100,
+        value="Poco hábito de recolección de residuos sólidos y acumulación de botellas de plástico en el patio durante el recreo por parte de los estudiantes de 3er grado."
+    )
+    titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático a partir del problema):", value="")
 
 # ==============================================================================
-# PROMPTS MAESTROS ALINEADOS AL CNEB COMPLETO CON ORDEN SECUENCIAL ESTRICTO
+# PROMPTS MAESTROS ALINEADOS AL CNEB COMPLETO
 # ==============================================================================
 def generar_prompt_sesion():
     if "45" in duracion_sesion:
@@ -352,53 +357,133 @@ def generar_prompt_sesion():
     elif "135" in duracion_sesion:
         t_inicio, t_desarrollo, t_cierre = "20 min", "100 min", "15 min"
     else:
-        t_inicio, t_desarrollo, t_cierre = "15 min", "65 min", "10 min"
-
-    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador basado en el problema.'
+        t_inicio, t_desarrollo, t_cierre = "20 min", "60 min", "10 min"
 
     return f"""
-Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS.
+Actúa como: Un Especialista en Currículo Nacional de Educación Básica (CNEB) del MINEDU, experto en planificación pedagógica de nivel Primaria.
+Tu objetivo: Elaborar una sesión de aprendizaje completa siguiendo estrictamente el formato y estructura del modelo proporcionado.
 
-A PARTIR DEL PROBLEMA DEL CONTEXTO:
-{problema_contexto}
-Instrucción de Título: {val_titulo}
-Instrucción de Situación Significativa: Redacta una Situación Significativa estructurada a partir del problema.
-
-ENCABEZADO DE SALIDA OBLIGATORIO:
-# **SESIÓN DE APRENDIZAJE N.º {num_doc}**
-## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
-
-DATOS INFORMATIVOS (MUESTRA ESTOS DATOS EXACTOS EN LA TABLA I):
+Datos para la sesión (Configuración):
+• Grado y Sección: {grado_seccion}
+• Área Curricular: {area_sel}
+• Tema/Título de la sesión: {problema_contexto}
+• Fecha sugerida: {fecha_sugerida}
 • DRE / UGEL: {dre_ugel}
 • Institución Educativa: {ie_nombre}
 • Director: {director}
 • Subdirector(es): {subdirector}
 • Docente de Aula: {docente}
-• Grado y Sección: {grado_seccion}
-• Área Curricular: {area_sel}
-• Fecha: {fecha_sugerida}
 • Duración Total: {duracion_sesion}
 
-REGLAS OBLIGATORIAS DE ESTÁNDAR, COMPETENCIA Y DESEMPEÑO DEL CNEB:
-1. **ESTÁNDAR DE APRENDIZAJE REDACTADO EN SU TOTALIDAD Y DE MANERA ÍNTEGRA:** En la Tabla II, copia el Estándar de Aprendizaje oficial del CNEB (RM N.º 649-2016-MINEDU) correspondiente al ciclo de {grado_seccion} EN SU TOTALIDAD Y SIN NINGÚN CORTE, RESUMEN NI OMISIÓN. DENTRO de ese texto completo, OBLIGATORIAMENTE RESALTA EN **NEGRITA** (`**únicamente el fragmento específico que se moviliza en la sesión**`).
-2. **DESEMPEÑO PRECISADO ÍNTEGRO Y COMPLETO:** Copia el desempeño oficial del CNEB para {grado_seccion} DE MANERA ÍNTEGRA Y COMPLETA, y RESALTA EN **NEGRITA** (`**la parte específica del desempeño que se evalúa en la sesión**`).
-3. **COLUMNA DE ÁREA Y COMPETENCIA ÚNICA:** Muestra la columna ÁREA y coloca una sola competencia abordada.
-4. PROHIBIDO UTILIZAR símbolos de almohadillas como #### o ##### y etiquetas HTML.
-5. ESTRUCTURA EN TABLAS/CUADROS OBLIGATORIOS:
-   - Tabla I: DATOS INFORMATIVOS
-   - Tabla II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS. Columnas estrictas: 
-     ÁREA | ACTIVIDAD | COMPETENCIA TRABAJADA (Solo una) Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo en su totalidad con parte trabajada en **negrita**) | DESEMPEÑO PRECISADO (CNEB completo con parte trabajada en **negrita**) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN.
-   - Tabla III: ENFOQUES TRANSVERSALES
-   - Tabla IV: COMPETENCIA TRANSVERSAL ("Gestiona su aprendizaje de manera autónoma")
-   - Tabla V: META DE APRENDIZAJE
-   - Tabla VI: PREPARACIÓN DE LA SESIÓN
-   - Tabla VII: ESCALA DE VALORACIÓN (Cuadro para 10 estudiantes ficticios peruanos)
+________________________________________
+INSTRUCCIONES DE FORMATO Y CONTENIDO (OBLIGATORIO):
+• Estructura de Cuadros: Utiliza exactamente los mismos cuadros del modelo (Datos Informativos, Propósitos, Enfoques, Metas, Preparación, Momentos de la sesión y Escala de Valoración). NO INCLUYAS NINGUNA SITUACIÓN SIGNIFICATIVA.
+• Alineación CNEB: Selecciona la Competencia, Capacidades y Desempeños (precisados si es necesario) directamente del Programa Curricular de Educación Primaria del MINEDU correspondiente al grado ({grado_seccion}). Para el Estándar de Aprendizaje del CNEB, escríbelo EN SU TOTALIDAD Y DE MANERA ÍNTEGRA sin ningún corte, resumen ni omisión, resaltando en **negrita** únicamente el fragmento trabajado.
+• Criterios de Evaluación: Deben redactarse bajo la estructura implícita de ACCIÓN + CONTENIDO + CONDICIÓN, pero que no figure dicha estructura o etiqueta explícita en su redacción (Ejemplo: "Reconoce las acciones que contaminan el ambiente mediante la observación de imágenes").
+• Redacción de Actividades: Las actividades en los momentos de Inicio, Desarrollo y Cierre deben estar redactadas en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE (Ejemplo: "Saludamos a los estudiantes", "Preguntamos a los niños", "Repartimos las fichas").
+• Procesos Didácticos y pedagógicos por Área: Debes aplicar rigurosamente los procesos del área seleccionada:
 
-6. FORMATO DE LOS MOMENTOS Y PROCESOS DE LA SESIÓN:
-   - Resalta en **NEGRITA** los títulos principales (**INICIO ({t_inicio})**, **DESARROLLO ({t_desarrollo})**, **CIERRE ({t_cierre})**) y cada uno de los procesos pedagógicos/didácticos.
-   - Cada actividad debe iniciar obligatoriamente con su subtítulo en **NEGRITA** y luego viñeta (`•`).
-   - Redacción en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE.
+Procesos Pedagógicos Comunes a Todas las Áreas:
+A.- MOMENTO: INICIO DE LA SESIÓN ({t_inicio})
+• Estos procesos son fundamentales para cualquier sesión de aprendizaje y el docente debe promoverlos de manera continua:
+- Problematización: Plantear situaciones o desafíos que generen interés y un conflicto cognitivo en los estudiantes, llevándolos a cuestionarse y a querer aprender.
+- Propósito y Organización: Comunicar a los estudiantes el objetivo de la sesión, las competencias que se desarrollarán y cómo será el proceso de trabajo.
+- Motivación/Interés: Mantener el interés de los estudiantes a lo largo de toda la sesión a través de actividades lúdicas, materiales novedosos o temáticas relevantes para ellos.
+- Saberes Previos: Activar los conocimientos y experiencias que los estudiantes ya poseen sobre el tema, conectándolos con el nuevo aprendizaje.
+- Criterios de evaluación: Se mencionan a los estudiantes los criterios que van a ser observados durante la sesión de aprendizaje.
+- Normas de convivencia: Formulación de normas que se van a utilizar en la sesión.
+- Gestión y Acompañamiento del Desarrollo de las Competencias: El docente acompaña al estudiante en su proceso de aprendizaje, brindándole retroalimentación, resolviendo dudas y ajustando la enseñanza según las necesidades observadas.
+- Evaluación: Recoger y valorar información sobre el nivel de desarrollo de las competencias de los estudiantes, tanto durante el proceso (formativa) como al final (sumativa), para tomar decisiones que mejoren el aprendizaje (Se dan en el momento del desarrollo de las sesiones).
+
+Procesos Didácticos por Área Curricular:
+B.- MOMENTO DEL DESARROLLO DE LA SESIÓN ({t_desarrollo})
+1. Matemática (Enfoque Centrado en la Resolución de Problemas):
+   - Comprensión del Problema: Los estudiantes leen atentamente el problema para identificar los datos, las condiciones y lo que se les pide resolver. Pueden usar técnicas como el parafraseo o la realización de preguntas.
+   - Búsqueda de Estrategias: Proponen y seleccionan diversas formas de solucionar el problema, como hacer un diagrama, usar material concreto, plantear una operación, etc.
+   - Representación: Plasman la situación de manera concreta (con materiales), pictórica (dibujos, esquemas) o simbólica (números, operaciones).
+   - Formalización: A partir de lo trabajado, el docente guía a los estudiantes para que identifiquen y nombren los conceptos, propiedades o procedimientos matemáticos involucrados.
+   - Reflexión: Los estudiantes analizan el proceso seguido, verifican sus resultados y reflexionan sobre qué les funcionó, qué dificultades tuvieron y cómo lo superaron.
+   - Transferencia: Aplican lo aprendido en la resolución de nuevos problemas o situaciones similares, tanto dentro como fuera de la escuela.
+
+2. Comunicación (Enfoque Comunicativo):
+   Los procesos didácticos varían si se trabaja la oralidad, la lectura o la escritura:
+   • Para la Comprensión de Textos (Lectura):
+     - Antes de la Lectura: Se activan los saberes previos, se formulan hipótesis sobre el contenido a partir del título o las imágenes y se define el propósito de la lectura.
+     - Durante la Lectura: Se realiza la lectura (individual, en voz alta, silenciosa), se formulan preguntas, se hacen predicciones y se aclara el vocabulario.
+     - Después de la Lectura: Se contrasta la hipótesis inicial, se resume el texto, se formulan opiniones y se reflexiona sobre el contenido y la forma del texto.
+   • Para la Producción de Textos (Escritura):
+     - Planificación: Se define el propósito, el destinatario, el tipo de texto y el tema. Se generan ideas y se organizan en un esquema o plan de escritura.
+     - Textualización (o Escritura): Se redacta el primer borrador del texto, respetando la estructura y el lenguaje planificados.
+     - Revisión: Se lee el borrador para identificar errores y aspectos a mejorar (coherencia, cohesión, ortografía, gramática). Se puede hacer de forma individual o con compañeros.
+     - Edición y Publicación: Se reescribe el texto incorporando las correcciones y se comparte o publica según el propósito definido.
+
+3. Personal Social (Enfoque de Desarrollo Personal y Ciudadanía Activa):
+   - Problematización: Se presenta una situación real o simulada (un caso, una noticia, un dilema moral) que genere un conflicto y motive al análisis.
+   - Análisis de Información: Los estudiantes buscan, leen y analizan información de diversas fuentes (textos, videos, testimonios) para comprender mejor la situación problemática.
+   - Acuerdo o Toma de Decisiones: A partir del análisis, los estudiantes deliberan, dialogan, argumentan sus puntos de vista y toman una postura o llegan a consensos para actuar frente a la situación.
+
+4. Ciencia y Tecnología (Enfoque de Indagación Científica):
+   - Planteamiento del Problema: A partir de una observación o experiencia, los estudiantes formulan una pregunta que pueda ser investigada.
+   - Planteamiento de la Hipótesis: Proponen una posible respuesta o explicación al problema planteado.
+   - Elaboración del Plan de Acción: Diseñan los pasos que seguirán para comprobar su hipótesis: qué materiales usarán, qué medirán, cómo registrarán los datos.
+   - Recojo y Análisis de Datos: Ejecutan el plan, experimentan, observan y registran la información obtenida en tablas, gráficos, etc.
+   - Estructuración del Saber Construido: Comparan los resultados con su hipótesis inicial, la aceptan o la rechazan, y construyen una conclusión basada en las evidencias.
+   - Evaluación y Comunicación: Comunican sus hallazgos y conclusiones (de forma oral, escrita, gráfica) y reflexionan sobre el proceso de indagación realizado.
+
+5. Arte y Cultura (Enfoque Multicultural e Interdisciplinario):
+   - Explorar y Experimentar: Los estudiantes interactúan libremente con diversos materiales y lenguajes artísticos (danza, música, teatro, artes visuales) para descubrir sus posibilidades expresivas.
+   - Aplicar Procesos Creativos: Planifican y desarrollan sus propios proyectos artísticos, tomando decisiones sobre los elementos y técnicas a utilizar para comunicar sus ideas y sentimientos.
+   - Evaluar y Socializar sus Procesos y Proyectos: Reflexionan sobre sus creaciones y las de sus compañeros, y las presentan a una audiencia, explicando sus intenciones y el proceso seguido.
+
+6. Educación Física (Enfoque de la Corporeidad):
+   - Se organiza de la siguiente manera:
+     • Actividad fisiológica: Se realizan juegos y actividades de calentamiento para preparar el cuerpo para la actividad principal.
+     • Actividades centrales de la sesión: Orientadas al desarrollo de habilidades motrices, la expresión corporal o la práctica de juegos y deportes (Actividad básica, Actividad avanzada, Actividad de aplicación).
+     • Momento de cierre: Vuelta a la Calma (Relajación), Metacognición, Retroalimentación, Despedida.
+
+7. Educación Religiosa (Enfoque Humanista Cristiano):
+   Se basa en el método VER - JUZGAR - ACTUAR - CELEBRAR:
+   - VER: Se parte de una experiencia de la vida cotidiana de los estudiantes, un acontecimiento o una realidad que los interpela.
+   - JUZGAR: Se ilumina esa realidad con la Palabra de Dios y las enseñanzas de la Iglesia, buscando un mensaje que dé sentido a la experiencia.
+   - ACTUAR: Se invita a los estudiantes a asumir un compromiso personal y comunitario coherente con la reflexión realizada.
+   - CELEBRAR: Se finaliza con un momento de oración, canto o un gesto simbólico para expresar la fe y agradecer la experiencia vivida.
+
+Procesos Pedagógicos Recurrentes: Asegúrese de incluir en la sesión: Problematización, Propósito y organización, Motivación, Saberes previos, Gestión y acompañamiento, y Evaluación.
+
+________________________________________
+ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN CUADROS/TABLAS MARKDOWN Y SIN SITUACIÓN SIGNIFICATIVA):
+
+# **SESIÓN DE APRENDIZAJE N.º {num_doc}**
+## **{problema_contexto.upper()}**
+
+• TABLA I: DATOS INFORMATIVOS
+| DRE / UGEL | Institución Educativa | Director | Subdirector(es) | Docente de Aula | Grado y Sección | Área Curricular | Fecha | Duración |
+| {dre_ugel} | {ie_nombre} | {director} | {subdirector} | {docente} | {grado_seccion} | {area_sel} | {fecha_sugerida} | {duracion_sesion} |
+
+• TABLA II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS
+| ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo en su totalidad con parte trabajada en **negrita**) | DESEMPEÑOS PRECISADOS (CNEB) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN |
+
+• TABLA III: ENFOQUES TRANSVERSALES
+| ENFOQUE TRANSVERSAL | VALORES | ACTITUDES OBSERVABLES |
+
+• TABLA IV: COMPETENCIA TRANSVERSAL
+| COMPETENCIA TRANSVERSAL | CAPACIDADES | DESEMPEÑOS PRECISADOS |
+| "Gestiona su aprendizaje de manera autónoma" | Define metas de aprendizaje / Organiza acciones estratégicas | Muestra autonomía al realizar sus tareas pedagógicas. |
+
+• TABLA V: META DE APRENDIZAJE
+| META DE APRENDIZAJE ({grado_seccion}) | DESCRIPCIÓN DE LA META |
+| Protección de la vida / Habilidades para la vida | [Inserte meta del grado correspondiente] |
+
+• TABLA VI: PREPARACIÓN DE LA SESIÓN
+| ¿Qué necesitamos hacer antes de la sesión? | ¿Qué recursos o materiales se utilizarán en esta sesión? |
+
+• MOMENTOS DE LA SESIÓN (REDACTADO EN 1ra PERSONA DEL PLURAL Y TIEMPO PRESENTE):
+- **INICIO ({t_inicio})**: Motivación, Saberes previos, Problematización, Propósito y Criterios, Normas de convivencia.
+- **DESARROLLO ({t_desarrollo})**: Aplicar detalladamente los procesos didácticos específicos del área ({area_sel}).
+- **CIERRE ({t_cierre})**: Metacognición y Reflexión final.
+
+• TABLA VII: ESCALA DE VALORACIÓN
+(Crea una tabla completa con exactamente 30 estudiantes ficticios con nombres y apellidos peruanos, y evalúa 3 Criterios de Evaluación con las columnas: N.°, Apellidos y Nombres, Criterio 1 [Inicio, En proceso, Lo logró], Criterio 2 [Inicio, En proceso, Lo logró], Criterio 3 [Inicio, En proceso, Lo logró], Observaciones).
 """
 
 def generar_prompt_ficha_trabajo():
@@ -529,24 +614,28 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
     if not api_key:
         st.error("⚠️ Ingresa tu API Key de Google AI Studio en la barra lateral izquierda o en los Secrets.")
     elif not problema_contexto:
-        st.warning("⚠️ Completa el campo del Problema o Interés del Contexto.")
+        st.warning("⚠️ Completa el campo del Tema o Problema del Contexto.")
     else:
         try:
             client = genai.Client(api_key=api_key)
             
             if tipo_documento == "Sesión de Aprendizaje":
                 prompt_maestro = generar_prompt_sesion()
+                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Creas sesiones de aprendizaje en tablas sin incluir situación significativa, incluyendo datos informativos, propósitos de aprendizaje, enfoques, competencia transversal, meta de aprendizaje, preparación, momentos con procesos didácticos del área en 1ra persona plural tiempo presente, y escala de valoración con 30 estudiantes ficticios."
             elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
                 prompt_maestro = generar_prompt_ficha_trabajo()
+                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
             elif tipo_documento == "Proyecto de Aprendizaje":
                 prompt_maestro = generar_prompt_proyecto()
+                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
+                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
                 
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está analizando el problema, transcribiendo Estándares en su TOTALIDAD del CNEB con negrita y generando títulos semanales para {grado_seccion}..."):
+            with st.spinner(f"🧠 Google Gemini ({model_choice}) está procesando y generando tu {tipo_documento} para {grado_seccion}..."):
                 
                 config = types.GenerateContentConfig(
-                    system_instruction="Eres un Especialista Curricular de Educación Primaria de Aula del MINEDU Perú. Transcribes el Estándar de Aprendizaje del CNEB EN SU TOTALIDAD Y DE MANERA ÍNTEGRA sin ningún corte ni resumen, resaltando en negrita únicamente la parte movilizada. Muestras Datos Informativos completos, Situación Significativa debajo, Títulos de la semana, Matriz de 8 columnas continua de Semana 1 a 5, Secuencia de Actividades con 2 a 3 sesiones de 90 min por día en turno único con días como columnas y tonos pasteles en todas las tablas sin omitir la tabla final de reflexiones.",
+                    system_instruction=sys_inst,
                     temperature=0.2
                 )
                 
@@ -578,14 +667,14 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
         except Exception as e:
             err_str = str(e)
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                st.warning("⏳ **Límite de velocidad del plan gratuito alcanzado.**\n\nPor favor, **espera 60 segundos** y vuelve a hacer clic en el botón de generación, o cambia el **Modelo de Gemini** en la barra lateral por otro modelo disponible.")
+                st.warning("⏳ **Límite de velocidad alcanzado.** Por favor, espera 60 segundos y vuelve a intentarlo o cambia de modelo en la barra lateral.")
             elif "404" in err_str or "NOT_FOUND" in err_str:
-                st.error("⚠️ El modelo seleccionado no está disponible para tu cuenta de Google AI. Por favor selecciona **gemini-2.0-flash** o **gemini-3.6-flash** en la barra lateral.")
+                st.error("⚠️ El modelo seleccionado no está disponible. Por favor selecciona **gemini-2.0-flash** o **gemini-2.5-flash** en la barra lateral.")
             else:
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
 
 # ==============================================================================
-# DESPLIEGUE DE VISTA PREVIA Y DESCARGA PERMANENTE (NUNCA DESAPARECE)
+# DESPLIEGUE DE VISTA PREVIA Y DESCARGA PERMANENTE
 # ==============================================================================
 if st.session_state['resultado_md'] is not None:
     st.markdown("---")
@@ -596,7 +685,6 @@ if st.session_state['resultado_md'] is not None:
         st.markdown(st.session_state['resultado_md'])
         
     with tab_download:
-        # Determinar si el documento debe ser HORIZONTAL (Unidades y Proyectos) o VERTICAL (Sesiones y Fichas)
         es_horizontal_doc = st.session_state['tipo_doc_generado'] in ["Proyecto de Aprendizaje", "Unidad de Aprendizaje (Modelo SARA)"]
         
         buffer_doc = markdown_to_docx(
@@ -611,4 +699,4 @@ if st.session_state['resultado_md'] is not None:
             file_name=st.session_state['fname_clean'],
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
-        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible de forma continua, los Estándares figuran transcritos EN SU TOTALIDAD del CNEB con su parte trabajada en negrita y el archivo Word descargado incluye la orientación HORIZONTAL para Unidades y Proyectos.")
+        st.info("💡 **Nota:** La vista previa en pantalla permanecerá visible. El documento Word generado incluye la estructura oficial solicitada en tablas.")
