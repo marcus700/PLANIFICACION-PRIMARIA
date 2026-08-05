@@ -18,7 +18,7 @@ def obtener_ciclo_por_grado(grado: str) -> str:
     return "IV CICLO"
 
 
-CURRICULO_NACIONAL_PRIMARIA = {
+CNEB_PRIMARIA = {
     "Personal Social": {
         "Construye su identidad": {
             "estandares": {
