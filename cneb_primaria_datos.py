@@ -940,7 +940,7 @@ CURRICULO_NACIONAL_PRIMARIA = {
             }
         }
     },
-    "AREA_MATEMATICA" = {
+    "AREA_MATEMATICA": {
     "Resuelve problemas de cantidad": {
         "capacidades": [
             "Traduce cantidades a expresiones numéricas.",
