@@ -105,7 +105,7 @@ else:
 # Modelos oficiales vigentes de Google AI Studio
 model_choice = st.sidebar.selectbox(
     "Modelo de Gemini:", 
-    ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
+    ["gemini-2.0-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash"]
 )
 
 st.sidebar.markdown("---")
@@ -124,8 +124,8 @@ st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
+• Respaldo automático ante sobrecarga (503)
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Todas las Áreas en CADA Semana
 • Unidades y Proyectos en HORIZONTAL
 • 2 Sesiones diarias (10 por semana)
 • Tablas en Colores Pasteles Variados
@@ -359,7 +359,7 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Especialista en CNEB MINEDU Perú, experto en planificación de Educación Primaria de Aula.
-Elabora una Sesión de Aprendizaje completa y estructurada strictly en CUADROS/TABLAS.
+Elabora una Sesión de Aprendizaje completa y estructurada estrictamente en CUADROS/TABLAS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO:
 {problema_contexto}
@@ -462,7 +462,7 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 
 5. SECUENCIA DE ACTIVIDADES (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE PROPÓSITOS.
-   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (2 a 3 sesiones de 90 min por día = 10 a 15 sesiones por semana en turno único), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
+   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades (2 a 3 sesiones de 90 min por día = 10 a 15 sesiones por semana en turno único), DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
    - En cada casillero diario, indica de forma obligatoria el **ÁREA CURRICULAR DESTACADA**:
