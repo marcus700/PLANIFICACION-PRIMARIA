@@ -1,4 +1,4 @@
-```python
+python
 # cneb_primaria_datos.py
 """
 Base de Datos Oficial del Currículo Nacional de la Educación Básica (CNEB)
