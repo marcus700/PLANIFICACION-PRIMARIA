@@ -1293,19 +1293,19 @@ CNEB_PRIMARIA = {
                         "Participa en momentos de encuentro con Dios, personal y comunitariamente, y celebra su fe con gratitud.",
                         "Participa responsablemente en el cuidado de sí mismo, del prójimo y de la naturaleza como creación de Dios."
                 ],
-                "4_GRADO": [
+                "4° GRADO": [
                     "Expresa su fe mediante acciones concretas en la convivencia diaria; para ello, aplica las enseñanzas bíblicas y de los santos.",
                     "Reconoce el amor de Dios asumiendo acciones para mejorar la relación con su familia, institución educativa y comunidad.",
                     "Interioriza la acción de Dios en su vida personal y en su entorno, y celebra su fe con confianza y gratitud.",
                     "Participa activamente y motiva a los demás en el respeto y cuidado de sí mismos, del prójimo y de la naturaleza como creación de Dios."
                 ],
-                "5_GRADO": [
+                "5° GRADO": [
                     "Relaciona el amor de Dios con sus experiencias de vida, para actuar con coherencia.",
                     "Acepta las enseñanzas de Jesucristo, para asumir cambios de comportamiento al interactuar con los demás.",
                     "Participa en espacios de encuentro personal y comunitario con Dios y fortalece así su fe como miembro activo de su familia, Iglesia y comunidad.",
                     "Participa proactivamente en acciones de cambio a imagen de Jesucristo, para alcanzar una convivencia justa y fraterna con los demás."
                 ],
-                "6_GRADO": [
+                "6° GRADO": [
                     "Expresa el amor de Dios desde sus vivencias, coherentes con su fe, en su entorno familiar y comunitario.",
                     "Reconoce que las enseñanzas de Jesucristo le permiten desarrollar actitudes de cambio a nivel personal y comunitario.",
                     "Cultiva el encuentro personal y comunitario con Dios mediante la búsqueda de espacios de oración y reflexión que lo ayuden a fortalecer su fe como miembro activo de su familia, Iglesia y comunidad desde las enseñanzas de Jesucristo.",
