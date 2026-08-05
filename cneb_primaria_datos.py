@@ -1,4 +1,3 @@
-python
 
 # cneb_primaria_datos.py
 """
