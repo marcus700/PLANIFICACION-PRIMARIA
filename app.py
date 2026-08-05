@@ -75,6 +75,38 @@ st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Doce
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
+# CONTROL DE ACCESO MEDIANTE CONTRASEÑA
+# ==============================================================================
+def check_password():
+    """Retorna True si el usuario ingresó la contraseña correcta."""
+    if "password_correct" not in st.session_state:
+        st.session_state["password_correct"] = False
+
+    if st.session_state["password_correct"]:
+        return True
+
+    st.markdown("---")
+    col1, col2, col3 = st.columns([1, 2, 1])
+    with col2:
+        st.subheader("🔒 Acceso Restringido al Sistema")
+        st.info("💡 Por favor, ingresa la contraseña para acceder a la plataforma.")
+        pwd_input = st.text_input("Contraseña de acceso:", type="password", key="pwd_input")
+        
+        if st.button("Ingresar 🚀"):
+            # Verifica contraseña desde Secrets o usa la predeterminada "docente2026"
+            target_pwd = st.secrets.get("APP_PASSWORD", "docente2026")
+            if pwd_input == target_pwd:
+                st.session_state["password_correct"] = True
+                st.rerun()
+            else:
+                st.error("❌ Contraseña incorrecta. Inténtalo de nuevo.")
+    return False
+
+# Si la contraseña no es correcta, detiene la ejecución aquí
+if not check_password():
+    st.stop()
+
+# ==============================================================================
 # INICIALIZACIÓN DE MEMORIA PERSISTENTE (st.session_state)
 # ==============================================================================
 if 'resultado_md' not in st.session_state:
@@ -90,6 +122,13 @@ if 'ie_nombre_generado' not in st.session_state:
 # BARRA LATERAL (SIDEBAR) - LECTURA DE API KEY Y MODELOS
 # ==============================================================================
 st.sidebar.title("⚙️ Configuración")
+
+# Botón para cerrar sesión
+if st.sidebar.button("🔒 Cerrar Sesión"):
+    st.session_state["password_correct"] = False
+    st.rerun()
+
+st.sidebar.markdown("---")
 
 # Detección inteligente de la API Key (Desde Secrets o Entrada Manual)
 if "GEMINI_API_KEY" in st.secrets and st.secrets["GEMINI_API_KEY"]:
