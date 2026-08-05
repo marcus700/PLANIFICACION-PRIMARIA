@@ -1311,9 +1311,10 @@ CNEB_PRIMARIA = {
                     "Cultiva el encuentro personal y comunitario con Dios mediante la búsqueda de espacios de oración y reflexión que lo ayuden a fortalecer su fe como miembro activo de su familia, Iglesia y comunidad desde las enseñanzas de Jesucristo.",
                     "Actúa con liderazgo realizando y proponiendo acciones a imagen de Jesucristo, para alcanzar una convivencia justa, fraterna y solidaria con los demás."
                 ]
+                }
             }
-        }
-    ],
+        ]
+    },
     "Enfoques Transversales": [
         {
             "nombre": "Enfoque de Derechos",
