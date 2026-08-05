@@ -105,7 +105,7 @@ else:
 # Modelos oficiales vigentes de Google AI Studio
 model_choice = st.sidebar.selectbox(
     "Modelo de Gemini:", 
-    ["gemini-2.5-flash", "gemini-2.0-flash", "gemini-1.5-flash"]
+    ["gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
 )
 
 st.sidebar.markdown("---")
@@ -402,7 +402,7 @@ B.- MOMENTO DEL DESARROLLO DE LA SESIÓN ({t_desarrollo})
    - Búsqueda de Estrategias: Proponen y seleccionan diversas formas de solucionar el problema, como hacer un diagrama, usar material concreto, plantear una operación, etc.
    - Representación: Plasman la situación de manera concreta (con materiales), pictórica (dibujos, esquemas) o simbólica (números, operaciones).
    - Formalización: A partir de lo trabajado, el docente guía a los estudiantes para que identifiquen y nombren los conceptos, propiedades o procedimientos matemáticos involucrados.
-   - Reflexión: Los estudiantes analizan el proceso seguido, verifican sus resultados y reflexionan sobre qué les funcionó, qué dificultades tuvieron y cómo lo superaron.
+   - Reflexión: Los estudiantes analizan el proceso seguido, verifican sus resultados y reflexiona sobre qué les funcionó, qué dificultades tuvieron y cómo lo superaron.
    - Transferencia: Aplican lo aprendido en la resolución de nuevos problemas o situaciones similares, tanto dentro como fuera de la escuela.
 
 2. Comunicación (Enfoque Comunicativo):
