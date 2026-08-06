@@ -56,64 +56,64 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* ESTILOS EXCLUSIVOS PARA LOS BOTONES DE HERRAMIENTAS EN LA PÁGINA PRINCIPAL */
-    div.st-key-btn_sesion > button {
-        background-color: #2563EB !important;
-        color: white !important;
-        border-radius: 10px !important;
-        font-weight: bold !important;
-        font-size: 1.05rem !important;
-        padding: 0.75rem 1rem !important;
-        border: none !important;
-        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3) !important;
-    }
-    div.st-key-btn_sesion > button:hover {
-        background-color: #1D4ED8 !important;
-        transform: translateY(-2px);
-    }
-
+    /* ESTILOS EXCLUSIVOS Y LLAMATIVOS PARA LOS BOTONES DE HERRAMIENTAS */
     div.st-key-btn_proyecto > button {
-        background-color: #059669 !important;
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
         color: white !important;
-        border-radius: 10px !important;
-        font-weight: bold !important;
+        border-radius: 12px !important;
+        font-weight: 800 !important;
         font-size: 1.05rem !important;
-        padding: 0.75rem 1rem !important;
+        padding: 0.85rem 1rem !important;
         border: none !important;
-        box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3) !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
     }
     div.st-key-btn_proyecto > button:hover {
-        background-color: #047857 !important;
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
         transform: translateY(-2px);
     }
 
     div.st-key-btn_unidad > button {
-        background-color: #7C3AED !important;
+        background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         color: white !important;
-        border-radius: 10px !important;
-        font-weight: bold !important;
+        border-radius: 12px !important;
+        font-weight: 800 !important;
         font-size: 1.05rem !important;
-        padding: 0.75rem 1rem !important;
+        padding: 0.85rem 1rem !important;
         border: none !important;
-        box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.3) !important;
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important;
     }
     div.st-key-btn_unidad > button:hover {
-        background-color: #6D28D9 !important;
+        background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
+        transform: translateY(-2px);
+    }
+
+    div.st-key-btn_sesion > button {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+        color: white !important;
+        border-radius: 12px !important;
+        font-weight: 800 !important;
+        font-size: 1.05rem !important;
+        padding: 0.85rem 1rem !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+    }
+    div.st-key-btn_sesion > button:hover {
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         transform: translateY(-2px);
     }
 
     div.st-key-btn_ficha > button {
-        background-color: #D97706 !important;
+        background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
         color: white !important;
-        border-radius: 10px !important;
-        font-weight: bold !important;
+        border-radius: 12px !important;
+        font-weight: 800 !important;
         font-size: 1.05rem !important;
-        padding: 0.75rem 1rem !important;
+        padding: 0.85rem 1rem !important;
         border: none !important;
-        box-shadow: 0 4px 6px -1px rgba(217, 119, 6, 0.3) !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
     }
     div.st-key-btn_ficha > button:hover {
-        background-color: #B45309 !important;
+        background: linear-gradient(135deg, #EA580C 0%, #B45309 100%) !important;
         transform: translateY(-2px);
     }
 </style>
@@ -166,7 +166,7 @@ if 'fname_clean' not in st.session_state:
 if 'ie_nombre_generado' not in st.session_state:
     st.session_state['ie_nombre_generado'] = None
 if 'tipo_documento' not in st.session_state:
-    st.session_state['tipo_documento'] = "Sesión de Aprendizaje"
+    st.session_state['tipo_documento'] = "Proyecto de Aprendizaje"
 
 # ==============================================================================
 # BARRA LATERAL (SIDEBAR) - CONFIGURACIÓN Y API KEY
@@ -208,25 +208,25 @@ st.sidebar.info("""
 """)
 
 # ==============================================================================
-# SELECCIÓN DE HERRAMIENTAS DE AULA EN LA PÁGINA PRINCIPAL (BOTONES COLOREADOS)
+# SELECCIÓN DE HERRAMIENTAS DE AULA EN LA PÁGINA PRINCIPAL (ORDEN Y COLORES LLAMATIVOS)
 # ==============================================================================
 st.markdown("### 📋 Selecciona la Herramienta de Aula que deseas elaborar:")
 
 col_b1, col_b2, col_b3, col_b4 = st.columns(4)
 
 with col_b1:
-    if st.button("🍎 Sesión de Aprendizaje", key="btn_sesion", use_container_width=True):
-        st.session_state['tipo_documento'] = "Sesión de Aprendizaje"
-        st.rerun()
-
-with col_b2:
     if st.button("🚀 Proyecto de Aprendizaje", key="btn_proyecto", use_container_width=True):
         st.session_state['tipo_documento'] = "Proyecto de Aprendizaje"
         st.rerun()
 
+with col_b2:
+    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
+        st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
+        st.rerun()
+
 with col_b3:
-    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
-        st.session_state['tipo_documento'] = "Unidad de Aprendizaje"
+    if st.button("🍎 Sesión de Aprendizaje", key="btn_sesion", use_container_width=True):
+        st.session_state['tipo_documento'] = "Sesión de Aprendizaje"
         st.rerun()
 
 with col_b4:
@@ -238,12 +238,12 @@ tipo_documento = st.session_state['tipo_documento']
 
 # Banner indicador de la herramienta seleccionada
 COLOR_MAP = {
-    "Sesión de Aprendizaje": "#2563EB",
     "Proyecto de Aprendizaje": "#059669",
-    "Unidad de Aprendizaje": "#7C3AED",
+    "Unidad de Aprendizaje (Modelo SARA)": "#7C3AED",
+    "Sesión de Aprendizaje": "#2563EB",
     "Ficha de Aplicación / Trabajo (Para Alumnos)": "#D97706"
 }
-banner_color = COLOR_MAP.get(tipo_documento, "#2563EB")
+banner_color = COLOR_MAP.get(tipo_documento, "#059669")
 
 st.markdown(f"""
 <div style="background-color: {banner_color}; color: white; padding: 0.6rem 1rem; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 0.8rem; margin-bottom: 1.2rem; text-align: center;">
@@ -411,12 +411,12 @@ st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", " ")
+    ie_nombre = st.text_input("Institución Educativa:", "N° 22303 'Santa Rosa de Lima'")
 with c2:
-    director = st.text_input("Director:", " ")
-    subdirector = st.text_input("Subdirector(es):", "  ")
+    director = st.text_input("Director:", "Lic. Bernardo Francisco Salcedo Barrientos")
+    subdirector = st.text_input("Subdirector(es):", "Mg. Mariela Velásquez Cárdenas / Mg. Frank Bernaola Pérez")
 with c3:
-    docente = st.text_input("Docente de Aula:", "  ")
+    docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
@@ -444,7 +444,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
 
-else:  # Unidad  de Aprendizaje
+else:  # Unidad SARA
     f1, f2, f3 = st.columns(3)
     with f1:
         num_doc = st.text_input("N.° de Unidad:", "01")
