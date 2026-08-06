@@ -339,7 +339,7 @@ with c3:
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
     f1, f2, f3, f4 = st.columns(4)
     with f1:
-        num_doc = st.text_input("N.° de Sesión:", "01")
+        num_doc = st.text_input("N.° de Documento / Sesión / Ficha:", "01")
     with f2:
         area_sel = st.selectbox("Área Curricular:", cneb.obtener_lista_areas(), index=0)
     with f3:
@@ -373,9 +373,9 @@ else:  # Unidad SARA
         duracion_sesion = "90 minutos"
 
 # CAMPO DE TEMA/PROBLEMA SEGÚN EL TIPO DE DOCUMENTO
-if tipo_documento == "Sesión de Aprendizaje":
+if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
     problema_contexto = st.text_input(
-        "📌 Tema / Título de la Sesión o Actividad a realizar:",
+        "📌 Tema / Título de la Actividad o Ficha de Trabajo:",
         value="Mis derechos y deberes"
     )
     titulo_opcional = ""
@@ -526,31 +526,94 @@ ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN CUADROS/TABLAS MARKDOWN Y SIN SIT
 """
 
 def generar_prompt_ficha_trabajo():
-    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO corto y motivador basado en el problema.'
-
     return f"""
-Actúa como un Docente de Primaria experto del MINEDU Perú.
-Crea una FICHA DE APLICACIÓN / TRABAJO PARA EL ESTUDIANTE lista para imprimir.
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y cuadros.
+Actúa como: Especialista en Educación Primaria (CNEB - MINEDU Perú) y diseñador experto de material educativo impreso para estudiantes de primaria.
+Tu objetivo: Elaborar una FICHA DE TRABAJO / APLICACIÓN PARA EL ESTUDIANTE altamente didáctica, motivadora, visualmente ordenada en cuadros/tablas y lista para imprimir.
 
-A PARTIR DEL PROBLEMA DEL CONTEXTO:
-{problema_contexto}
-Instrucción de Título: {val_titulo}
+DATOS DE CONFIGURACIÓN DE LA FICHA:
+• Grado y Sección: {grado_seccion}
+• Área Curricular: {area_sel}
+• Tema / Título de la Ficha: {problema_contexto}
+• Fecha: {fecha_sugerida}
+• Institución Educativa: {ie_nombre}
+• Docente de Aula: {docente}
 
-ENCABEZADO DE SALIDA OBLIGATORIO:
-# **FICHA DE TRABAJO N.º {num_doc}**
-## **[INSERTAR AQUÍ EL TÍTULO GENERADO]**
+________________________________________
+INSTRUCCIONES DE ESTILO Y DISEÑO (OBLIGATORIO):
+1. Adaptación al Grado: Utiliza un lenguaje directo, claro, motivador e instrucciones sencillas adaptadas al nivel lector de {grado_seccion}.
+2. Formato en Cuadros/Tablas: Organiza los ejercicios y actividades en tablas Markdown para que al convertirse a Word mantengan un diseño limpio con bordes y recuadros donde los niños puedan escribir, dibujar o marcar.
+3. PROHIBIDO usar etiquetas HTML o símbolos de almohadillas excesivos (#### o #####). Usa solo Markdown limpio (#, ##, **negrita**, listas • y tablas |).
 
-DATOS DE LA FICHA:
-• Institución Educativa: {ie_nombre} | Grado y Sección: {grado_seccion} | Área: {area_sel} | Docente: {docente} | Estudiante: _____________________________________ | Fecha: {fecha_sugerida}
+________________________________________
+APLICACIÓN ESTRICTA DEL PROCESO DIDÁCTICO SEGÚN EL ÁREA SELECCIONADA ({area_sel}):
+La estructura central de la ficha DEBE seguir obligatoriamente los pasos del proceso didáctico del CNEB del área elegida:
 
-ESTRUCTURA DE LA FICHA EN MARKDOWN (INCLUIR TABLAS PARA EJERCICIOS Y AUTOEVALUACIÓN):
-1. Encabezado llamativo en un cuadro con título de la ficha y propósito para el niño.
-2. Breve texto/resumen ilustrativo o caso práctico adaptado a niños de {grado_seccion}.
-3. Sección 1: "Comprendo lo que leí / lo que aprendí" (3 preguntas).
-4. Sección 2: "Aplico lo aprendido" (3 actividades prácticas en tablas/cuadros).
-5. Sección 3: "Reto Creativo / Mi Compromiso".
-6. Tabla de Autoevaluación para el niño.
+• Si el área es MATEMÁTICA (Enfoque de Resolución de Problemas):
+  - Sección 1: Comprensión del problema (Texto del problema cotidiano + preguntas para identificar datos).
+  - Sección 2: Búsqueda de estrategias y representación (Cuadro para representar con dibujo/esquema y cuadro para la operación).
+  - Sección 3: Formalización y Transferencia (Conclusión rápida + Un nuevo reto matemático similar).
+
+• Si el área es COMUNICACIÓN - LECTURA (Enfoque Comunicativo):
+  - Sección 1: Antes de la lectura (Predicciones a partir del título/imagen y propósito lector).
+  - Sección 2: Durante la lectura (Lectura corta y adaptada al grado).
+  - Sección 3: Después de la lectura (Preguntas explícitas, inferenciales y de opinión/reflexión).
+
+• Si el área es COMUNICACIÓN - ESCRITURA (Enfoque Comunicativo):
+  - Sección 1: Planificación (Cuadro: ¿Qué escribiré?, ¿Para quién?, ¿Para qué?).
+  - Sección 2: Textualización (Espacio estructurado para escribir el primer borrador).
+  - Sección 3: Revisión (Lista de cotejo amigable para que el estudiante revise su texto).
+
+• Si el área es PERSONAL SOCIAL (Enfoque de Ciudadanía Activa / Desarrollo Personal):
+  - Sección 1: Problematización (Lectura de un caso o noticia corta con dilema/situación).
+  - Sección 2: Análisis de la información (Preguntas de reflexión y comparación de posturas).
+  - Sección 3: Toma de decisiones / Mi compromiso (Cuadro para redactar su compromiso personal).
+
+• Si el área es CIENCIA Y TECNOLOGÍA (Enfoque de Indagación Científica):
+  - Sección 1: Planteamiento del problema e Hipótesis (Pregunta investigable + Mi respuesta previa).
+  - Sección 2: Plan de acción y Recojo de datos (Tabla para registrar experimento, observaciones o lectura).
+  - Sección 3: Conclusión (Comprobación de hipótesis y qué aprendí hoy).
+
+• Si el área es ARTE Y CULTURA (Enfoque Multicultural):
+  - Sección 1: Exploración (Observación de una manifestación o prueba de materiales).
+  - Sección 2: Proceso Creativo (Pasos para realizar la actividad artística o boceto).
+  - Sección 3: Reflexión (Preguntas sobre lo que sintió y transmitió con su obra).
+
+• Si el área es EDUCACIÓN RELIGIOSA (Método Ver-Juzgar-Actuar-Celebrar):
+  - Sección 1: VER (Situación de la vida diaria).
+  - Sección 2: JUZGAR (Cita bíblica o mensaje bíblico corto adaptado).
+  - Sección 3: ACTUAR Y CELEBRAR (Compromiso cristiano + Oración final corta).
+
+• Si el área es EDUCACIÓN FÍSICA / TUTORÍA:
+  - Sección 1: Identificación (Situación sobre hábitos saludables, emociones o habilidades).
+  - Sección 2: Práctica / Aplicación (Ficha de registro de actividad o reflexiones).
+  - Sección 3: Autocuidado y Compromiso.
+
+________________________________________
+ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN MARKDOWN Y TABLAS):
+
+# **FICHA DE TRABAJO DE {area_sel.upper()} N.º {num_doc}**
+## **{problema_contexto.upper()}**
+
+• TABLA I: DATOS DE LA FICHA
+| Institución Educativa | Grado y Sección | Área Curricular | Fecha |
+| {ie_nombre} | {grado_seccion} | {area_sel} | {fecha_sugerida} |
+| **Estudiante:** __________________________________________________ | **Docente:** {docente} |
+| **Mi Propósito de Hoy:** [Explica en una frase sencilla y cercana qué logrará el estudiante] |
+
+• SECCIÓN 1: "ME PREPARO Y DESCUBRO"
+(Aplica el 1er momento del proceso didáctico del área de {area_sel}).
+
+• SECCIÓN 2: "MANOS A LA OBRA / APLICO LO APRENDIDO"
+(Aplica el 2do momento del proceso didáctico con tablas de ejercicios, casilleros para responder, marcar o completar).
+
+• SECCIÓN 3: "MI RETO FINAL / MI COMPROMISO"
+(Aplica el momento final del proceso didáctico con una actividad desafiante o compromiso).
+
+• TABLA II: AUTOEVALUACIÓN DE MIS LOGROS
+| Criterios para evaluar mi trabajo | ¡Lo logré! 😀 | Estoy en proceso 😐 | Necesito ayuda 😕 |
+| [Criterio 1 adaptado al niño de {grado_seccion}] | | | |
+| [Criterio 2 adaptado al niño de {grado_seccion}] | | | |
+| [Criterio 3 adaptado al niño de {grado_seccion}] | | | |
 """
 
 def generar_prompt_proyecto():
@@ -663,7 +726,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                 sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Creas sesiones de aprendizaje en tablas sin incluir situación significativa, incluyendo datos informativos, propósitos de aprendizaje, enfoques, competencia transversal, meta de aprendizaje, preparación, momentos con procesos didácticos del área en 1ra persona plural tiempo presente, y escala de valoración con 30 estudiantes ficticios."
             elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
                 prompt_maestro = generar_prompt_ficha_trabajo()
-                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
+                sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo estructuradas en tablas aplicando estrictamente el proceso didáctico del área elegida."
             elif tipo_documento == "Proyecto de Aprendizaje":
                 prompt_maestro = generar_prompt_proyecto()
                 sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
