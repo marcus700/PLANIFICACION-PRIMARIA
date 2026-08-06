@@ -55,18 +55,66 @@ st.markdown("""
         text-align: center;
         margin-bottom: 1.5rem;
     }
-    .stButton>button {
-        background-color: #2563EB;
-        color: white;
-        font-weight: bold;
-        border-radius: 8px;
-        padding: 0.75rem 1rem;
-        width: 100%;
-        font-size: 1.1rem;
+
+    /* ESTILOS EXCLUSIVOS PARA LOS BOTONES DE HERRAMIENTAS EN LA PÁGINA PRINCIPAL */
+    div.st-key-btn_sesion > button {
+        background-color: #2563EB !important;
+        color: white !important;
+        border-radius: 10px !important;
+        font-weight: bold !important;
+        font-size: 1.05rem !important;
+        padding: 0.75rem 1rem !important;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(37, 99, 235, 0.3) !important;
     }
-    .stButton>button:hover {
-        background-color: #1D4ED8;
-        color: white;
+    div.st-key-btn_sesion > button:hover {
+        background-color: #1D4ED8 !important;
+        transform: translateY(-2px);
+    }
+
+    div.st-key-btn_proyecto > button {
+        background-color: #059669 !important;
+        color: white !important;
+        border-radius: 10px !important;
+        font-weight: bold !important;
+        font-size: 1.05rem !important;
+        padding: 0.75rem 1rem !important;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(5, 150, 105, 0.3) !important;
+    }
+    div.st-key-btn_proyecto > button:hover {
+        background-color: #047857 !important;
+        transform: translateY(-2px);
+    }
+
+    div.st-key-btn_unidad > button {
+        background-color: #7C3AED !important;
+        color: white !important;
+        border-radius: 10px !important;
+        font-weight: bold !important;
+        font-size: 1.05rem !important;
+        padding: 0.75rem 1rem !important;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(124, 58, 237, 0.3) !important;
+    }
+    div.st-key-btn_unidad > button:hover {
+        background-color: #6D28D9 !important;
+        transform: translateY(-2px);
+    }
+
+    div.st-key-btn_ficha > button {
+        background-color: #D97706 !important;
+        color: white !important;
+        border-radius: 10px !important;
+        font-weight: bold !important;
+        font-size: 1.05rem !important;
+        padding: 0.75rem 1rem !important;
+        border: none !important;
+        box-shadow: 0 4px 6px -1px rgba(217, 119, 6, 0.3) !important;
+    }
+    div.st-key-btn_ficha > button:hover {
+        background-color: #B45309 !important;
+        transform: translateY(-2px);
     }
 </style>
 """, unsafe_allow_html=True)
@@ -117,9 +165,11 @@ if 'fname_clean' not in st.session_state:
     st.session_state['fname_clean'] = None
 if 'ie_nombre_generado' not in st.session_state:
     st.session_state['ie_nombre_generado'] = None
+if 'tipo_documento' not in st.session_state:
+    st.session_state['tipo_documento'] = "Sesión de Aprendizaje"
 
 # ==============================================================================
-# BARRA LATERAL (SIDEBAR) - LECTURA DE API KEY Y MODELOS
+# BARRA LATERAL (SIDEBAR) - CONFIGURACIÓN Y API KEY
 # ==============================================================================
 st.sidebar.title("⚙️ Configuración")
 
@@ -148,18 +198,6 @@ model_choice = st.sidebar.selectbox(
 )
 
 st.sidebar.markdown("---")
-st.sidebar.markdown("### 📋 Herramientas de Aula")
-tipo_documento = st.sidebar.radio(
-    "Selecciona la herramienta:",
-    [
-        "Sesión de Aprendizaje", 
-        "Proyecto de Aprendizaje", 
-        "Unidad de Aprendizaje (Modelo SARA)",
-        "Ficha de Aplicación / Trabajo (Para Alumnos)"
-    ]
-)
-
-st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
@@ -168,6 +206,50 @@ st.sidebar.info("""
 • Nivel Educación Primaria (1.° a 6.° Grado)
 • Tablas en Colores Pasteles Variados
 """)
+
+# ==============================================================================
+# SELECCIÓN DE HERRAMIENTAS DE AULA EN LA PÁGINA PRINCIPAL (BOTONES COLOREADOS)
+# ==============================================================================
+st.markdown("### 📋 Selecciona la Herramienta de Aula que deseas elaborar:")
+
+col_b1, col_b2, col_b3, col_b4 = st.columns(4)
+
+with col_b1:
+    if st.button("🍎 Sesión de Aprendizaje", key="btn_sesion", use_container_width=True):
+        st.session_state['tipo_documento'] = "Sesión de Aprendizaje"
+        st.rerun()
+
+with col_b2:
+    if st.button("🚀 Proyecto de Aprendizaje", key="btn_proyecto", use_container_width=True):
+        st.session_state['tipo_documento'] = "Proyecto de Aprendizaje"
+        st.rerun()
+
+with col_b3:
+    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
+        st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
+        st.rerun()
+
+with col_b4:
+    if st.button("📝 Ficha de Aplicación", key="btn_ficha", use_container_width=True):
+        st.session_state['tipo_documento'] = "Ficha de Aplicación / Trabajo (Para Alumnos)"
+        st.rerun()
+
+tipo_documento = st.session_state['tipo_documento']
+
+# Banner indicador de la herramienta seleccionada
+COLOR_MAP = {
+    "Sesión de Aprendizaje": "#2563EB",
+    "Proyecto de Aprendizaje": "#059669",
+    "Unidad de Aprendizaje (Modelo SARA)": "#7C3AED",
+    "Ficha de Aplicación / Trabajo (Para Alumnos)": "#D97706"
+}
+banner_color = COLOR_MAP.get(tipo_documento, "#2563EB")
+
+st.markdown(f"""
+<div style="background-color: {banner_color}; color: white; padding: 0.6rem 1rem; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 0.8rem; margin-bottom: 1.2rem; text-align: center;">
+    📍 Herramienta Seleccionada: {tipo_documento.upper()}
+</div>
+""", unsafe_allow_html=True)
 
 # ==============================================================================
 # PROCESADOR DE TEXTO ENRIQUECIDO PARA WORD (SOPORTE DE NEGRITAS **)
