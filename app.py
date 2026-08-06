@@ -15,30 +15,41 @@ import cneb_primaria_datos as cneb
 # CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
-    page_title="PLANIFICA PRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
+    page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
     page_icon="🍎",
     layout="wide"
 )
 
 st.markdown("""
 <style>
-    /* Ocultar la barra superior predeterminada de Streamlit */
-    header {visibility: hidden !important;}
+    /* Ocultar elementos predeterminados de Streamlit y el botón 'Gestionar la aplicación' */
+    header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
-    footer {visibility: hidden !important;}
+    footer {visibility: hidden !important; display: none !important;}
     
-    /* Ocultar el banner e icono inferior de 'Gestionar la aplicación' */
+    /* Ocultar la barra flotante de despliegue inferior derecha */
     div[data-testid="stDecoration"] {display: none !important;}
     div[data-testid="stStatusWidget"] {display: none !important;}
     div[data-testid="stViewerBadge"] {display: none !important;}
     .viewerBadge_container__1613n {display: none !important;}
     .stDeployButton {display: none !important;}
+    .stAppDeployButton {display: none !important;}
+    [data-testid="manage-app-button"] {display: none !important;}
+    button[title="View app in Streamlit Community Cloud"] {display: none !important;}
+    div[data-testid="stToolbar"] {display: none !important;}
+    
+    /* FORZAR FONDO CLARO Y ELEGANTE PARA TODA LA APLICACIÓN */
+    .stApp {
+        background-color: #F8FAFC !important;
+        color: #0F172A !important;
+    }
     
     /* Ajustar espacios para diseño limpio */
     .block-container {
         padding-top: 1.2rem !important;
         padding-bottom: 1rem !important;
+        background-color: #F8FAFC !important;
     }
     
     /* Estilos del encabezado principal */
@@ -54,6 +65,19 @@ st.markdown("""
         color: #4B5563;
         text-align: center;
         margin-bottom: 1.5rem;
+    }
+
+    /* ESTILOS DE CAMPOS DE ENTRADA E INPUTS EN MODO CLARO */
+    .stTextInput input, .stTextArea textarea, .stSelectbox > div > div {
+        background-color: #FFFFFF !important;
+        color: #0F172A !important;
+        border: 1px solid #CBD5E1 !important;
+        border-radius: 8px !important;
+    }
+    
+    .stTextInput label, .stTextArea label, .stSelectbox label, .stSlider label {
+        color: #1E293B !important;
+        font-weight: 700 !important;
     }
 
     /* ESTILOS EXCLUSIVOS Y LLAMATIVOS PARA LOS BOTONES DE HERRAMIENTAS */
@@ -119,7 +143,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header">🍎 PLANIFICA PRIMARIA - SISTEMA PARA DOCENTE DE AULA</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
@@ -215,22 +239,22 @@ st.markdown("### 📋 Selecciona la Herramienta de Aula que deseas elaborar:")
 col_b1, col_b2, col_b3, col_b4 = st.columns(4)
 
 with col_b1:
-    if st.button("🚀 PROYECTO DE APRENDIZAJE", key="btn_proyecto", use_container_width=True):
+    if st.button("🚀 Proyecto de Aprendizaje", key="btn_proyecto", use_container_width=True):
         st.session_state['tipo_documento'] = "Proyecto de Aprendizaje"
         st.rerun()
 
 with col_b2:
-    if st.button("📘 UNIDAD DE APRENDIZAJE", key="btn_unidad", use_container_width=True):
+    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
         st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
         st.rerun()
 
 with col_b3:
-    if st.button("🍎 SESIÓN DE APRENDIZAJE", key="btn_sesion", use_container_width=True):
+    if st.button("🍎 Sesión de Aprendizaje", key="btn_sesion", use_container_width=True):
         st.session_state['tipo_documento'] = "Sesión de Aprendizaje"
         st.rerun()
 
 with col_b4:
-    if st.button("📝 FICHA DE APLICACIÓN", key="btn_ficha", use_container_width=True):
+    if st.button("📝 Ficha de Aplicación", key="btn_ficha", use_container_width=True):
         st.session_state['tipo_documento'] = "Ficha de Aplicación / Trabajo (Para Alumnos)"
         st.rerun()
 
@@ -239,7 +263,7 @@ tipo_documento = st.session_state['tipo_documento']
 # Banner indicador de la herramienta seleccionada
 COLOR_MAP = {
     "Proyecto de Aprendizaje": "#059669",
-    "Unidad de Aprendizaje": "#7C3AED",
+    "Unidad de Aprendizaje (Modelo SARA)": "#7C3AED",
     "Sesión de Aprendizaje": "#2563EB",
     "Ficha de Aplicación / Trabajo (Para Alumnos)": "#D97706"
 }
@@ -406,17 +430,17 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
 # ==============================================================================
 # FORMULARIO DE DATOS DE AULA
 # ==============================================================================
-st.subheader(f"📝 CONFIGURACIÓN DE DATOS: {tipo_documento}")
+st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", "N°")
+    ie_nombre = st.text_input("Institución Educativa:", "N° 22303 'Santa Rosa de Lima'")
 with c2:
-    director = st.text_input("Director:", " ")
-    subdirector = st.text_input("Subdirector(es):", " ")
+    director = st.text_input("Director:", "Lic. Bernardo Francisco Salcedo Barrientos")
+    subdirector = st.text_input("Subdirector(es):", "Mg. Mariela Velásquez Cárdenas / Mg. Frank Bernaola Pérez")
 with c3:
-    docente = st.text_input("Docente de Aula:", " ")
+    docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
@@ -438,7 +462,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
     with f1:
         num_doc = st.text_input("N.° de Proyecto:", "01")
     with f2:
-        fechas_duracion = st.text_input("Fechas / Duración:", " ")
+        fechas_duracion = st.text_input("Fechas / Duración:", "Del 11 de marzo al 12 de abril de 2026 (4 Semanas)")
     with f3:
         duracion_semanas = st.slider("Número de Semanas del Proyecto:", min_value=2, max_value=5, value=4)
         area_sel = "Multidisciplinar"
@@ -449,7 +473,7 @@ else:  # Unidad SARA
     with f1:
         num_doc = st.text_input("N.° de Unidad:", "01")
     with f2:
-        fechas_duracion = st.text_input("Fechas / Duración:", " ")
+        fechas_duracion = st.text_input("Fechas / Duración:", "Del 01 de abril al 03 de mayo de 2026 (5 Semanas)")
     with f3:
         duracion_semanas = st.slider("Número de Semanas de la Unidad:", min_value=2, max_value=5, value=5)
         area_sel = "Multidisciplinar"
