@@ -15,7 +15,7 @@ import cneb_primaria_datos as cneb
 # CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
-    page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
+    page_title="PLANIFIC APRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
     page_icon="🍎",
     layout="wide"
 )
