@@ -15,7 +15,7 @@ import cneb_primaria_datos as cneb
 # CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
-    page_title="PLANIFIC APRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
+    page_title="PLANIFICA PRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
     page_icon="🍎",
     layout="wide"
 )
@@ -119,7 +119,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🍎 PLANIFICA PRIMARIA - SISTEMA PARA DOCENTE DE AULA</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
@@ -215,22 +215,22 @@ st.markdown("### 📋 Selecciona la Herramienta de Aula que deseas elaborar:")
 col_b1, col_b2, col_b3, col_b4 = st.columns(4)
 
 with col_b1:
-    if st.button("🚀 Proyecto de Aprendizaje", key="btn_proyecto", use_container_width=True):
+    if st.button("🚀 PROYECTO DE APRENDIZAJE", key="btn_proyecto", use_container_width=True):
         st.session_state['tipo_documento'] = "Proyecto de Aprendizaje"
         st.rerun()
 
 with col_b2:
-    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
+    if st.button("📘 UNIDAD DE APRENDIZAJE", key="btn_unidad", use_container_width=True):
         st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
         st.rerun()
 
 with col_b3:
-    if st.button("🍎 Sesión de Aprendizaje", key="btn_sesion", use_container_width=True):
+    if st.button("🍎 SESIÓN DE APRENDIZAJE", key="btn_sesion", use_container_width=True):
         st.session_state['tipo_documento'] = "Sesión de Aprendizaje"
         st.rerun()
 
 with col_b4:
-    if st.button("📝 Ficha de Aplicación", key="btn_ficha", use_container_width=True):
+    if st.button("📝 FICHA DE APLICACIÓN", key="btn_ficha", use_container_width=True):
         st.session_state['tipo_documento'] = "Ficha de Aplicación / Trabajo (Para Alumnos)"
         st.rerun()
 
