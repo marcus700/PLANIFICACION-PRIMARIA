@@ -406,7 +406,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
 # ==============================================================================
 # FORMULARIO DE DATOS DE AULA
 # ==============================================================================
-st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
+st.subheader(f"📝 CONFIGURACIÓN DE DATOS: {tipo_documento}")
 
 c1, c2, c3 = st.columns(3)
 with c1:
@@ -438,7 +438,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
     with f1:
         num_doc = st.text_input("N.° de Proyecto:", "01")
     with f2:
-        fechas_duracion = st.text_input("Fechas / Duración:", "Del 11 de marzo al 12 de abril de 2026 (4 Semanas)")
+        fechas_duracion = st.text_input("Fechas / Duración:", " ")
     with f3:
         duracion_semanas = st.slider("Número de Semanas del Proyecto:", min_value=2, max_value=5, value=4)
         area_sel = "Multidisciplinar"
@@ -449,7 +449,7 @@ else:  # Unidad SARA
     with f1:
         num_doc = st.text_input("N.° de Unidad:", "01")
     with f2:
-        fechas_duracion = st.text_input("Fechas / Duración:", "Del 01 de abril al 03 de mayo de 2026 (5 Semanas)")
+        fechas_duracion = st.text_input("Fechas / Duración:", " ")
     with f3:
         duracion_semanas = st.slider("Número de Semanas de la Unidad:", min_value=2, max_value=5, value=5)
         area_sel = "Multidisciplinar"
