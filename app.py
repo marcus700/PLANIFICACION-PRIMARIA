@@ -553,6 +553,9 @@ INSTRUCCIONES DE ESTILO Y DISEÑO (OBLIGATORIO):
 2. Formato en Cuadros/Tablas MARKDOWN PURAS: Organiza los ejercicios y actividades en tablas Markdown puras usando tuberías (|). 
 3. PROHIBIDO ROTUNDAMENTE usar etiquetas HTML de tablas como <table>, <tr>, <td>, <th>, <tbody>, <thead> o <br>. Toda la información, tableros posicionales o cuadros matemáticos deben generarse únicamente mediante sintaxis de tablas Markdown de texto (| C | D | U |).
 4. NO uses símbolos de almohadillas excesivos (#### o #####). Usa solo Markdown limpio (#, ##, **negrita**, listas • y tablas |).
+5. REGLA DE SUBTÍTULOS OBLIGATORIOS FUERA DE LAS TABLAS: 
+   - Las palabras "DATOS INFORMATIVOS" deben colocarse FUERA DE CUALQUIER TABLA como un SUBTÍTULO PRINCIPAL (`## **DATOS INFORMATIVOS**`).
+   - Las palabras "PROPÓSITO DE HOY" deben colocarse FUERA DE CUALQUIER TABLA como otro SUBTÍTULO PRINCIPAL (`## **PROPÓSITO DE HOY**`).
 
 ________________________________________
 APLICACIÓN ESTRICTA DEL PROCESO DIDÁCTICO SEGÚN EL ÁREA SELECCIONADA ({area_sel}):
@@ -604,7 +607,8 @@ ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN MARKDOWN PURA Y TABLAS SIN ETIQUE
 # **FICHA DE TRABAJO DE {area_sel.upper()} N.º {num_doc}**
 ## **{problema_contexto.upper()}**
 
-• TABLA I: DATOS DE LA FICHA (ESTRICTAMENTE EN 2 COLUMNAS: COLUMNA 1 = CONCEPTO/DATO, COLUMNA 2 = VALOR/RESPUESTA):
+## **DATOS INFORMATIVOS**
+• TABLA I: DATOS DE LA FICHA (EN 2 COLUMNAS):
 | DATOS INFORMATIVOS | DETALLE / INFORMACIÓN |
 | Institución Educativa | {ie_nombre} |
 | Grado y Sección | {grado_seccion} |
@@ -612,7 +616,9 @@ ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN MARKDOWN PURA Y TABLAS SIN ETIQUE
 | Docente de Aula | {docente} |
 | Fecha | {fecha_sugerida} |
 | Estudiante | __________________________________________________ |
-| Propósito de Hoy | [Explica en una frase sencilla y cercana qué logrará el estudiante] |
+
+## **PROPÓSITO DE HOY**
+[Escribe aquí en una frase o párrafo corto, sencillo y directo qué aprenderá y logrará el estudiante el día de hoy].
 
 • SECCIÓN 1: "ME PREPARO Y DESCUBRO"
 (Aplica el 1er momento del proceso didáctico del área de {area_sel}).
@@ -740,7 +746,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                 sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Creas sesiones de aprendizaje en tablas sin incluir situación significativa, incluyendo datos informativos en 2 columnas, propósitos de aprendizaje, enfoques, competencia transversal, meta de aprendizaje, preparación, momentos con procesos didácticos del área en 1ra persona plural tiempo presente, y escala de valoración con 30 estudiantes ficticios."
             elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
                 prompt_maestro = generar_prompt_ficha_trabajo()
-                sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo estructuradas en tablas Markdown puras (usando |) aplicando estrictamente el proceso didáctico del área elegida. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
+                sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo aplicando el proceso didáctico del área elegida. Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
             elif tipo_documento == "Proyecto de Aprendizaje":
                 prompt_maestro = generar_prompt_proyecto()
                 sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
