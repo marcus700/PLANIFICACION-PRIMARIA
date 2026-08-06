@@ -225,7 +225,7 @@ with col_b2:
         st.rerun()
 
 with col_b3:
-    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
+    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
         st.session_state['tipo_documento'] = "Unidad de Aprendizaje"
         st.rerun()
 
