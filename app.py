@@ -22,37 +22,44 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* Ocultar elementos predeterminados de Streamlit y el botón 'Gestionar la aplicación' */
+    /* 1. OCULTAR COMPLETAMENTE 'GESTIONAR LA APLICACIÓN' Y ELEMENTOS FLOTANTES DE STREAMLIT CLOUD */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important; display: none !important;}
     
-    /* Ocultar la barra flotante de despliegue inferior derecha */
-    div[data-testid="stDecoration"] {display: none !important;}
-    div[data-testid="stStatusWidget"] {display: none !important;}
-    div[data-testid="stViewerBadge"] {display: none !important;}
-    .viewerBadge_container__1613n {display: none !important;}
-    .stDeployButton {display: none !important;}
-    .stAppDeployButton {display: none !important;}
-    [data-testid="manage-app-button"] {display: none !important;}
-    button[title="View app in Streamlit Community Cloud"] {display: none !important;}
-    div[data-testid="stToolbar"] {display: none !important;}
+    [data-testid="manage-app-button"],
+    .stAppDeployButton,
+    [data-testid="stHeader"],
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    [data-testid="stViewerBadge"],
+    .viewerBadge_container__1613n,
+    button[title="View app in Streamlit Community Cloud"],
+    div[class*="stDeployButton"],
+    div[class*="viewerBadge"] {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        height: 0 !important;
+        width: 0 !important;
+        pointer-events: none !important;
+    }
     
-    /* FORZAR FONDO CLARO Y ELEGANTE PARA TODA LA APLICACIÓN */
-    .stApp {
+    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA */
+    html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
     }
     
-    /* Ajustar espacios para diseño limpio */
     .block-container {
         padding-top: 1.2rem !important;
         padding-bottom: 1rem !important;
         background-color: #F8FAFC !important;
     }
     
-    /* Estilos del encabezado principal */
+    /* Encabezados */
     .main-header {
         font-size: 2.3rem;
         color: #1E3A8A;
@@ -67,78 +74,88 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* ESTILOS DE CAMPOS DE ENTRADA E INPUTS EN MODO CLARO */
-    .stTextInput input, .stTextArea textarea, .stSelectbox > div > div {
+    /* 3. CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
+    .stTextInput input, .stTextArea textarea, .stSelectbox [data-baseweb="select"] {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
-        border: 1px solid #CBD5E1 !important;
+        border: 1px solid #94A3B8 !important;
         border-radius: 8px !important;
     }
-    
-    .stTextInput label, .stTextArea label, .stSelectbox label, .stSlider label {
-        color: #1E293B !important;
-        font-weight: 700 !important;
+    .stTextInput label, .stTextArea label, .stSelectbox label, .stSlider label, p, span, h1, h2, h3, h4 {
+        color: #0F172A !important;
+        font-weight: 600 !important;
     }
 
-    /* ESTILOS EXCLUSIVOS Y LLAMATIVOS PARA LOS BOTONES DE HERRAMIENTAS */
-    div.st-key-btn_proyecto > button {
+    /* 4. COLORES EXCLUSIVOS Y VISIBLES PARA CADA BOTÓN DE HERRAMIENTA */
+    
+    /* Botón 1: PROYECTO DE APRENDIZAJE (VERDE) */
+    div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
         background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
-        color: white !important;
+        background-color: #059669 !important;
         border-radius: 12px !important;
-        font-weight: 800 !important;
-        font-size: 1.05rem !important;
-        padding: 0.85rem 1rem !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
     }
-    div.st-key-btn_proyecto > button:hover {
-        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
-        transform: translateY(-2px);
-    }
-
-    div.st-key-btn_unidad > button {
-        background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
-        color: white !important;
-        border-radius: 12px !important;
+    div.st-key-btn_proyecto > button p, button[key="btn_proyecto"] p, div.st-key-btn_proyecto > button span {
+        color: #FFFFFF !important;
         font-weight: 800 !important;
         font-size: 1.05rem !important;
-        padding: 0.85rem 1rem !important;
+    }
+
+    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
+    div.st-key-btn_unidad > button, button[key="btn_unidad"] {
+        background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
+        background-color: #7C3AED !important;
+        border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important;
     }
-    div.st-key-btn_unidad > button:hover {
-        background: linear-gradient(135deg, #7C3AED 0%, #6D28D9 100%) !important;
-        transform: translateY(-2px);
-    }
-
-    div.st-key-btn_sesion > button {
-        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
-        color: white !important;
-        border-radius: 12px !important;
+    div.st-key-btn_unidad > button p, button[key="btn_unidad"] p, div.st-key-btn_unidad > button span {
+        color: #FFFFFF !important;
         font-weight: 800 !important;
         font-size: 1.05rem !important;
-        padding: 0.85rem 1rem !important;
+    }
+
+    /* Botón 3: SESIÓN DE APRENDIZAJE (AZUL) */
+    div.st-key-btn_sesion > button, button[key="btn_sesion"] {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+        background-color: #2563EB !important;
+        border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
     }
-    div.st-key-btn_sesion > button:hover {
-        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
-        transform: translateY(-2px);
-    }
-
-    div.st-key-btn_ficha > button {
-        background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
-        color: white !important;
-        border-radius: 12px !important;
+    div.st-key-btn_sesion > button p, button[key="btn_sesion"] p, div.st-key-btn_sesion > button span {
+        color: #FFFFFF !important;
         font-weight: 800 !important;
         font-size: 1.05rem !important;
-        padding: 0.85rem 1rem !important;
+    }
+
+    /* Botón 4: FICHA DE APLICACIÓN (NARANJA) */
+    div.st-key-btn_ficha > button, button[key="btn_ficha"] {
+        background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
+        background-color: #D97706 !important;
+        border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
     }
-    div.st-key-btn_ficha > button:hover {
-        background: linear-gradient(135deg, #EA580C 0%, #B45309 100%) !important;
-        transform: translateY(-2px);
+    div.st-key-btn_ficha > button p, button[key="btn_ficha"] p, div.st-key-btn_ficha > button span {
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
+        font-size: 1.05rem !important;
+    }
+
+    /* BOTÓN PRINCIPAL DE GENERACIÓN EN WORD */
+    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]) {
+        background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
+        background-color: #2563EB !important;
+        border-radius: 10px !important;
+        border: none !important;
+        box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
+    }
+    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]) p {
+        color: #FFFFFF !important;
+        font-weight: 800 !important;
+        font-size: 1.1rem !important;
     }
 </style>
 """, unsafe_allow_html=True)
@@ -232,7 +249,7 @@ st.sidebar.info("""
 """)
 
 # ==============================================================================
-# SELECCIÓN DE HERRAMIENTAS DE AULA EN LA PÁGINA PRINCIPAL (ORDEN Y COLORES LLAMATIVOS)
+# SELECCIÓN DE HERRAMIENTAS DE AULA EN LA PÁGINA PRINCIPAL
 # ==============================================================================
 st.markdown("### 📋 Selecciona la Herramienta de Aula que deseas elaborar:")
 
@@ -793,7 +810,7 @@ def generar_prompt_unidad_sara():
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
