@@ -220,7 +220,7 @@ with col_b1:
         st.rerun()
 
 with col_b2:
-    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
+    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
         st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
         st.rerun()
 
@@ -239,7 +239,7 @@ tipo_documento = st.session_state['tipo_documento']
 # Banner indicador de la herramienta seleccionada
 COLOR_MAP = {
     "Proyecto de Aprendizaje": "#059669",
-    "Unidad de Aprendizaje (Modelo SARA)": "#7C3AED",
+    "Unidad de Aprendizaje": "#7C3AED",
     "Sesión de Aprendizaje": "#2563EB",
     "Ficha de Aplicación / Trabajo (Para Alumnos)": "#D97706"
 }
@@ -411,12 +411,12 @@ st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", "N° 22303 'Santa Rosa de Lima'")
+    ie_nombre = st.text_input("Institución Educativa:", "N°")
 with c2:
-    director = st.text_input("Director:", "Lic. Bernardo Francisco Salcedo Barrientos")
-    subdirector = st.text_input("Subdirector(es):", "Mg. Mariela Velásquez Cárdenas / Mg. Frank Bernaola Pérez")
+    director = st.text_input("Director:", " ")
+    subdirector = st.text_input("Subdirector(es):", " ")
 with c3:
-    docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
+    docente = st.text_input("Docente de Aula:", " ")
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
