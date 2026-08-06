@@ -255,9 +255,10 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     for line in lines:
         line_str = line.strip()
         
-        # Limpieza de etiquetas HTML indeseadas (<br>, <br/>, etc.)
+        # Limpieza de etiquetas HTML indeseadas (<br>, <br/>, <tr>, <td>, <th>, etc.)
         line_str = re.sub(r'<br\s*/?>', ' ', line_str)
         line_str = re.sub(r'</?[a-zA-Z0-9]+\s*/>', ' ', line_str)
+        line_str = re.sub(r'</?(table|tr|td|th|thead|tbody)[^>]*>', ' ', line_str, flags=re.IGNORECASE)
         
         # Procesamiento de Tablas Markdown
         if line_str.startswith('|') and line_str.endswith('|'):
@@ -495,9 +496,17 @@ ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN CUADROS/TABLAS MARKDOWN Y SIN SIT
 # **SESIÓN DE APRENDIZAJE N.º {num_doc}**
 ## **{problema_contexto.upper()}**
 
-• TABLA I: DATOS INFORMATIVOS
-| DRE / UGEL | Institución Educativa | Director | Subdirector(es) | Docente de Aula | Grado y Sección | Área Curricular | Fecha | Duración |
-| {dre_ugel} | {ie_nombre} | {director} | {subdirector} | {docente} | {grado_seccion} | {area_sel} | {fecha_sugerida} | {duracion_sesion} |
+• TABLA I: DATOS INFORMATIVOS (ESTRICTAMENTE EN 2 COLUMNAS: COLUMNA 1 = CONCEPTO/DATO, COLUMNA 2 = VALOR/RESPUESTA):
+| DATOS INFORMATIVOS | DETALLE / INFORMACIÓN |
+| DRE / UGEL | {dre_ugel} |
+| Institución Educativa | {ie_nombre} |
+| Director | {director} |
+| Subdirector(es) | {subdirector} |
+| Docente de Aula | {docente} |
+| Grado y Sección | {grado_seccion} |
+| Área Curricular | {area_sel} |
+| Fecha | {fecha_sugerida} |
+| Duración | {duracion_sesion} |
 
 • TABLA II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS
 | ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo en su totalidad con parte trabajada en **negrita**) | DESEMPEÑOS PRECISADOS (CNEB) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN |
@@ -541,8 +550,9 @@ DATOS DE CONFIGURACIÓN DE LA FICHA:
 ________________________________________
 INSTRUCCIONES DE ESTILO Y DISEÑO (OBLIGATORIO):
 1. Adaptación al Grado: Utiliza un lenguaje directo, claro, motivador e instrucciones sencillas adaptadas al nivel lector de {grado_seccion}.
-2. Formato en Cuadros/Tablas: Organiza los ejercicios y actividades en tablas Markdown para que al convertirse a Word mantengan un diseño limpio con bordes y recuadros donde los niños puedan escribir, dibujar o marcar.
-3. PROHIBIDO usar etiquetas HTML o símbolos de almohadillas excesivos (#### o #####). Usa solo Markdown limpio (#, ##, **negrita**, listas • y tablas |).
+2. Formato en Cuadros/Tablas MARKDOWN PURAS: Organiza los ejercicios y actividades en tablas Markdown puras usando tuberías (|). 
+3. PROHIBIDO ROTUNDAMENTE usar etiquetas HTML de tablas como <table>, <tr>, <td>, <th>, <tbody>, <thead> o <br>. Toda la información, tableros posicionales o cuadros matemáticos deben generarse únicamente mediante sintaxis de tablas Markdown de texto (| C | D | U |).
+4. NO uses símbolos de almohadillas excesivos (#### o #####). Usa solo Markdown limpio (#, ##, **negrita**, listas • y tablas |).
 
 ________________________________________
 APLICACIÓN ESTRICTA DEL PROCESO DIDÁCTICO SEGÚN EL ÁREA SELECCIONADA ({area_sel}):
@@ -550,13 +560,13 @@ La estructura central de la ficha DEBE seguir obligatoriamente los pasos del pro
 
 • Si el área es MATEMÁTICA (Enfoque de Resolución de Problemas):
   - Sección 1: Comprensión del problema (Texto del problema cotidiano + preguntas para identificar datos).
-  - Sección 2: Búsqueda de estrategias y representación (Cuadro para representar con dibujo/esquema y cuadro para la operación).
+  - Sección 2: Búsqueda de estrategias y representación (Cuadro Markdown para representar con dibujo/esquema y cuadro Markdown para la operación o tablero posicional).
   - Sección 3: Formalización y Transferencia (Conclusión rápida + Un nuevo reto matemático similar).
 
 • Si el área es COMUNICACIÓN - LECTURA (Enfoque Comunicativo):
   - Sección 1: Antes de la lectura (Predicciones a partir del título/imagen y propósito lector).
   - Sección 2: Durante la lectura (Lectura corta y adaptada al grado).
-  - Sección 3: Después de la lectura (Preguntas explícitas, inferenciales y de opinión/reflexión).
+  - Sección 3: Después de la lectura (Preguntas explícitas, inferenciales y de opinión/reflexión en cuadros).
 
 • Si el área es COMUNICACIÓN - ESCRITURA (Enfoque Comunicativo):
   - Sección 1: Planificación (Cuadro: ¿Qué escribiré?, ¿Para quién?, ¿Para qué?).
@@ -589,22 +599,26 @@ La estructura central de la ficha DEBE seguir obligatoriamente los pasos del pro
   - Sección 3: Autocuidado y Compromiso.
 
 ________________________________________
-ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN MARKDOWN Y TABLAS):
+ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN MARKDOWN PURA Y TABLAS SIN ETIQUETAS HTML):
 
 # **FICHA DE TRABAJO DE {area_sel.upper()} N.º {num_doc}**
 ## **{problema_contexto.upper()}**
 
-• TABLA I: DATOS DE LA FICHA
-| Institución Educativa | Grado y Sección | Área Curricular | Fecha |
-| {ie_nombre} | {grado_seccion} | {area_sel} | {fecha_sugerida} |
-| **Estudiante:** __________________________________________________ | **Docente:** {docente} |
-| **Mi Propósito de Hoy:** [Explica en una frase sencilla y cercana qué logrará el estudiante] |
+• TABLA I: DATOS DE LA FICHA (ESTRICTAMENTE EN 2 COLUMNAS: COLUMNA 1 = CONCEPTO/DATO, COLUMNA 2 = VALOR/RESPUESTA):
+| DATOS INFORMATIVOS | DETALLE / INFORMACIÓN |
+| Institución Educativa | {ie_nombre} |
+| Grado y Sección | {grado_seccion} |
+| Área Curricular | {area_sel} |
+| Docente de Aula | {docente} |
+| Fecha | {fecha_sugerida} |
+| Estudiante | __________________________________________________ |
+| Propósito de Hoy | [Explica en una frase sencilla y cercana qué logrará el estudiante] |
 
 • SECCIÓN 1: "ME PREPARO Y DESCUBRO"
 (Aplica el 1er momento del proceso didáctico del área de {area_sel}).
 
 • SECCIÓN 2: "MANOS A LA OBRA / APLICO LO APRENDIDO"
-(Aplica el 2do momento del proceso didáctico con tablas de ejercicios, casilleros para responder, marcar o completar).
+(Aplica el 2do momento del proceso didáctico con tablas de ejercicios, casilleros para responder, marcar o completar usando únicamente tablas Markdown con |).
 
 • SECCIÓN 3: "MI RETO FINAL / MI COMPROMISO"
 (Aplica el momento final del proceso didáctico con una actividad desafiante o compromiso).
@@ -723,10 +737,10 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
             
             if tipo_documento == "Sesión de Aprendizaje":
                 prompt_maestro = generar_prompt_sesion()
-                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Creas sesiones de aprendizaje en tablas sin incluir situación significativa, incluyendo datos informativos, propósitos de aprendizaje, enfoques, competencia transversal, meta de aprendizaje, preparación, momentos con procesos didácticos del área en 1ra persona plural tiempo presente, y escala de valoración con 30 estudiantes ficticios."
+                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Creas sesiones de aprendizaje en tablas sin incluir situación significativa, incluyendo datos informativos en 2 columnas, propósitos de aprendizaje, enfoques, competencia transversal, meta de aprendizaje, preparación, momentos con procesos didácticos del área en 1ra persona plural tiempo presente, y escala de valoración con 30 estudiantes ficticios."
             elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
                 prompt_maestro = generar_prompt_ficha_trabajo()
-                sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo estructuradas en tablas aplicando estrictamente el proceso didáctico del área elegida."
+                sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo estructuradas en tablas Markdown puras (usando |) aplicando estrictamente el proceso didáctico del área elegida. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
             elif tipo_documento == "Proyecto de Aprendizaje":
                 prompt_maestro = generar_prompt_proyecto()
                 sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
