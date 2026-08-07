@@ -15,7 +15,7 @@ import cneb_primaria_datos as cneb
 # CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
-    page_title="PLANIFICAPRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
+    page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
     page_icon="🍎",
     layout="wide"
 )
@@ -320,7 +320,7 @@ with col_b1:
         st.rerun()
 
 with col_b2:
-    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
+    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
         st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
         st.rerun()
 
@@ -367,7 +367,7 @@ def add_formatted_text(paragraph, text):
 # ==============================================================================
 # CONVERTIDOR A WORD (.DOCX) CON PROCESAMIENTO GARANTIZADO DE LA ÚLTIMA TABLA
 # ==============================================================================
-def markdown_to_docx(md_text, ie_nombre="I.E. N°    ", es_horizontal=False):
+def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     doc = docx.Document()
     
     # Paleta de colores pasteles rotativos para los encabezados de tablas
@@ -399,6 +399,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N°    ", es_horizontal=False):
         
     p_box = doc.add_paragraph()
     p_box.alignment = WD_ALIGN_PARAGRAPH.CENTER
+    run_box = p_box.add_run(f"🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]\n")
     run_box.font.size = Pt(10)
     run_box.font.italic = True
     run_box.font.color.rgb = RGBColor(107, 114, 128)
@@ -510,13 +511,13 @@ st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", "N°  ")
+    ie_nombre = st.text_input("Institución Educativa:", "N° 22303 'Santa Rosa de Lima'")
 with c2:
-    director = st.text_input("Director:", " ")
-    subdirector = st.text_input("Subdirector(es):", " ")
+    director = st.text_input("Director:", "Lic. Bernardo Francisco Salcedo Barrientos")
+    subdirector = st.text_input("Subdirector(es):", "Mg. Mariela Velásquez Cárdenas / Mg. Frank Bernaola Pérez")
 with c3:
-    docente = st.text_input("Docente de Aula:", " ")
-    grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado ", "2do Grado ", "3er Grado ", "4to Grado ", "5to Grado ", "6to Grado "], index=2)
+    docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
+    grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
     f1, f2, f3, f4 = st.columns(4)
@@ -867,7 +868,7 @@ def generar_prompt_unidad_sara():
     val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO motivador para la Unidad SARA basado en el problema.'
 
     return f"""
-Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
+Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE completa y detallada (Modelo SARA).
 PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
@@ -875,37 +876,63 @@ A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 
 OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
 1. Genera un TÍTULO de la unidad: {val_titulo}
-2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos.
+2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA (SITUACION / RETO) estructurada en 3 párrafos:
+   - Párrafo 1: Diagnóstico de la problemática en el contexto local/nacional.
+   - Párrafo 2: Propuesta pedagógica de solución e integración de áreas.
+   - Párrafo 3: Preguntas retadoras y desafíos motivadores para los estudiantes.
 
 ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 
-I. TABLA I: DATOS INFORMATIVOS (Muestra exactamente: DRE/UGEL: {dre_ugel}, IE: {ie_nombre}, Director: {director}, Subdirector: {subdirector}, Docente: {docente}, Grado/Sección: {grado_seccion}, Duración: {fechas_duracion}).
+UNIDAD DE APRENDIZAJE N.º {num_doc}
+{val_titulo}
 
-II. SITUACIÓN SIGNIFICATIVA GENERADA (Ubicada OBLIGATORIAMENTE justo debajo de los Datos Informativos).
+I. TABLA I: DATOS GENERALES (Muestra exactamente: DRE/UGEL: {dre_ugel}, IE: {ie_nombre}, Director: {director}, Subdirector: {subdirector}, Docente: {docente}, Grado/Sección: {grado_seccion}, Fechas y Duración: {fechas_duracion}, Duración en Semanas: {duracion_semanas} semanas).
 
-III. MATRIZ DE APRENDIZAJES POR ÁREA (SECCIÓN CONTINUA COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
-    - Para CADA una de las {duracion_semanas} semanas, coloca el **TÍTULO CREATIVO DE LA ACTIVIDAD DE LA SEMANA** (Ejemplo: SEMANA 1: "Desarrollamos hábitos de limpieza en nuestro entorno").
-    - Debajo del título de la semana, presenta la Matriz de Aprendizajes en sus 8 COLUMNAS EXACTAS:
-      | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
-    - REGLA OBLIGATORIA DEL ESTÁNDAR: Copia el **ESTÁNDAR DE APRENDIZAJE EN SU TOTALIDAD Y DE MANERA ÍNTEGRA** tal cual figura en el CNEB oficial (RM N.º 649-2016-MINEDU) sin ningún corte ni resumen, y RESALTA EN **NEGRITA** (`**la parte específica movilizada en la actividad**`).
-    - Copia el DESEMPEÑO ÍNTEGRO del CNEB con la parte trabajada en **negrita**.
-    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
+II. SITUACIÓN (RETO):
+(Ubica la SITUACIÓN SIGNIFICATIVA GENERADA con sus 3 párrafos y retos justo debajo de los Datos Generales).
 
-IV. SECUENCIA DE ACTIVIDADES PROPUESTAS (SECCIÓN COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
-    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE APRENDIZAJES.
-    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
-      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-    - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único (sin dividir en mañana/tarde), indicando el **ÁREA CURRICULAR DESTACADA**:
-      • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-      • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-      • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-    - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades, DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
-    - Cierra respondiendo a: ¿Qué productos lograré en esta experiencia?
+III. ENFOQUES TRANSVERSALES:
+| ENFOQUE TRANSVERSAL | VALOR | ACTITUD |
 
-V. TABLA DE ENFOQUES TRANSVERSALES.
-VI. PRODUCTO DE LA UNIDAD.
-VII. LISTA CLASIFICADA DE MATERIALES Y RECURSOS.
-VIII. TABLA VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
+IV. ACTIVIDADES PERTINENTES AL PROPÓSITO DE APRENDIZAJE:
+(Presenta una lista ordenada de las grandes actividades pedagógicas planificadas por semana).
+
+V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (MATRIZ DE APRENDIZAJES POR ÁREA):
+   - Presenta la Matriz Curricular completa en sus 8 COLUMNAS EXACTAS:
+     | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
+   
+   - REGLA STRICTA Y ABSOLUTA PARA EL ESTÁNDAR DE APRENDIZAJE:
+     1. El Estándar de Aprendizaje del ciclo correspondiente debe escribirse TAL CUAL figura de forma oficial en el CNEB (RM N.º 649-2016-MINEDU).
+     2. Queda STRICTAMENTE PROHIBIDO modificar, parafrasear, resumir, cortar o omitir cualquier parte del texto del estándar. Debe incluirse el texto completo e íntegro del estándar del ciclo.
+     3. ÚNICAMENTE debes resaltar en NEGRITA (`**texto en negrita**`) el fragmento o porción específica del estándar que se está abordando o movilizando en esa actividad. El resto del texto del estándar debe permanecer en texto plano normal.
+   
+   - Copia el DESEMPEÑO ÍNTEGRO del CNEB resaltando en **negrita** la parte trabajada.
+   - Formula CRITERIOS DE EVALUACIÓN claros basados en: Verbo de acción + Contenido disciplinar + Condición/Contexto.
+   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
+
+VI. TUTORÍA Y EDUCACIÓN EDUCATIVA:
+| DIMENSIÓN | SESIÓN | ¿QUÉ BUSCAMOS? |
+
+VII. COMPETENCIAS TRANSVERSALES:
+- "Se desenvuelve en los entornos virtuales generados por las TIC" (capacidades y desempeños precisados).
+- "Gestiona su aprendizaje de manera autónoma" (capacidades y desempeños precisados).
+
+VIII. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
+   - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE APRENDIZAJES.
+   - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
+     | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+   - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único (sin dividir en mañana/tarde), indicando el **ÁREA CURRICULAR DESTACADA**:
+     • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+     • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+     • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades, DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
+
+IX. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
+- Para el estudiante.
+- Para el docente.
+
+X. REFLEXIONES SOBRE LOS APRENDIZAJES:
+- Incluye la tabla o lista de preguntas de reflexión y metacognición del docente sobre el desarrollo de la unidad.
 """
 
 # ==============================================================================
@@ -933,7 +960,12 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                 sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
             else:
                 prompt_maestro = generar_prompt_unidad_sara()
-                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
+                sys_inst = (
+                    "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
+                    "Elaboras Unidades de Aprendizaje completas en formato Markdown. "
+                    "REGLA CRÍTICA PARA EL ESTÁNDAR DE APRENDIZAJE: Debes copiar el texto completo e íntegro del Estándar de Aprendizaje oficial del CNEB (RM N.° 649-2016-MINEDU) para la competencia seleccionada, sin modificar, resumir, alterar ni recortar ninguna palabra. "
+                    "Resalta en NEGRITA (**texto**) únicamente el fragmento o porción específica del estándar que se moviliza o evalúa en la actividad. El resto del estándar debe permanecer exactamente en texto normal."
+                )
                 
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está procesando y generando tu {tipo_documento} para {grado_seccion}..."):
                 
