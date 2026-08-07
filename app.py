@@ -24,7 +24,7 @@ st.set_page_config(
 # 1. ESTILOS CSS REFORZADOS
 st.markdown("""
 <style>
-    /* OCULTAR ELEMENTOS DE STREAMLIT, BADGES, FOOTERS Y BOTONES FLOTANTES */
+    /* OCULTAR ELEMENTOS DE STREAMLIT, BADGES Y BOTONES FLOTANTES */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
@@ -700,7 +700,7 @@ B.- MOMENTO DEL DESARROLLO DE LA SESIÓN ({t_desarrollo})
    - Elaboración del Plan de Acción: Diseñan los pasos que seguirán para comprobar su hipótesis: qué materiales usarán, qué medirán, cómo registrarán los datos.
    - Recojo y Análisis de Datos: Ejecutan el plan, experimentan, observan y registran la información obtenida en tablas, gráficos, etc.
    - Estructuración del Saber Construido: Comparan los resultados con su hipótesis inicial, la aceptan o la rechazan, y construyen una conclusión basada en las evidencias.
-   - Evaluación y Comunicación: Comunican sus hallazgos y conclusiones (de forma oral, escrita, gráfica) y reflexiona sobre el proceso de indagación realizado.
+   - Evaluación y Comunicación: Comunican sus hallazgos y conclusiones (de forma oral, escrita, gráfica) y reflexionan sobre el proceso de indagación realizado.
 
 5. Arte y Cultura (Enfoque Multicultural e Interdisciplinario):
    - Explorar y Experimentar: Los estudiantes interactúan libremente con diversos materiales y lenguajes artísticos (danza, música, teatro, artes visuales) para descubrir sus posibilidades expresivas.
