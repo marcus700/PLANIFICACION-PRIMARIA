@@ -20,34 +20,39 @@ st.set_page_config(
     layout="wide"
 )
 
+# ==============================================================================
+# INYECCIÓN CSS/JS NIVEL INGENIERÍA PARA ELIMINACIÓN DE INSIGNIAS FLOTANTES
+# ==============================================================================
 st.markdown("""
 <style>
-    /* 1. OCULTAR COMPLETAMENTE 'GESTIONAR LA APLICACIÓN' Y ELEMENTOS FLOTANTES DE STREAMLIT CLOUD */
-    header {visibility: hidden !important; display: none !important;}
-    div[data-testid="stHeader"] {display: none !important;}
-    #MainMenu {visibility: hidden !important;}
-    footer {visibility: hidden !important; display: none !important;}
-    
-    [data-testid="manage-app-button"],
-    .stAppDeployButton,
-    [data-testid="stHeader"],
-    [data-testid="stToolbar"],
-    [data-testid="stDecoration"],
-    [data-testid="stStatusWidget"],
-    [data-testid="stViewerBadge"],
-    .viewerBadge_container__1613n,
-    button[title="View app in Streamlit Community Cloud"],
-    div[class*="stDeployButton"],
-    div[class*="viewerBadge"] {
+    /* 1. ANULACIÓN Y COLAPSO ABSOLUTO DE ELEMENTOS DE STREAMLIT CLOUD */
+    header, footer, [data-testid="stHeader"], [data-testid="stDecoration"], 
+    [data-testid="stStatusWidget"], [data-testid="stViewerBadge"], 
+    [data-testid="manage-app-button"], .stAppDeployButton, .viewerBadge_container__1613n,
+    button[title*="Streamlit"], div[class*="stDeployButton"], div[class*="viewerBadge"], 
+    div[class*="ViewerBadge"], a[class*="viewerBadge"], a[class*="ViewerBadge"], 
+    div[class*="profile"], div[class*="Profile"], div[class*="crown"], div[class*="Crown"], 
+    div[class*="hostBadge"], div[class*="HostBadge"], div[class*="badge"], div[class*="Badge"], 
+    div[class*="floating"], div[class*="Floating"], a[href*="streamlit"], a[href*="share.streamlit.io"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
-        height: 0 !important;
-        width: 0 !important;
+        width: 0px !important;
+        height: 0px !important;
+        max-width: 0px !important;
+        max-height: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
         pointer-events: none !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
+        z-index: -9999 !important;
+        transform: scale(0) !important;
     }
     
-    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA */
+    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
@@ -158,6 +163,60 @@ st.markdown("""
         font-size: 1.1rem !important;
     }
 </style>
+""", unsafe_allow_html=True)
+
+# SCRIPT JAVASCRIPT GLOBAL QUE SE EJECUTA EN EL MARCO PADRE
+st.markdown("""
+<script>
+function injectKillStyle() {
+    const targets = [window.document, window.parent.document, window.top.document];
+    targets.forEach(doc => {
+        try {
+            if (doc && !doc.getElementById('sys-kill-style')) {
+                const style = doc.createElement('style');
+                style.id = 'sys-kill-style';
+                style.innerHTML = `
+                    [data-testid="stViewerBadge"],
+                    [data-testid="manage-app-button"],
+                    .viewerBadge_container__1613n,
+                    .stAppDeployButton,
+                    div[class*="viewerBadge"],
+                    div[class*="ViewerBadge"],
+                    a[class*="viewerBadge"],
+                    a[class*="ViewerBadge"],
+                    div[class*="profile"],
+                    div[class*="Profile"],
+                    div[class*="crown"],
+                    div[class*="Crown"],
+                    div[class*="badge"],
+                    div[class*="Badge"],
+                    a[href*="streamlit"] {
+                        display: none !important;
+                        visibility: hidden !important;
+                        opacity: 0 !important;
+                        pointer-events: none !important;
+                        width: 0 !important;
+                        height: 0 !important;
+                    }
+                `;
+                doc.head.appendChild(style);
+            }
+            const badSelectors = [
+                '[data-testid="stViewerBadge"]',
+                '[data-testid="manage-app-button"]',
+                '.stAppDeployButton',
+                '.viewerBadge_container__1613n',
+                'a[href*="streamlit"]'
+            ];
+            badSelectors.forEach(s => {
+                doc.querySelectorAll(s).forEach(el => el.remove());
+            });
+        } catch(e) {}
+    });
+}
+setInterval(injectKillStyle, 150);
+window.addEventListener('load', injectKillStyle);
+</script>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
