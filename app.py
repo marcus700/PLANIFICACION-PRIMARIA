@@ -22,41 +22,51 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* 1. OCULTAR COMPLETAMENTE EN CELULARES Y PC ÍCONOS FLOTANTES, CORONAS, AVATARES Y BARRAS DE STREAMLIT */
+    /* 1. ELIMINACIÓN ABSOLUTA Y DEFINITIVA DE LAS INSIGNIAS Y FLOTANTES DE STREAMLIT CLOUD (AVATAR Y CORONA ROJA) */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important; display: none !important;}
     
-    [data-testid="manage-app-button"],
-    [data-testid="stViewerBadge"],
-    [data-testid="stStatusWidget"],
-    [data-testid="stDecoration"],
-    [data-testid="stToolbar"],
-    .stAppDeployButton,
-    .viewerBadge_container__1613n,
-    button[title="View app in Streamlit Community Cloud"],
-    div[class*="stDeployButton"],
-    div[class*="viewerBadge"],
-    div[class*="ViewerBadge"],
-    div[class*="profile"],
-    div[class*="Profile"],
-    div[class*="crown"],
-    div[class*="Crown"],
-    div[class*="badge"],
-    div[class*="Badge"],
-    div[class*="floating"],
-    div[class*="Floating"],
-    a[class*="viewerBadge"] {
+    html body [data-testid="manage-app-button"],
+    html body [data-testid="stViewerBadge"],
+    html body [data-testid="stStatusWidget"],
+    html body [data-testid="stDecoration"],
+    html body [data-testid="stToolbar"],
+    html body .stAppDeployButton,
+    html body .viewerBadge_container__1613n,
+    html body button[title*="Streamlit"],
+    html body div[class*="stDeployButton"],
+    html body div[class*="viewerBadge"],
+    html body div[class*="ViewerBadge"],
+    html body a[class*="viewerBadge"],
+    html body a[class*="ViewerBadge"],
+    html body div[class*="profile"],
+    html body div[class*="Profile"],
+    html body div[class*="crown"],
+    html body div[class*="Crown"],
+    html body div[class*="hostBadge"],
+    html body div[class*="HostBadge"],
+    html body div[class*="badge"],
+    html body div[class*="Badge"],
+    html body div[class*="floating"],
+    html body div[class*="Floating"],
+    html body a[href*="streamlit"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
-        height: 0 !important;
         width: 0 !important;
+        height: 0 !important;
+        max-width: 0 !important;
+        max-height: 0 !important;
+        overflow: hidden !important;
         pointer-events: none !important;
+        position: absolute !important;
+        left: -9999px !important;
+        top: -9999px !important;
     }
     
-    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA */
+    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
