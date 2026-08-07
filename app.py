@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from google import genai
 from google.genai import types
 import docx
@@ -20,9 +21,10 @@ st.set_page_config(
     layout="wide"
 )
 
+# 1. ESTILOS CSS REFORZADOS PARA ELIMINAR INSIGNIAS Y FLOTANTES
 st.markdown("""
 <style>
-    /* 1. ELIMINACIÓN ABSOLUTA Y DEFINITIVA DE LAS INSIGNIAS Y FLOTANTES DE STREAMLIT CLOUD (AVATAR Y CORONA ROJA) */
+    /* OCULTAR COMPLETAMENTE TODO ELEMENTO DE STREAMLIT CLOUD Y FLOTANTES */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
@@ -51,7 +53,10 @@ st.markdown("""
     html body div[class*="Badge"],
     html body div[class*="floating"],
     html body div[class*="Floating"],
-    html body a[href*="streamlit"] {
+    html body a[href*="streamlit"],
+    html body a[href*="share.streamlit.io"],
+    html body div[style*="position: fixed"][style*="bottom"],
+    html body a[style*="position: fixed"][style*="bottom"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -64,9 +69,10 @@ st.markdown("""
         position: absolute !important;
         left: -9999px !important;
         top: -9999px !important;
+        z-index: -9999 !important;
     }
     
-    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
+    /* FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
@@ -93,7 +99,7 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* 3. CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
+    /* CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
     .stTextInput input, .stTextArea textarea, .stSelectbox [data-baseweb="select"] {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
@@ -105,7 +111,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* 4. COLORES EXCLUSIVOS Y VISIBLES PARA CADA BOTÓN DE HERRAMIENTA */
+    /* COLORES EXCLUSIVOS Y VISIBLES PARA CADA BOTÓN DE HERRAMIENTA */
     
     /* Botón 1: PROYECTO DE APRENDIZAJE (VERDE) */
     div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
@@ -177,6 +183,53 @@ st.markdown("""
         font-size: 1.1rem !important;
     }
 </style>
+""", unsafe_allow_html=True)
+
+# 2. SCRIPT JAVASCRIPT DINÁMICO PARA ELIMINAR EL BADGE DE STREAMLIT DE RAÍZ
+st.markdown("""
+<script>
+function cleanBadges() {
+    const parentDoc = window.parent.document;
+    const selectors = [
+        '[data-testid="stViewerBadge"]',
+        '[data-testid="manage-app-button"]',
+        '.stAppDeployButton',
+        '.viewerBadge_container__1613n',
+        'a[href*="streamlit"]',
+        'a[href*="share.streamlit.io"]',
+        'div[class*="viewerBadge"]',
+        'div[class*="ViewerBadge"]',
+        'div[class*="profile"]',
+        'div[class*="Profile"]',
+        'div[class*="crown"]',
+        'div[class*="Crown"]',
+        'div[class*="badge"]',
+        'div[class*="Badge"]'
+    ];
+    selectors.forEach(sel => {
+        try {
+            parentDoc.querySelectorAll(sel).forEach(el => el.remove());
+            document.querySelectorAll(sel).forEach(el => el.remove());
+        } catch(e) {}
+    });
+    
+    // Buscar y eliminar cualquier elemento flotante que contenga "Alojado" o "Streamlit"
+    try {
+        const allElements = parentDoc.querySelectorAll('a, div, button');
+        allElements.forEach(el => {
+            if (el.innerText && (el.innerText.includes('Alojado') || el.innerText.includes('Streamlit'))) {
+                const pos = window.getComputedStyle(el).position;
+                if (pos === 'fixed' || pos === 'absolute') {
+                    el.remove();
+                }
+            }
+        });
+    } catch(e) {}
+}
+
+setInterval(cleanBadges, 200);
+window.addEventListener('load', cleanBadges);
+</script>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
@@ -829,7 +882,7 @@ def generar_prompt_unidad_sara():
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
