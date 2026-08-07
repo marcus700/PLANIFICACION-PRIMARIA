@@ -516,7 +516,7 @@ with c2:
     subdirector = st.text_input("Subdirector(es):", " ")
 with c3:
     docente = st.text_input("Docente de Aula:", " ")
-    grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado" " ", "2do Grado " " ", "3er Grado" " ", "4to Grado "" ", "5to Grado "" ", "6to Grado "" "], index=2)
+    grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado:" " ", "2do Grado: " " ", "3er Grado:" " ", "4to Grado: "" ", "5to Grado: "" ", "6to Grado: "" "], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
     f1, f2, f3, f4 = st.columns(4)
