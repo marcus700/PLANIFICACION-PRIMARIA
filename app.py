@@ -1,5 +1,4 @@
-import streamlit as st
-import streamlit.components.v1 as components
+ import streamlit as st
 from google import genai
 from google.genai import types
 import docx
@@ -21,68 +20,34 @@ st.set_page_config(
     layout="wide"
 )
 
-# 1. ESTILOS CSS REFORZADOS
 st.markdown("""
 <style>
-    /* OCULTAR ELEMENTOS DE STREAMLIT, BADGES Y BOTONES FLOTANTES */
+    /* 1. OCULTAR COMPLETAMENTE 'GESTIONAR LA APLICACIÓN' Y ELEMENTOS FLOTANTES DE STREAMLIT CLOUD */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important; display: none !important;}
     
-    html body [data-testid="manage-app-button"],
-    html body [data-testid="stViewerBadge"],
-    html body [data-testid="stStatusWidget"],
-    html body [data-testid="stDecoration"],
-    html body [data-testid="stToolbar"],
-    html body [data-testid="stFullScreenFrame"],
-    html body [data-testid="StyledFullScreenButton"],
-    html body div[class*="StyledFullScreenButton"],
-    html body div[class*="fullscreen"],
-    html body div[class*="FullScreen"],
-    html body button[title*="Fullscreen"],
-    html body button[title*="Pantalla completa"],
-    html body button[aria-label*="Fullscreen"],
-    html body button[aria-label*="Pantalla completa"],
-    html body .stAppDeployButton,
-    html body .viewerBadge_container__1613n,
-    html body button[title*="Streamlit"],
-    html body div[class*="stDeployButton"],
-    html body div[class*="viewerBadge"],
-    html body div[class*="ViewerBadge"],
-    html body a[class*="viewerBadge"],
-    html body a[class*="ViewerBadge"],
-    html body div[class*="profile"],
-    html body div[class*="Profile"],
-    html body div[class*="crown"],
-    html body div[class*="Crown"],
-    html body div[class*="hostBadge"],
-    html body div[class*="HostBadge"],
-    html body div[class*="badge"],
-    html body div[class*="Badge"],
-    html body div[class*="floating"],
-    html body div[class*="Floating"],
-    html body a[href*="streamlit"],
-    html body a[href*="share.streamlit.io"],
-    html body div[style*="position: fixed"][style*="bottom"],
-    html body a[style*="position: fixed"][style*="bottom"] {
+    [data-testid="manage-app-button"],
+    .stAppDeployButton,
+    [data-testid="stHeader"],
+    [data-testid="stToolbar"],
+    [data-testid="stDecoration"],
+    [data-testid="stStatusWidget"],
+    [data-testid="stViewerBadge"],
+    .viewerBadge_container__1613n,
+    button[title="View app in Streamlit Community Cloud"],
+    div[class*="stDeployButton"],
+    div[class*="viewerBadge"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
-        width: 0px !important;
-        height: 0px !important;
-        max-width: 0px !important;
-        max-height: 0px !important;
-        overflow: hidden !important;
+        height: 0 !important;
+        width: 0 !important;
         pointer-events: none !important;
-        position: absolute !important;
-        left: -9999px !important;
-        top: -9999px !important;
-        z-index: -9999 !important;
-        transform: scale(0) !important;
     }
     
-    /* FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
+    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
@@ -109,7 +74,7 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
+    /* 3. CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
     .stTextInput input, .stTextArea textarea, .stSelectbox [data-baseweb="select"] {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
@@ -121,7 +86,9 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* BOTONES DE HERRAMIENTAS DE AULA */
+    /* 4. COLORES EXCLUSIVOS Y VISIBLES PARA CADA BOTÓN DE HERRAMIENTA */
+    
+    /* Botón 1: PROYECTO DE APRENDIZAJE (VERDE) */
     div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
         background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
         background-color: #059669 !important;
@@ -135,6 +102,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
@@ -148,6 +116,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* Botón 3: SESIÓN DE APRENDIZAJE (AZUL) */
     div.st-key-btn_sesion > button, button[key="btn_sesion"] {
         background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
         background-color: #2563EB !important;
@@ -161,6 +130,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* Botón 4: FICHA DE APLICACIÓN (NARANJA) */
     div.st-key-btn_ficha > button, button[key="btn_ficha"] {
         background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
         background-color: #D97706 !important;
@@ -174,6 +144,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* BOTÓN PRINCIPAL DE GENERACIÓN EN WORD */
     div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]) {
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         background-color: #2563EB !important;
@@ -187,86 +158,6 @@ st.markdown("""
         font-size: 1.1rem !important;
     }
 </style>
-""", unsafe_allow_html=True)
-
-# 2. INYECCIÓN JAVASCRIPT GLOBAL QUE ELIMINA BADGES Y BARRAS FLOTANTES
-st.markdown("""
-<script>
-function injectParentKillStyle() {
-    const targets = [window.document, window.parent.document, window.top.document];
-    targets.forEach(doc => {
-        try {
-            if (doc && !doc.getElementById('sys-kill-style')) {
-                const style = doc.createElement('style');
-                style.id = 'sys-kill-style';
-                style.innerHTML = `
-                    [data-testid="stViewerBadge"],
-                    [data-testid="manage-app-button"],
-                    [data-testid="stFullScreenFrame"],
-                    [data-testid="StyledFullScreenButton"],
-                    div[class*="StyledFullScreenButton"],
-                    div[class*="fullscreen"],
-                    div[class*="FullScreen"],
-                    button[title*="Fullscreen"],
-                    button[title*="Pantalla completa"],
-                    button[aria-label*="Fullscreen"],
-                    button[aria-label*="Pantalla completa"],
-                    .viewerBadge_container__1613n,
-                    .stAppDeployButton,
-                    div[class*="viewerBadge"],
-                    div[class*="ViewerBadge"],
-                    a[class*="viewerBadge"],
-                    a[class*="ViewerBadge"],
-                    div[class*="profile"],
-                    div[class*="Profile"],
-                    div[class*="crown"],
-                    div[class*="Crown"],
-                    div[class*="badge"],
-                    div[class*="Badge"],
-                    a[href*="streamlit"] {
-                        display: none !important;
-                        visibility: hidden !important;
-                        opacity: 0 !important;
-                        pointer-events: none !important;
-                        width: 0px !important;
-                        height: 0px !important;
-                    }
-                `;
-                doc.head.appendChild(style);
-            }
-            
-            // Eliminar físicamente del DOM cualquier elemento o botón flotante
-            const badSelectors = [
-                '[data-testid="stViewerBadge"]',
-                '[data-testid="manage-app-button"]',
-                '[data-testid="stFullScreenFrame"]',
-                '[data-testid="StyledFullScreenButton"]',
-                '.stAppDeployButton',
-                '.viewerBadge_container__1613n',
-                'button[title*="Fullscreen"]',
-                'button[title*="Pantalla completa"]',
-                'a[href*="streamlit"]'
-            ];
-            badSelectors.forEach(s => {
-                doc.querySelectorAll(s).forEach(el => el.remove());
-            });
-
-            doc.querySelectorAll('button, div, a, span').forEach(el => {
-                const txt = el.innerText || el.textContent || '';
-                if (txt.includes('Pantalla completa') || txt.includes('Fullscreen') || txt.includes('Alojado') || txt.includes('Hosted') || txt.includes('Construido con')) {
-                    const pos = window.getComputedStyle(el).position;
-                    if (pos === 'fixed' || pos === 'absolute' || el.tagName === 'BUTTON') {
-                        el.remove();
-                    }
-                }
-            });
-        } catch(e) {}
-    });
-}
-
-setInterval(injectParentKillStyle, 100);
-window.addEventListener('load', injectParentKillStyle);
-</script>
 """, unsafe_allow_html=True)
 
 st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
