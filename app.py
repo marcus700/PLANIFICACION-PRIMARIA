@@ -107,7 +107,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 2: UNIDAD DE APRENDIZAJE (PURPURA / MORADO) */
+    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
@@ -564,11 +564,11 @@ if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo 
     titulo_opcional = ""
 else:
     problema_contexto = st.text_area(
-        "🚨 Problema o Interés del Contexto (Único dato requerido para que la IA cree el Título y la Situación Significativa automáticamente):",
-        height=100,
+        "🚨 Problema, Situación Significativa o Actividades Propuestas (Puedes colocar tu Situación Significativa / Actividades completas para que la IA las respete, o escribir solo el problema de contexto para que la IA las genere automáticamente):",
+        height=130,
         value="Poco hábito de recolección de residuos sólidos y acumulación de botellas de plástico en el patio durante el recreo por parte de los estudiantes de 3er grado."
     )
-    titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático a partir del problema):", value="")
+    titulo_opcional = st.text_input("Título Opcional (Déjalo en blanco si deseas que la IA cree un título creativo automático):", value="")
 
 # ==============================================================================
 # PROMPTS MAESTROS ALINEADOS AL CNEB COMPLETO
@@ -865,21 +865,18 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 """
 
 def generar_prompt_unidad_sara():
-    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO motivador para la Unidad SARA basado en el problema.'
+    val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO motivador para la Unidad de Aprendizaje basado en el contexto/problema.'
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE completa y detallada (Modelo SARA).
 PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
 
-A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
+ENTRADA PROVISTA POR EL DOCENTE (PROBLEMA DE CONTEXTO, SITUACIÓN SIGNIFICATIVA COMPLETA Y/O ACTIVIDADES PROPUESTAS):
 {problema_contexto}
 
-OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
-1. Genera un TÍTULO de la unidad: {val_titulo}
-2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA (SITUACION / RETO) estructurada en 3 párrafos:
-   - Párrafo 1: Diagnóstico de la problemática en el contexto local/nacional.
-   - Párrafo 2: Propuesta pedagógica de solución e integración de áreas.
-   - Párrafo 3: Preguntas retadoras y desafíos motivadores para los estudiantes.
+REGLA DE PROCESAMIENTO DE LA SITUACIÓN SIGNIFICATIVA Y ACTIVIDADES:
+1. SI EL DOCENTE INGRESÓ UNA SITUACIÓN SIGNIFICATIVA COMPLETA O ACTIVIDADES ESPECÍFICAS: Utiliza, respeta y adapta fielmente dicho texto e ideas dentro de la sección "II. SITUACIÓN (RETO)" y en la matriz curricular.
+2. SI EL DOCENTE SOLO INGRESÓ UN PROBLEMA O INTERÉS DEL CONTEXTO BREVE: La IA debe GENERAR AUTOMÁTICAMENTE la Situación Significativa completa estructurada en 3 párrafos (Párrafo 1: Diagnóstico de la problemática local/nacional; Párrafo 2: Propuesta pedagógica e integración de áreas; Párrafo 3: Interrogantes retadoras y desafíos) y articular las actividades sugeridas correspondientes.
 
 ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 
@@ -889,13 +886,13 @@ UNIDAD DE APRENDIZAJE N.º {num_doc}
 I. TABLA I: DATOS GENERALES (Muestra exactamente: DRE/UGEL: {dre_ugel}, IE: {ie_nombre}, Director: {director}, Subdirector: {subdirector}, Docente: {docente}, Grado/Sección: {grado_seccion}, Fechas y Duración: {fechas_duracion}, Duración en Semanas: {duracion_semanas} semanas).
 
 II. SITUACIÓN (RETO):
-(Ubica la SITUACIÓN SIGNIFICATIVA GENERADA con sus 3 párrafos y retos justo debajo de los Datos Generales).
+(Muestra la SITUACIÓN SIGNIFICATIVA provista por el docente o la generada automáticamente por la IA con sus 3 párrafos y retos justo debajo de los Datos Generales).
 
 III. ENFOQUES TRANSVERSALES:
 | ENFOQUE TRANSVERSAL | VALOR | ACTITUD |
 
 IV. ACTIVIDADES PERTINENTES AL PROPÓSITO DE APRENDIZAJE:
-(Presenta una lista ordenada de las grandes actividades pedagógicas planificadas por semana).
+(Presenta una lista ordenada de las grandes actividades pedagógicas planificadas por semana, respetando las propuestas por el docente si las incluyó).
 
 V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (MATRIZ DE APRENDIZAJES POR ÁREA):
    - Presenta la Matriz Curricular completa en sus 8 COLUMNAS EXACTAS:
@@ -903,7 +900,7 @@ V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (
    
    - REGLA STRICTA Y ABSOLUTA PARA EL ESTÁNDAR DE APRENDIZAJE:
      1. El Estándar de Aprendizaje del ciclo correspondiente debe escribirse TAL CUAL figura de forma oficial en el CNEB (RM N.º 649-2016-MINEDU).
-     2. Queda STRICTAMENTE PROHIBIDO modificar, parafrasear, resumir, cortar o omitir cualquier parte del texto del estándar. Debe incluirse el texto completo e íntegro del estándar del ciclo.
+     2. Queda STRICTAMENTE PROHIBIDO modificar, parafrasear, resumir, cortar u omitir cualquier parte del texto del estándar. Debe incluirse el texto completo e íntegro del estándar del ciclo.
      3. ÚNICAMENTE debes resaltar en NEGRITA (`**texto en negrita**`) el fragmento o porción específica del estándar que se está abordando o movilizando en esa actividad. El resto del texto del estándar debe permanecer en texto plano normal.
    
    - Copia el DESEMPEÑO ÍNTEGRO del CNEB resaltando en **negrita** la parte trabajada.
@@ -944,7 +941,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
     if not api_key:
         st.error("⚠️ Ingresa tu API Key de Google AI Studio en la barra lateral izquierda o en los Secrets.")
     elif not problema_contexto:
-        st.warning("⚠️ Completa el campo del Tema o Problema del Contexto.")
+        st.warning("⚠️ Completa el campo del Tema, Problema o Situación Significativa.")
     else:
         try:
             client = genai.Client(api_key=api_key)
@@ -964,7 +961,8 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                     "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
                     "Elaboras Unidades de Aprendizaje completas en formato Markdown. "
                     "REGLA CRÍTICA PARA EL ESTÁNDAR DE APRENDIZAJE: Debes copiar el texto completo e íntegro del Estándar de Aprendizaje oficial del CNEB (RM N.° 649-2016-MINEDU) para la competencia seleccionada, sin modificar, resumir, alterar ni recortar ninguna palabra. "
-                    "Resalta en NEGRITA (**texto**) únicamente el fragmento o porción específica del estándar que se moviliza o evalúa en la actividad. El resto del estándar debe permanecer exactamente en texto normal."
+                    "Resalta en NEGRITA (**texto**) únicamente el fragmento o porción específica del estándar que se moviliza o evalúa en la actividad. El resto del estándar debe permanecer exactamente en texto normal. "
+                    "Si el docente proporciona su propia Situación Significativa o actividades, utilízalas y respétalas íntegramente; si solo indica un problema breve, genera la Situación Significativa automáticamente."
                 )
                 
             with st.spinner(f"🧠 Google Gemini ({model_choice}) está procesando y generando tu {tipo_documento} para {grado_seccion}..."):
