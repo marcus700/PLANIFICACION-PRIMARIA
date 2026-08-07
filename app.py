@@ -20,51 +20,39 @@ st.set_page_config(
     layout="wide"
 )
 
-# 1. ESTILOS CSS REFORZADOS
+# ==============================================================================
+# INYECCIÓN CSS/JS NIVEL INGENIERÍA PARA ELIMINACIÓN DE INSIGNIAS FLOTANTES
+# ==============================================================================
 st.markdown("""
 <style>
-    /* OCULTAR ELEMENTOS DE STREAMLIT DENTRO DEL APP */
-    header {visibility: hidden !important; display: none !important;}
-    div[data-testid="stHeader"] {display: none !important;}
-    #MainMenu {visibility: hidden !important;}
-    footer {visibility: hidden !important; display: none !important;}
-    
-    [data-testid="manage-app-button"],
-    [data-testid="stViewerBadge"],
-    [data-testid="stStatusWidget"],
-    [data-testid="stDecoration"],
-    [data-testid="stToolbar"],
-    .stAppDeployButton,
-    .viewerBadge_container__1613n,
-    button[title*="Streamlit"],
-    div[class*="stDeployButton"],
-    div[class*="viewerBadge"],
-    div[class*="ViewerBadge"],
-    div[class*="profile"],
-    div[class*="Profile"],
-    div[class*="crown"],
-    div[class*="Crown"],
-    div[class*="badge"],
-    div[class*="Badge"],
-    div[class*="floating"],
-    div[class*="Floating"],
-    a[href*="streamlit"],
-    a[href*="share.streamlit.io"],
-    div[style*="position: fixed"][style*="bottom"],
-    a[style*="position: fixed"][style*="bottom"] {
+    /* 1. ANULACIÓN Y COLAPSO ABSOLUTO DE ELEMENTOS DE STREAMLIT CLOUD */
+    header, footer, [data-testid="stHeader"], [data-testid="stDecoration"], 
+    [data-testid="stStatusWidget"], [data-testid="stViewerBadge"], 
+    [data-testid="manage-app-button"], .stAppDeployButton, .viewerBadge_container__1613n,
+    button[title*="Streamlit"], div[class*="stDeployButton"], div[class*="viewerBadge"], 
+    div[class*="ViewerBadge"], a[class*="viewerBadge"], a[class*="ViewerBadge"], 
+    div[class*="profile"], div[class*="Profile"], div[class*="crown"], div[class*="Crown"], 
+    div[class*="hostBadge"], div[class*="HostBadge"], div[class*="badge"], div[class*="Badge"], 
+    div[class*="floating"], div[class*="Floating"], a[href*="streamlit"], a[href*="share.streamlit.io"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
-        width: 0 !important;
-        height: 0 !important;
+        width: 0px !important;
+        height: 0px !important;
+        max-width: 0px !important;
+        max-height: 0px !important;
+        margin: 0 !important;
+        padding: 0 !important;
+        overflow: hidden !important;
         pointer-events: none !important;
         position: absolute !important;
         left: -9999px !important;
         top: -9999px !important;
         z-index: -9999 !important;
+        transform: scale(0) !important;
     }
     
-    /* FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
+    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
@@ -91,7 +79,7 @@ st.markdown("""
         margin-bottom: 1.5rem;
     }
 
-    /* CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
+    /* 3. CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
     .stTextInput input, .stTextArea textarea, .stSelectbox [data-baseweb="select"] {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
@@ -103,7 +91,9 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* BOTONES DE HERRAMIENTAS */
+    /* 4. COLORES EXCLUSIVOS Y VISIBLES PARA CADA BOTÓN DE HERRAMIENTA */
+    
+    /* Botón 1: PROYECTO DE APRENDIZAJE (VERDE) */
     div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
         background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
         background-color: #059669 !important;
@@ -117,6 +107,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
@@ -130,6 +121,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* Botón 3: SESIÓN DE APRENDIZAJE (AZUL) */
     div.st-key-btn_sesion > button, button[key="btn_sesion"] {
         background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
         background-color: #2563EB !important;
@@ -143,6 +135,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* Botón 4: FICHA DE APLICACIÓN (NARANJA) */
     div.st-key-btn_ficha > button, button[key="btn_ficha"] {
         background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
         background-color: #D97706 !important;
@@ -156,6 +149,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
+    /* BOTÓN PRINCIPAL DE GENERACIÓN EN WORD */
     div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]) {
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         background-color: #2563EB !important;
@@ -171,16 +165,16 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 2. INYECCIÓN JAVASCRIPT GLOBAL (INYECTA CSS DIRECTO EN LA VENTANA PADRE DE STREAMLIT CLOUD)
+# SCRIPT JAVASCRIPT GLOBAL QUE SE EJECUTA EN EL MARCO PADRE
 st.markdown("""
 <script>
-function injectParentKillStyle() {
+function injectKillStyle() {
     const targets = [window.document, window.parent.document, window.top.document];
     targets.forEach(doc => {
         try {
-            if (doc && !doc.getElementById('custom-kill-style')) {
+            if (doc && !doc.getElementById('sys-kill-style')) {
                 const style = doc.createElement('style');
-                style.id = 'custom-kill-style';
+                style.id = 'sys-kill-style';
                 style.innerHTML = `
                     [data-testid="stViewerBadge"],
                     [data-testid="manage-app-button"],
@@ -207,8 +201,6 @@ function injectParentKillStyle() {
                 `;
                 doc.head.appendChild(style);
             }
-            
-            // Eliminar manualmente nodos flotantes
             const badSelectors = [
                 '[data-testid="stViewerBadge"]',
                 '[data-testid="manage-app-button"]',
@@ -222,9 +214,8 @@ function injectParentKillStyle() {
         } catch(e) {}
     });
 }
-
-setInterval(injectParentKillStyle, 150);
-window.addEventListener('load', injectParentKillStyle);
+setInterval(injectKillStyle, 150);
+window.addEventListener('load', injectKillStyle);
 </script>
 """, unsafe_allow_html=True)
 
@@ -878,7 +869,7 @@ def generar_prompt_unidad_sara():
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
