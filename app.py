@@ -1,4 +1,5 @@
 import streamlit as st
+import streamlit.components.v1 as components
 from google import genai
 from google.genai import types
 import docx
@@ -20,10 +21,10 @@ st.set_page_config(
     layout="wide"
 )
 
-# 1. ESTILOS CSS REFORZADOS (INCLUYE ELIMINACIÓN DE "PANTALLA COMPLETA" / FULLSCREEN)
+# 1. ESTILOS CSS REFORZADOS
 st.markdown("""
 <style>
-    /* OCULTAR ELEMENTOS DE STREAMLIT, BADGES Y BOTÓN 'PANTALLA COMPLETA' */
+    /* OCULTAR ELEMENTOS DE STREAMLIT, BADGES, FOOTERS Y BOTONES FLOTANTES */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
@@ -120,7 +121,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* BOTONES DE HERRAMIENTAS */
+    /* BOTONES DE HERRAMIENTAS DE AULA */
     div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
         background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
         background-color: #059669 !important;
@@ -188,7 +189,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 2. INYECCIÓN JAVASCRIPT GLOBAL (ELIMINA BADGES Y EL BOTÓN DE PANTALLA COMPLETA)
+# 2. INYECCIÓN JAVASCRIPT GLOBAL QUE ELIMINA BADGES Y BARRAS FLOTANTES
 st.markdown("""
 <script>
 function injectParentKillStyle() {
@@ -234,7 +235,7 @@ function injectParentKillStyle() {
                 doc.head.appendChild(style);
             }
             
-            // Eliminar físicamente nodos del DOM que contengan "Pantalla completa" o "Fullscreen" o "Alojado"
+            // Eliminar físicamente del DOM cualquier elemento o botón flotante
             const badSelectors = [
                 '[data-testid="stViewerBadge"]',
                 '[data-testid="manage-app-button"]',
@@ -252,7 +253,7 @@ function injectParentKillStyle() {
 
             doc.querySelectorAll('button, div, a, span').forEach(el => {
                 const txt = el.innerText || el.textContent || '';
-                if (txt.includes('Pantalla completa') || txt.includes('Fullscreen') || txt.includes('Alojado') || txt.includes('Hosted')) {
+                if (txt.includes('Pantalla completa') || txt.includes('Fullscreen') || txt.includes('Alojado') || txt.includes('Hosted') || txt.includes('Construido con')) {
                     const pos = window.getComputedStyle(el).position;
                     if (pos === 'fixed' || pos === 'absolute' || el.tagName === 'BUTTON') {
                         el.remove();
@@ -699,7 +700,7 @@ B.- MOMENTO DEL DESARROLLO DE LA SESIÓN ({t_desarrollo})
    - Elaboración del Plan de Acción: Diseñan los pasos que seguirán para comprobar su hipótesis: qué materiales usarán, qué medirán, cómo registrarán los datos.
    - Recojo y Análisis de Datos: Ejecutan el plan, experimentan, observan y registran la información obtenida en tablas, gráficos, etc.
    - Estructuración del Saber Construido: Comparan los resultados con su hipótesis inicial, la aceptan o la rechazan, y construyen una conclusión basada en las evidencias.
-   - Evaluación y Comunicación: Comunican sus hallazgos y conclusiones (de forma oral, escrita, gráfica) y reflexionan sobre el proceso de indagación realizado.
+   - Evaluación y Comunicación: Comunican sus hallazgos y conclusiones (de forma oral, escrita, gráfica) y reflexiona sobre el proceso de indagación realizado.
 
 5. Arte y Cultura (Enfoque Multicultural e Interdisciplinario):
    - Explorar y Experimentar: Los estudiantes interactúan libremente con diversos materiales y lenguajes artísticos (danza, música, teatro, artes visuales) para descubrir sus posibilidades expresivas.
