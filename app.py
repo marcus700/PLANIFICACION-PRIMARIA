@@ -15,7 +15,7 @@ import cneb_primaria_datos as cneb
 # CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
-    page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
+    page_title="PLANIFICAPRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
     page_icon="🍎",
     layout="wide"
 )
@@ -107,7 +107,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
+    /* Botón 2: UNIDAD DE APRENDIZAJE (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
@@ -320,7 +320,7 @@ with col_b1:
         st.rerun()
 
 with col_b2:
-    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
+    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
         st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
         st.rerun()
 
@@ -367,7 +367,7 @@ def add_formatted_text(paragraph, text):
 # ==============================================================================
 # CONVERTIDOR A WORD (.DOCX) CON PROCESAMIENTO GARANTIZADO DE LA ÚLTIMA TABLA
 # ==============================================================================
-def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
+def markdown_to_docx(md_text, ie_nombre="I.E. N°    ", es_horizontal=False):
     doc = docx.Document()
     
     # Paleta de colores pasteles rotativos para los encabezados de tablas
@@ -399,7 +399,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
         
     p_box = doc.add_paragraph()
     p_box.alignment = WD_ALIGN_PARAGRAPH.CENTER
-    run_box = p_box.add_run(f"🖼️ [ PEGAR AQUÍ LA INSIGNIA / ESCUDO DE LA {ie_nombre.upper()} ]\n")
     run_box.font.size = Pt(10)
     run_box.font.italic = True
     run_box.font.color.rgb = RGBColor(107, 114, 128)
@@ -511,13 +510,13 @@ st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", "N° 22303 'Santa Rosa de Lima'")
+    ie_nombre = st.text_input("Institución Educativa:", "N°  ")
 with c2:
-    director = st.text_input("Director:", "Lic. Bernardo Francisco Salcedo Barrientos")
-    subdirector = st.text_input("Subdirector(es):", "Mg. Mariela Velásquez Cárdenas / Mg. Frank Bernaola Pérez")
+    director = st.text_input("Director:", " ")
+    subdirector = st.text_input("Subdirector(es):", " ")
 with c3:
-    docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
-    grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
+    docente = st.text_input("Docente de Aula:", " ")
+    grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado ", "2do Grado ", "3er Grado ", "4to Grado ", "5to Grado ", "6to Grado "], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)"]:
     f1, f2, f3, f4 = st.columns(4)
