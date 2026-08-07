@@ -22,23 +22,32 @@ st.set_page_config(
 
 st.markdown("""
 <style>
-    /* 1. OCULTAR COMPLETAMENTE 'GESTIONAR LA APLICACIÓN' Y ELEMENTOS FLOTANTES DE STREAMLIT CLOUD */
+    /* 1. OCULTAR COMPLETAMENTE EN CELULARES Y PC ÍCONOS FLOTANTES, CORONAS, AVATARES Y BARRAS DE STREAMLIT */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important; display: none !important;}
     
     [data-testid="manage-app-button"],
-    .stAppDeployButton,
-    [data-testid="stHeader"],
-    [data-testid="stToolbar"],
-    [data-testid="stDecoration"],
-    [data-testid="stStatusWidget"],
     [data-testid="stViewerBadge"],
+    [data-testid="stStatusWidget"],
+    [data-testid="stDecoration"],
+    [data-testid="stToolbar"],
+    .stAppDeployButton,
     .viewerBadge_container__1613n,
     button[title="View app in Streamlit Community Cloud"],
     div[class*="stDeployButton"],
-    div[class*="viewerBadge"] {
+    div[class*="viewerBadge"],
+    div[class*="ViewerBadge"],
+    div[class*="profile"],
+    div[class*="Profile"],
+    div[class*="crown"],
+    div[class*="Crown"],
+    div[class*="badge"],
+    div[class*="Badge"],
+    div[class*="floating"],
+    div[class*="Floating"],
+    a[class*="viewerBadge"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
@@ -810,7 +819,7 @@ def generar_prompt_unidad_sara():
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
