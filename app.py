@@ -1,5 +1,4 @@
 import streamlit as st
-import streamlit.components.v1 as components
 from google import genai
 from google.genai import types
 import docx
@@ -21,50 +20,43 @@ st.set_page_config(
     layout="wide"
 )
 
-# 1. ESTILOS CSS REFORZADOS PARA ELIMINAR INSIGNIAS Y FLOTANTES
+# 1. ESTILOS CSS REFORZADOS
 st.markdown("""
 <style>
-    /* OCULTAR COMPLETAMENTE TODO ELEMENTO DE STREAMLIT CLOUD Y FLOTANTES */
+    /* OCULTAR ELEMENTOS DE STREAMLIT DENTRO DEL APP */
     header {visibility: hidden !important; display: none !important;}
     div[data-testid="stHeader"] {display: none !important;}
     #MainMenu {visibility: hidden !important;}
     footer {visibility: hidden !important; display: none !important;}
     
-    html body [data-testid="manage-app-button"],
-    html body [data-testid="stViewerBadge"],
-    html body [data-testid="stStatusWidget"],
-    html body [data-testid="stDecoration"],
-    html body [data-testid="stToolbar"],
-    html body .stAppDeployButton,
-    html body .viewerBadge_container__1613n,
-    html body button[title*="Streamlit"],
-    html body div[class*="stDeployButton"],
-    html body div[class*="viewerBadge"],
-    html body div[class*="ViewerBadge"],
-    html body a[class*="viewerBadge"],
-    html body a[class*="ViewerBadge"],
-    html body div[class*="profile"],
-    html body div[class*="Profile"],
-    html body div[class*="crown"],
-    html body div[class*="Crown"],
-    html body div[class*="hostBadge"],
-    html body div[class*="HostBadge"],
-    html body div[class*="badge"],
-    html body div[class*="Badge"],
-    html body div[class*="floating"],
-    html body div[class*="Floating"],
-    html body a[href*="streamlit"],
-    html body a[href*="share.streamlit.io"],
-    html body div[style*="position: fixed"][style*="bottom"],
-    html body a[style*="position: fixed"][style*="bottom"] {
+    [data-testid="manage-app-button"],
+    [data-testid="stViewerBadge"],
+    [data-testid="stStatusWidget"],
+    [data-testid="stDecoration"],
+    [data-testid="stToolbar"],
+    .stAppDeployButton,
+    .viewerBadge_container__1613n,
+    button[title*="Streamlit"],
+    div[class*="stDeployButton"],
+    div[class*="viewerBadge"],
+    div[class*="ViewerBadge"],
+    div[class*="profile"],
+    div[class*="Profile"],
+    div[class*="crown"],
+    div[class*="Crown"],
+    div[class*="badge"],
+    div[class*="Badge"],
+    div[class*="floating"],
+    div[class*="Floating"],
+    a[href*="streamlit"],
+    a[href*="share.streamlit.io"],
+    div[style*="position: fixed"][style*="bottom"],
+    a[style*="position: fixed"][style*="bottom"] {
         display: none !important;
         visibility: hidden !important;
         opacity: 0 !important;
         width: 0 !important;
         height: 0 !important;
-        max-width: 0 !important;
-        max-height: 0 !important;
-        overflow: hidden !important;
         pointer-events: none !important;
         position: absolute !important;
         left: -9999px !important;
@@ -111,9 +103,7 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* COLORES EXCLUSIVOS Y VISIBLES PARA CADA BOTÓN DE HERRAMIENTA */
-    
-    /* Botón 1: PROYECTO DE APRENDIZAJE (VERDE) */
+    /* BOTONES DE HERRAMIENTAS */
     div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
         background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
         background-color: #059669 !important;
@@ -127,7 +117,6 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
@@ -141,7 +130,6 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 3: SESIÓN DE APRENDIZAJE (AZUL) */
     div.st-key-btn_sesion > button, button[key="btn_sesion"] {
         background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
         background-color: #2563EB !important;
@@ -155,7 +143,6 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 4: FICHA DE APLICACIÓN (NARANJA) */
     div.st-key-btn_ficha > button, button[key="btn_ficha"] {
         background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
         background-color: #D97706 !important;
@@ -169,7 +156,6 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* BOTÓN PRINCIPAL DE GENERACIÓN EN WORD */
     div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]) {
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         background-color: #2563EB !important;
@@ -185,50 +171,60 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# 2. SCRIPT JAVASCRIPT DINÁMICO PARA ELIMINAR EL BADGE DE STREAMLIT DE RAÍZ
+# 2. INYECCIÓN JAVASCRIPT GLOBAL (INYECTA CSS DIRECTO EN LA VENTANA PADRE DE STREAMLIT CLOUD)
 st.markdown("""
 <script>
-function cleanBadges() {
-    const parentDoc = window.parent.document;
-    const selectors = [
-        '[data-testid="stViewerBadge"]',
-        '[data-testid="manage-app-button"]',
-        '.stAppDeployButton',
-        '.viewerBadge_container__1613n',
-        'a[href*="streamlit"]',
-        'a[href*="share.streamlit.io"]',
-        'div[class*="viewerBadge"]',
-        'div[class*="ViewerBadge"]',
-        'div[class*="profile"]',
-        'div[class*="Profile"]',
-        'div[class*="crown"]',
-        'div[class*="Crown"]',
-        'div[class*="badge"]',
-        'div[class*="Badge"]'
-    ];
-    selectors.forEach(sel => {
+function injectParentKillStyle() {
+    const targets = [window.document, window.parent.document, window.top.document];
+    targets.forEach(doc => {
         try {
-            parentDoc.querySelectorAll(sel).forEach(el => el.remove());
-            document.querySelectorAll(sel).forEach(el => el.remove());
+            if (doc && !doc.getElementById('custom-kill-style')) {
+                const style = doc.createElement('style');
+                style.id = 'custom-kill-style';
+                style.innerHTML = `
+                    [data-testid="stViewerBadge"],
+                    [data-testid="manage-app-button"],
+                    .viewerBadge_container__1613n,
+                    .stAppDeployButton,
+                    div[class*="viewerBadge"],
+                    div[class*="ViewerBadge"],
+                    a[class*="viewerBadge"],
+                    a[class*="ViewerBadge"],
+                    div[class*="profile"],
+                    div[class*="Profile"],
+                    div[class*="crown"],
+                    div[class*="Crown"],
+                    div[class*="badge"],
+                    div[class*="Badge"],
+                    a[href*="streamlit"] {
+                        display: none !important;
+                        visibility: hidden !important;
+                        opacity: 0 !important;
+                        pointer-events: none !important;
+                        width: 0 !important;
+                        height: 0 !important;
+                    }
+                `;
+                doc.head.appendChild(style);
+            }
+            
+            // Eliminar manualmente nodos flotantes
+            const badSelectors = [
+                '[data-testid="stViewerBadge"]',
+                '[data-testid="manage-app-button"]',
+                '.stAppDeployButton',
+                '.viewerBadge_container__1613n',
+                'a[href*="streamlit"]'
+            ];
+            badSelectors.forEach(s => {
+                doc.querySelectorAll(s).forEach(el => el.remove());
+            });
         } catch(e) {}
     });
-    
-    // Buscar y eliminar cualquier elemento flotante que contenga "Alojado" o "Streamlit"
-    try {
-        const allElements = parentDoc.querySelectorAll('a, div, button');
-        allElements.forEach(el => {
-            if (el.innerText && (el.innerText.includes('Alojado') || el.innerText.includes('Streamlit'))) {
-                const pos = window.getComputedStyle(el).position;
-                if (pos === 'fixed' || pos === 'absolute') {
-                    el.remove();
-                }
-            }
-        });
-    } catch(e) {}
 }
 
-setInterval(cleanBadges, 200);
-window.addEventListener('load', cleanBadges);
+setInterval(injectParentKillStyle, 150);
+window.addEventListener('load', injectParentKillStyle);
 </script>
 """, unsafe_allow_html=True)
 
@@ -882,7 +878,7 @@ def generar_prompt_unidad_sara():
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE (Modelo SARA).
-PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura strictly en TABLAS Y CUADROS.
+PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y estructura estrictamente en TABLAS Y CUADROS.
 
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
