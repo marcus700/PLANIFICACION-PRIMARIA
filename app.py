@@ -234,7 +234,7 @@ window.addEventListener('load', injectKillStyle);
 </script>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header">🍎 PLANIFICA PRIMARIA - SISTEMA PARA DOCENTE DE AULA</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
@@ -333,7 +333,7 @@ with col_b1:
         st.rerun()
 
 with col_b2:
-    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
+    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
         st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
         st.rerun()
 
@@ -381,7 +381,7 @@ def add_formatted_text(paragraph, text):
         else:
             paragraph.add_run(part)
 
-def markdown_to_docx(md_text, ie_nombre="I.E. N°    ", es_horizontal=False):
+def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     doc = docx.Document()
     PASTEL_COLORS = ['D9E1F2', 'E2EFDA', 'FFF2CC', 'E8D8F8', 'E0F2FE', 'FCE4D6']
     table_count = 0
@@ -500,7 +500,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N°    ", es_horizontal=False):
     return buffer
 
 def generar_imagen_nanobanana(client, tema, grado, area):
-    """Genera un afiche/infografía educativa completa estilo MINEDU con Nano Banana"""
+    """Genera un afiche/infografía educativa completa estilo MINEDU con Nano Banana / Imagen"""
     prompt_nanobanana = f"""
     Full educational primary school session infographic poster (Estilo Sesión de Aprendizaje e Infografía Oficial MINEDU Perú).
     Grade: {grado}. Subject: {area}. Topic: '{tema}'.
@@ -513,22 +513,37 @@ def generar_imagen_nanobanana(client, tema, grado, area):
     
     Art Style: Highly detailed vector educational infographic poster layout, pastel blue/green/yellow/orange cards with rounded borders, white background, clean outlines, cute Peruvian primary school children illustrations, 3:4 vertical poster format.
     """
-    try:
-        result = client.models.generate_images(
-            model='imagen-3.0-generate-002',  # Motor Nano Banana / Imagen 3 de Google AI Studio
-            prompt=prompt_nanobanana,
-            config=dict(
-                number_of_images=1,
-                output_mime_type="image/jpeg",
-                aspect_ratio="3:4",
+    
+    # Lista de modelos compatibles de Google AI Studio (Sistema de cascada si el primero no responde)
+    modelos_imagen = [
+        'imagen-3.0-generate-002',
+        'imagen-3.0-fast-generate-001',
+        'imagen-3.0-generate-001',
+        'gemini-2.5-flash-image'
+    ]
+    
+    ultimo_error = None
+    
+    for mod in modelos_imagen:
+        try:
+            result = client.models.generate_images(
+                model=mod,
+                prompt=prompt_nanobanana,
+                config=types.GenerateImagesConfig(
+                    number_of_images=1,
+                    output_mime_type="image/jpeg",
+                    aspect_ratio="3:4",
+                )
             )
-        )
-        for gen_img in result.generated_images:
-            img_bytes = gen_img.image.image_bytes
-            img = Image.open(io.BytesIO(img_bytes))
-            return img, img_bytes
-    except Exception as img_err:
-        return None, None
+            for gen_img in result.generated_images:
+                img_bytes = gen_img.image.image_bytes
+                img = Image.open(io.BytesIO(img_bytes))
+                return img, img_bytes, None
+        except Exception as err:
+            ultimo_error = str(err)
+            continue
+            
+    return None, None, ultimo_error
 
 # ==============================================================================
 # FORMULARIO DE DATOS DE AULA
@@ -538,12 +553,12 @@ st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", "N°   ")
+    ie_nombre = st.text_input("Institución Educativa:", "N° 22303 'Santa Rosa de Lima'")
 with c2:
-    director = st.text_input("Director:", " ")
-    subdirector = st.text_input("Subdirector(es):", " ")
+    director = st.text_input("Director:", "Lic. Bernardo Francisco Salcedo Barrientos")
+    subdirector = st.text_input("Subdirector(es):", "Mg. Mariela Velásquez Cárdenas / Mg. Frank Bernaola Pérez")
 with c3:
-    docente = st.text_input("Docente de Aula:", " ")
+    docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
@@ -571,7 +586,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
 
-else:  # Unidad de Aprendizaje
+else:  # Unidad SARA
     f1, f2, f3 = st.columns(3)
     with f1:
         num_doc = st.text_input("N.° de Unidad:", "01")
@@ -609,7 +624,7 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Un Especialista en Currículo Nacional de Educación Básica (CNEB) del MINEDU, experto en planificación pedagógica de nivel Primaria.
-Tu objetivo: Elaborar una sesión de aprendizaje completa siguiendo strictly el formato y estructura del modelo proporcionado.
+Tu objetivo: Elaborar una sesión de aprendizaje completa siguiendo estrictamente el formato y estructura del modelo proporcionado.
 
 Datos para la sesión (Configuración):
 • Grado y Sección: {grado_seccion}
@@ -727,7 +742,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
             # SI SE SELECCIONA EL AFICHE DE NANO BANANA:
             if tipo_documento == "Afiche Educativo de la Sesión (Nano Banana)":
                 with st.spinner("🎨 Nano Banana está diseñando la Lámina / Afiche Educativo Ilustrado en HD para tu sesión..."):
-                    img_obj, img_bytes = generar_imagen_nanobanana(
+                    img_obj, img_bytes, err_detallado = generar_imagen_nanobanana(
                         client, 
                         tema=problema_contexto, 
                         grado=grado_seccion, 
@@ -744,11 +759,12 @@ if st.button(f"✨ Generar {tipo_documento}"):
 **Institución Educativa:** {ie_nombre} | **Docente:** {docente}  
 
 ---
-*El afiche e infografía educativa ilustrada ha sido generado en alta resolución. Puedes observarlo en la vista previa y descargarlo directamente en formato JPG listo para imprimir o proyectar en el aula.*
+*El afiche ilustrado ha sido generado en alta resolución. Puedes observarlo en la vista previa y descargarlo directamente en formato JPG listo para imprimir o proyectar en el aula.*
 """
-                        st.success("✅ ¡Afiche Educativo Ilustrado de Nano Banana generado con éxito!")
+                        st.success("✅ ¡Afiche Educativo Ilustrado generado con éxito!")
                     else:
-                        st.error("❌ Ocurrió un inconveniente al generar la imagen. Intenta de nuevo.")
+                        st.error(f"❌ Ocurrió un problema de la API de Google AI Studio al generar la imagen. Detalle técnico: {err_detallado}")
+                        st.info("💡 **Sugerencia:** Si utilizas una clave gratuita de Google AI Studio, asegúrate de haber aceptado los términos del servicio o prueba generando primero una Sesión de Aprendizaje.")
 
             # SI SE SELECCIONA OTRA HERRAMIENTA (PROYECTO, UNIDAD, SESIÓN, FICHA):
             else:
