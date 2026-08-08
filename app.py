@@ -180,7 +180,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# SCRIPT JAVASCRIPT GLOBAL
+# SCRIPT JAVASCRIPT GLOBAL QUE SE EJECUTA EN EL MARCO PADRE
 st.markdown("""
 <script>
 function injectKillStyle() {
@@ -317,7 +317,7 @@ st.sidebar.info("""
 • Estándares y Desempeños CNEB Íntegros
 • Turno Único: 2 a 3 Sesiones diarias de 90 min
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Generador de Infografía con Nano Banana
+• Generación de Lámina de Actividades con Nano Banana
 """)
 
 # ==============================================================================
@@ -370,7 +370,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# FUNCIONES AUXILIARES Y GENERADOR DE IMÁGENES NANO BANANA
+# FUNCIONES AUXILIARES Y GENERADOR DE AFICHE DE ACTIVIDADES NANO BANANA
 # ==============================================================================
 def add_formatted_text(paragraph, text):
     parts = re.split(r'(\*\*.*?\*\*)', text)
@@ -500,16 +500,21 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     return buffer
 
 def generar_imagen_nanobanana(client, tema, grado, area):
-    """Genera la imagen infográfica educativa con Nano Banana (Google AI Studio)"""
+    """Genera una lámina de actividades tipo afiche MINEDU paso a paso con Nano Banana"""
     prompt_nanobanana = f"""
-    Educational infographic poster for primary school children ({grado} in Peru MINEDU).
-    Subject: {area}. Topic: '{tema}'.
-    Visual style: Bright, clean, colorful, vector illustration educational poster.
-    Features: Clear visual sections, friendly Peruvian primary school students, key concept boxes, vivid pastel colors, clean layout, 3:4 aspect ratio.
+    Official MINEDU Peru primary school educational activity poster (Lámina educativa de actividades paso a paso).
+    Grade: {grado}. Subject: {area}. Topic: '{tema}'.
+    
+    Visual format: A 3-step sequential activity poster with 3 distinct illustrated panels showing Peruvian primary school children engaged in learning activities:
+    - Panel 1 (Inicio / Problematización): Peruvian students observing, asking questions, or discovering a problem about '{tema}'.
+    - Panel 2 (Desarrollo / Indagación): Students working in teams, reading, experimenting, or manipulating learning materials.
+    - Panel 3 (Cierre / Conclusión): Students presenting their work, smiling, or writing their conclusions on a poster board.
+    
+    Style: Bright, clean, colorful Peruvian MINEDU textbook vector illustration style, bright pastel colors, clear outline, educational, friendly, school classroom context, 3:4 vertical poster format.
     """
     try:
         result = client.models.generate_images(
-            model='imagen-3.0-generate-002',  # Motor Nano Banana / Imagen de Google AI Studio
+            model='imagen-3.0-generate-002',  # Motor Nano Banana / Imagen 3 de Google AI Studio
             prompt=prompt_nanobanana,
             config=dict(
                 number_of_images=1,
@@ -691,14 +696,13 @@ ESTRUCTURA DE SALIDA REQUERIDA (MARKDOWN PURA EN TABLAS):
 """
 
 def generar_prompt_infografia():
-    # Si existe una sesión de aprendizaje generada previamente en la memoria del sistema, se usa como contexto directo
     contexto_sesion_previa = ""
     if st.session_state.get('resultado_md'):
-        contexto_sesion_previa = f"\n\nNOTA: Utiliza fielmente el contenido pedagógico de la SESIÓN DE APRENDIZAJE previamente generada:\n{st.session_state['resultado_md'][:2000]}\n"
+        contexto_sesion_previa = f"\n\nNOTA: Utiliza fielmente las actividades pedagógicas de la SESIÓN DE APRENDIZAJE generada previamente:\n{st.session_state['resultado_md'][:2000]}\n"
 
     return f"""
 Actúa como: Especialista en Comunicación Visual Educativa y Diseñador de Materiales del MINEDU Perú (Educación Primaria - CNEB).
-Tu objetivo: Elaborar el contenido completo de una INFOGRAFÍA EDUCATIVA TIPO MINEDU basada directamente en la sesión de aprendizaje sobre '{problema_contexto}' para niños de {grado_seccion}.{contexto_sesion_previa}
+Tu objetivo: Elaborar el contenido completo de una INFOGRAFÍA EDUCATIVA TIPO MINEDU basada directamente en las actividades de la sesión sobre '{problema_contexto}' para niños de {grado_seccion}.{contexto_sesion_previa}
 
 DATOS DE CONFIGURACIÓN DE LA INFOGRAFÍA MINEDU:
 • Grado y Sección: {grado_seccion}
@@ -730,11 +734,11 @@ ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN TABLAS Y CUADROS MARKDOWN SIN HTM
 | [Concepto 2 de la sesión] | [Explicación sencilla] | [Ejemplo práctico] |
 | [Concepto 3 de la sesión] | [Explicación sencilla] | [Ejemplo práctico] |
 
-• TABLA IV: NUESTRO CAMINO DE APRENDIZAJE (PROCESO DIDÁCTICO DEL ÁREA: {area_sel})
-| 🚀 PASO / MOMENTO | 🎬 ¿QUÉ HACEMOS Y CÓMO LO RESOLVEMOS? | 🛠️ PISTA O ESTRATEGIA CLAVE |
-| **PASO 1** | [Primer paso del proceso didáctico CNEB] | [Estrategia o consejo] |
-| **PASO 2** | [Segundo paso del proceso didáctico CNEB] | [Estrategia o consejo] |
-| **PASO 3** | [Tercer paso del proceso didáctico CNEB] | [Estrategia o consejo] |
+• TABLA IV: NUESTRO CAMINO DE APRENDIZAJE (PASO A PASO DE LAS ACTIVIDADES DE LA SESIÓN - ÁREA: {area_sel})
+| 🚀 PASO / MOMENTO | 🎬 ¿QUÉ HACEMOS Y CÓMO LO RESOLVEMOS EN EL AULA? | 🛠️ PISTA O ESTRATEGIA CLAVE |
+| **PASO 1** | [Primer paso de la actividad de aprendizaje CNEB] | [Estrategia o consejo] |
+| **PASO 2** | [Segundo paso de la actividad de aprendizaje CNEB] | [Estrategia o consejo] |
+| **PASO 3** | [Tercer paso de la actividad de aprendizaje CNEB] | [Estrategia o consejo] |
 
 • TABLA V: DATO CURIOSO / ¿SABÍAS QUE...?
 | 🌟 ¿SABÍAS QUE...? (DATO CURIOSO DIVERTIMEDU) |
@@ -824,9 +828,9 @@ if st.button(f"✨ Generar {tipo_documento}"):
                 st.session_state['fname_clean'] = f"{tipo_documento.replace(' ', '_')}_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx"
                 st.session_state['ie_nombre_generado'] = ie_nombre
                 
-                # SI ES INFOGRAFÍA, GENERAMOS ADEMÁS LA IMAGEN ILUSTRADA CON NANO BANANA
+                # SI ES INFOGRAFÍA, GENERAMOS LA LÁMINA DE ACTIVIDADES CON NANO BANANA
                 if tipo_documento == "Infografía MINEDU de la Sesión":
-                    with st.spinner("🎨 Nano Banana está diseñando el afiche infográfico ilustrado en HD..."):
+                    with st.spinner("🎨 Nano Banana está diseñando la Lámina de Actividades de la Sesión (Estilo Oficial MINEDU)..."):
                         img_obj, img_bytes = generar_imagen_nanobanana(
                             client, 
                             tema=problema_contexto, 
@@ -856,10 +860,10 @@ if st.session_state['resultado_md'] is not None:
     tab_preview, tab_download = st.tabs(["📄 Vista Previa (Permanente)", "📥 Descargar Word / Imagen"])
     
     with tab_preview:
-        # Si se generó una imagen con Nano Banana, se muestra arriba de las tablas
+        # Muestra la lámina ilustrada de actividades generada por Nano Banana
         if st.session_state.get('imagen_nanobanana') is not None:
-            st.markdown("### 🖼️ Afiche Infográfico Ilustrado (Generado por Nano Banana AI)")
-            st.image(st.session_state['imagen_nanobanana'], caption=f"Infografía Ilustrada para {grado_seccion}", use_container_width=True)
+            st.markdown("### 🖼️ Lámina Didáctica de Actividades - Estilo MINEDU (Nano Banana AI)")
+            st.image(st.session_state['imagen_nanobanana'], caption=f"Lámina Ilustrada de Actividades para {grado_seccion} - {problema_contexto}", use_container_width=True)
             st.markdown("---")
 
         st.markdown(st.session_state['resultado_md'])
@@ -880,12 +884,12 @@ if st.session_state['resultado_md'] is not None:
             mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
         )
 
-        # Si existe imagen de Nano Banana, muestra botón para descargar la foto en JPG
+        # Botón para descargar la Lámina de Actividades de Nano Banana en JPG
         if st.session_state.get('imagen_bytes') is not None:
             st.download_button(
-                label="🖼️ Descargar Imagen de Infografía Nano Banana (.jpg)",
+                label="🖼️ Descargar Lámina de Actividades en JPG (Nano Banana)",
                 data=st.session_state['imagen_bytes'],
-                file_name=f"Infografia_NanoBanana_{grado_seccion.replace(' ', '_')}.jpg",
+                file_name=f"Lamina_Actividades_MINEDU_{grado_seccion.replace(' ', '_')}.jpg",
                 mime="image/jpeg"
             )
             
