@@ -370,7 +370,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# FUNCIONES AUXILIARES Y GENERADOR DE AFICHE NANO BANANA
+# FUNCIONES AUXILIARES Y GENERADOR HÍBRIDO NANO BANANA / GEMINI MULTIMODAL
 # ==============================================================================
 def add_formatted_text(paragraph, text):
     parts = re.split(r'(\*\*.*?\*\*)', text)
@@ -500,7 +500,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     return buffer
 
 def generar_imagen_nanobanana(client, tema, grado, area):
-    """Genera un afiche/infografía educativa completa estilo MINEDU con Nano Banana / Imagen"""
+    """Genera la imagen infográfica educativa con sistema dual (Imagen 3 / Gemini Multimodal)"""
     prompt_nanobanana = f"""
     Full educational primary school session infographic poster (Estilo Sesión de Aprendizaje e Infografía Oficial MINEDU Perú).
     Grade: {grado}. Subject: {area}. Topic: '{tema}'.
@@ -514,16 +514,10 @@ def generar_imagen_nanobanana(client, tema, grado, area):
     Art Style: Highly detailed vector educational infographic poster layout, pastel blue/green/yellow/orange cards with rounded borders, white background, clean outlines, cute Peruvian primary school children illustrations, 3:4 vertical poster format.
     """
     
-    # Lista de modelos compatibles de Google AI Studio (Sistema de cascada si el primero no responde)
-    modelos_imagen = [
-        'imagen-3.0-generate-002',
-        'imagen-3.0-fast-generate-001',
-        'imagen-3.0-generate-001',
-        'gemini-2.5-flash-image'
-    ]
-    
     ultimo_error = None
     
+    # MÉTODO 1: Probar modelos de Imagen
+    modelos_imagen = ['imagen-3.0-generate-002', 'imagen-3.0-fast-generate-001', 'imagen-3.0-generate-001']
     for mod in modelos_imagen:
         try:
             result = client.models.generate_images(
@@ -535,14 +529,36 @@ def generar_imagen_nanobanana(client, tema, grado, area):
                     aspect_ratio="3:4",
                 )
             )
-            for gen_img in result.generated_images:
-                img_bytes = gen_img.image.image_bytes
-                img = Image.open(io.BytesIO(img_bytes))
-                return img, img_bytes, None
+            if hasattr(result, 'generated_images') and result.generated_images:
+                for gen_img in result.generated_images:
+                    img_bytes = gen_img.image.image_bytes
+                    img = Image.open(io.BytesIO(img_bytes))
+                    return img, img_bytes, None
         except Exception as err:
             ultimo_error = str(err)
             continue
-            
+
+    # MÉTODO 2: Probar generación multimodal nativa vía generate_content
+    modelos_multimodal = ['gemini-2.0-flash-exp', 'gemini-2.0-flash']
+    for mod in modelos_multimodal:
+        try:
+            response = client.models.generate_content(
+                model=mod,
+                contents=f"Genera la imagen de un afiche educativo visual: {prompt_nanobanana}",
+                config=types.GenerateContentConfig(
+                    response_modalities=["TEXT", "IMAGE"]
+                )
+            )
+            if hasattr(response, 'candidates') and response.candidates:
+                for part in response.candidates[0].content.parts:
+                    if hasattr(part, 'inline_data') and part.inline_data and part.inline_data.data:
+                        img_bytes = part.inline_data.data
+                        img = Image.open(io.BytesIO(img_bytes))
+                        return img, img_bytes, None
+        except Exception as err:
+            ultimo_error = str(err)
+            continue
+
     return None, None, ultimo_error
 
 # ==============================================================================
@@ -763,8 +779,8 @@ if st.button(f"✨ Generar {tipo_documento}"):
 """
                         st.success("✅ ¡Afiche Educativo Ilustrado generado con éxito!")
                     else:
-                        st.error(f"❌ Ocurrió un problema de la API de Google AI Studio al generar la imagen. Detalle técnico: {err_detallado}")
-                        st.info("💡 **Sugerencia:** Si utilizas una clave gratuita de Google AI Studio, asegúrate de haber aceptado los términos del servicio o prueba generando primero una Sesión de Aprendizaje.")
+                        st.error(f"❌ Ocurrió un inconveniente al generar la imagen. Detalle técnico: {err_detallado}")
+                        st.info("💡 **Aviso:** Si tu clave de Google AI Studio es de nivel gratuito y limita Imagen 3, el sistema intenta utilizar la generación nativa de Gemini. Si persiste, verifica que la clave API esté bien escrita.")
 
             # SI SE SELECCIONA OTRA HERRAMIENTA (PROYECTO, UNIDAD, SESIÓN, FICHA):
             else:
