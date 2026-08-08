@@ -719,7 +719,7 @@ ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN CUADROS/TABLAS MARKDOWN Y SIN SIT
 def generar_prompt_ficha_trabajo():
     return f"""
 Actúa como: Especialista en Educación Primaria (CNEB - MINEDU Perú) y diseñador experto de material educativo impreso para estudiantes de primaria.
-Tu objetivo: Elaborar una FICHA DE TRABAJO / APLICACIÓN PARA EL ESTUDIANTE altamente didáctica, motivadora, visualmente ordenada en cuadros/tablas y lista para imprimir.
+Tu objetivo: Elaborar una FICHA DE TRABAJO / APLICACIÓN PARA EL ESTUDIANTE highly didáctica, motivadora, visualmente ordenada en cuadros/tablas y lista para imprimir.
 
 DATOS DE CONFIGURACIÓN DE LA FICHA:
 • Grado y Sección: {grado_seccion}
@@ -898,6 +898,17 @@ V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (
    - Presenta la Matriz Curricular completa en sus 8 COLUMNAS EXACTAS:
      | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
    
+   - REGLA CRÍTICA OBLIGATORIA PARA MATEMÁTICA Y COMUNICACIÓN:
+     1. En el área de MATEMÁTICA debes abordar e incluir OBLIGATORIAMENTE LAS 4 COMPETENCIAS del CNEB distribuida a lo largo de la unidad:
+        - Resuelve problemas de cantidad.
+        - Resuelve problemas de regularidad, equivalencia y cambio.
+        - Resuelve problemas de forma, movimiento y localización.
+        - Resuelve problemas de gestión de datos e incertidumbre.
+     2. En el área de COMUNICACIÓN debes abordar e incluir OBLIGATORIAMENTE LAS 3 COMPETENCIAS del CNEB distribuida a lo largo de la unidad:
+        - Se comunica oralmente en su lengua materna.
+        - Lee diversos tipos de textos escritos en su lengua materna.
+        - Escribe diversos tipos de textos en su lengua materna.
+
    - REGLA STRICTA Y ABSOLUTA PARA EL ESTÁNDAR DE APRENDIZAJE:
      1. El Estándar de Aprendizaje del ciclo correspondiente debe escribirse TAL CUAL figura de forma oficial en el CNEB (RM N.º 649-2016-MINEDU).
      2. Queda STRICTAMENTE PROHIBIDO modificar, parafrasear, resumir, cortar u omitir cualquier parte del texto del estándar. Debe incluirse el texto completo e íntegro del estándar del ciclo.
@@ -905,7 +916,7 @@ V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (
    
    - Copia el DESEMPEÑO ÍNTEGRO del CNEB resaltando en **negrita** la parte trabajada.
    - Formula CRITERIOS DE EVALUACIÓN claros basados en: Verbo de acción + Contenido disciplinar + Condición/Contexto.
-   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
+   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 competencias), Matemática (4 competencias), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
 VI. TUTORÍA Y EDUCACIÓN EDUCATIVA:
 | DIMENSIÓN | SESIÓN | ¿QUÉ BUSCAMOS? |
@@ -960,6 +971,7 @@ if st.button(f"✨ Generar {tipo_documento} en Word"):
                 sys_inst = (
                     "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
                     "Elaboras Unidades de Aprendizaje completas en formato Markdown. "
+                    "REGLA CRÍTICA PARA MATEMÁTICA Y COMUNICACIÓN: Debes incluir OBLIGATORIAMENTE las 4 competencias del área de Matemática y las 3 competencias del área de Comunicación a lo largo de la unidad. "
                     "REGLA CRÍTICA PARA EL ESTÁNDAR DE APRENDIZAJE: Debes copiar el texto completo e íntegro del Estándar de Aprendizaje oficial del CNEB (RM N.° 649-2016-MINEDU) para la competencia seleccionada, sin modificar, resumir, alterar ni recortar ninguna palabra. "
                     "Resalta en NEGRITA (**texto**) únicamente el fragmento o porción específica del estándar que se moviliza o evalúa en la actividad. El resto del estándar debe permanecer exactamente en texto normal. "
                     "Si el docente proporciona su propia Situación Significativa o actividades, utilízalas y respétalas íntegramente; si solo indica un problema breve, genera la Situación Significativa automáticamente."
