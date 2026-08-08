@@ -16,7 +16,7 @@ import cneb_primaria_datos as cneb
 # CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
-    page_title="PLANIFICA PRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
+    page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
     page_icon="🍎",
     layout="wide"
 )
@@ -108,7 +108,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 2: UNIDAD DE APRENDIZAJE (PURPURA / MORADO) */
+    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
@@ -150,29 +150,29 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 5: INFOGRAFÍA MINEDU (ROJO / CARMESÍ) */
-    div.st-key-btn_infografia > button, button[key="btn_infografia"] {
+    /* Botón 5: AFICHE NANO BANANA (ROJO / CARMESÍ) */
+    div.st-key-btn_afiche > button, button[key="btn_afiche"] {
         background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
         background-color: #DC2626 !important;
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
     }
-    div.st-key-btn_infografia > button p, button[key="btn_infografia"] p, div.st-key-btn_infografia > button span {
+    div.st-key-btn_afiche > button p, button[key="btn_afiche"] p, div.st-key-btn_afiche > button span {
         color: #FFFFFF !important;
         font-weight: 800 !important;
         font-size: 1.05rem !important;
     }
 
     /* BOTÓN PRINCIPAL DE GENERACIÓN */
-    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]):not([key="btn_infografia"]) {
+    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]):not([key="btn_afiche"]) {
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         background-color: #2563EB !important;
         border-radius: 10px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
     }
-    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]):not([key="btn_infografia"]) p {
+    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]):not([key="btn_afiche"]) p {
         color: #FFFFFF !important;
         font-weight: 800 !important;
         font-size: 1.1rem !important;
@@ -180,7 +180,7 @@ st.markdown("""
 </style>
 """, unsafe_allow_html=True)
 
-# SCRIPT JAVASCRIPT GLOBAL QUE SE EJECUTA EN EL MARCO PADRE
+# SCRIPT JAVASCRIPT GLOBAL
 st.markdown("""
 <script>
 function injectKillStyle() {
@@ -255,7 +255,7 @@ def check_password():
         pwd_input = st.text_input("Contraseña de acceso:", type="password", key="pwd_input")
         
         if st.button("Ingresar 🚀"):
-            target_pwd = st.secrets.get("APP_PASSWORD", "docente52026")
+            target_pwd = st.secrets.get("APP_PASSWORD", "docente2026")
             if pwd_input == target_pwd:
                 st.session_state["password_correct"] = True
                 st.rerun()
@@ -317,7 +317,7 @@ st.sidebar.info("""
 • Estándares y Desempeños CNEB Íntegros
 • Turno Único: 2 a 3 Sesiones diarias de 90 min
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Generación de Lámina de Actividades con Nano Banana
+• Generador de Infografía / Afiche con Nano Banana
 """)
 
 # ==============================================================================
@@ -333,8 +333,8 @@ with col_b1:
         st.rerun()
 
 with col_b2:
-    if st.button("📘 Unidad de aprendizaje", key="btn_unidad", use_container_width=True):
-        st.session_state['tipo_documento'] = "Unidad de Aprendizaje"
+    if st.button("📘 Unidad de Aprendizaje", key="btn_unidad", use_container_width=True):
+        st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
         st.rerun()
 
 with col_b3:
@@ -348,18 +348,18 @@ with col_b4:
         st.rerun()
 
 with col_b5:
-    if st.button("📊 Infografía MINEDU", key="btn_infografia", use_container_width=True):
-        st.session_state['tipo_documento'] = "Infografía MINEDU de la Sesión"
+    if st.button("🖼️ Afiche Nano Banana", key="btn_afiche", use_container_width=True):
+        st.session_state['tipo_documento'] = "Afiche Educativo de la Sesión (Nano Banana)"
         st.rerun()
 
 tipo_documento = st.session_state['tipo_documento']
 
 COLOR_MAP = {
     "Proyecto de Aprendizaje": "#059669",
-    "Unidad de Aprendizaje": "#7C3AED",
+    "Unidad de Aprendizaje (Modelo SARA)": "#7C3AED",
     "Sesión de Aprendizaje": "#2563EB",
     "Ficha de Aplicación / Trabajo (Para Alumnos)": "#D97706",
-    "Infografía MINEDU de la Sesión": "#DC2626"
+    "Afiche Educativo de la Sesión (Nano Banana)": "#DC2626"
 }
 banner_color = COLOR_MAP.get(tipo_documento, "#059669")
 
@@ -370,7 +370,7 @@ st.markdown(f"""
 """, unsafe_allow_html=True)
 
 # ==============================================================================
-# FUNCIONES AUXILIARES Y GENERADOR DE AFICHE DE ACTIVIDADES NANO BANANA
+# FUNCIONES AUXILIARES Y GENERADOR DE AFICHE NANO BANANA
 # ==============================================================================
 def add_formatted_text(paragraph, text):
     parts = re.split(r'(\*\*.*?\*\*)', text)
@@ -381,7 +381,7 @@ def add_formatted_text(paragraph, text):
         else:
             paragraph.add_run(part)
 
-def markdown_to_docx(md_text, ie_nombre="I.E. N°      ", es_horizontal=False):
+def markdown_to_docx(md_text, ie_nombre="I.E. N°    ", es_horizontal=False):
     doc = docx.Document()
     PASTEL_COLORS = ['D9E1F2', 'E2EFDA', 'FFF2CC', 'E8D8F8', 'E0F2FE', 'FCE4D6']
     table_count = 0
@@ -500,17 +500,18 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N°      ", es_horizontal=False):
     return buffer
 
 def generar_imagen_nanobanana(client, tema, grado, area):
-    """Genera una lámina de actividades tipo afiche MINEDU paso a paso con Nano Banana"""
+    """Genera un afiche/infografía educativa completa estilo MINEDU con Nano Banana"""
     prompt_nanobanana = f"""
-    Official MINEDU Peru primary school educational activity poster (Lámina educativa de actividades paso a paso).
+    Full educational primary school session infographic poster (Estilo Sesión de Aprendizaje e Infografía Oficial MINEDU Perú).
     Grade: {grado}. Subject: {area}. Topic: '{tema}'.
     
-    Visual format: A 3-step sequential activity poster with 3 distinct illustrated panels showing Peruvian primary school children engaged in learning activities:
-    - Panel 1 (Inicio / Problematización): Peruvian students observing, asking questions, or discovering a problem about '{tema}'.
-    - Panel 2 (Desarrollo / Indagación): Students working in teams, reading, experimenting, or manipulating learning materials.
-    - Panel 3 (Cierre / Conclusión): Students presenting their work, smiling, or writing their conclusions on a poster board.
+    Visual Poster Layout & Structure:
+    - TOP HEADER BANNER: Bold title "SESIÓN DE APRENDIZAJE: {tema.upper()}" with cute primary school children cartoon mascot icons.
+    - TOP SECTION (DATOS Y PROPÓSITO): Small pastel information card boxes with checkmark icons detailing learning goals.
+    - MAIN SECTION (DESARROLLO DE ACTIVIDADES EN SECUENCIA): Numbered activity step cards (1, 2, 3, 4) with timer clock icons, showing friendly Peruvian primary school students actively performing the learning activities step-by-step for '{tema}' in a safe classroom/school setting.
+    - BOTTOM SECTION (REFLEXIÓN Y RECUERDA): A bottom "RECUERDA" bar with small safety tip badges and smile icons.
     
-    Style: Bright, clean, colorful Peruvian MINEDU textbook vector illustration style, bright pastel colors, clear outline, educational, friendly, school classroom context, 3:4 vertical poster format.
+    Art Style: Highly detailed vector educational infographic poster layout, pastel blue/green/yellow/orange cards with rounded borders, white background, clean outlines, cute Peruvian primary school children illustrations, 3:4 vertical poster format.
     """
     try:
         result = client.models.generate_images(
@@ -537,18 +538,18 @@ st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", "N°")
+    ie_nombre = st.text_input("Institución Educativa:", "N°   ")
 with c2:
-    director = st.text_input("Director:", "  ")
-    subdirector = st.text_input("Subdirector(es):", "   ")
+    director = st.text_input("Director:", " ")
+    subdirector = st.text_input("Subdirector(es):", " ")
 with c3:
-    docente = st.text_input("Docente de Aula:", "   ")
+    docente = st.text_input("Docente de Aula:", " ")
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
-if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Infografía MINEDU de la Sesión"]:
+if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     f1, f2, f3, f4 = st.columns(4)
     with f1:
-        num_doc = st.text_input("N.° de Documento / Sesión / Ficha / Infografía:", "01")
+        num_doc = st.text_input("N.° de Documento / Sesión / Ficha / Afiche:", "01")
     with f2:
         area_sel = st.selectbox("Área Curricular:", cneb.obtener_lista_areas(), index=0)
     with f3:
@@ -581,9 +582,9 @@ else:  # Unidad de Aprendizaje
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
 
-if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Infografía MINEDU de la Sesión"]:
+if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     problema_contexto = st.text_input(
-        "📌 Tema / Título de la Actividad, Ficha de Trabajo o Infografía:",
+        "📌 Tema / Título de la Actividad, Ficha de Trabajo o Afiche:",
         value="Mis derechos y deberes"
     )
     titulo_opcional = ""
@@ -608,7 +609,7 @@ def generar_prompt_sesion():
 
     return f"""
 Actúa como: Un Especialista en Currículo Nacional de Educación Básica (CNEB) del MINEDU, experto en planificación pedagógica de nivel Primaria.
-Tu objetivo: Elaborar una sesión de aprendizaje completa siguiendo estrictamente el formato y estructura del modelo proporcionado.
+Tu objetivo: Elaborar una sesión de aprendizaje completa siguiendo strictly el formato y estructura del modelo proporcionado.
 
 Datos para la sesión (Configuración):
 • Grado y Sección: {grado_seccion}
@@ -695,65 +696,6 @@ ESTRUCTURA DE SALIDA REQUERIDA (MARKDOWN PURA EN TABLAS):
 • TABLA II: AUTOEVALUACIÓN DE MIS LOGROS
 """
 
-def generar_prompt_infografia():
-    contexto_sesion_previa = ""
-    if st.session_state.get('resultado_md'):
-        contexto_sesion_previa = f"\n\nNOTA: Utiliza fielmente las actividades pedagógicas de la SESIÓN DE APRENDIZAJE generada previamente:\n{st.session_state['resultado_md'][:2000]}\n"
-
-    return f"""
-Actúa como: Especialista en Comunicación Visual Educativa y Diseñador de Materiales del MINEDU Perú (Educación Primaria - CNEB).
-Tu objetivo: Elaborar el contenido completo de una INFOGRAFÍA EDUCATIVA TIPO MINEDU basada directamente en las actividades de la sesión sobre '{problema_contexto}' para niños de {grado_seccion}.{contexto_sesion_previa}
-
-DATOS DE CONFIGURACIÓN DE LA INFOGRAFÍA MINEDU:
-• Grado y Sección: {grado_seccion}
-• Área Curricular: {area_sel}
-• Tema / Título de la Infografía: {problema_contexto}
-• Fecha: {fecha_sugerida}
-• Institución Educativa: {ie_nombre}
-• Docente de Aula: {docente}
-
-ESTRUCTURA DE SALIDA REQUERIDA (OBLIGATORIA EN TABLAS Y CUADROS MARKDOWN SIN HTML):
-
-# **INFOGRAFÍA EDUCATIVA MINEDU: {problema_contexto.upper()}**
-
-• TABLA I: DATOS INFORMATIVOS (EN 2 COLUMNAS):
-| DATOS DE LA INFOGRAFÍA MINEDU | DETALLE |
-| Institución Educativa | {ie_nombre} |
-| Grado y Sección | {grado_seccion} |
-| Área Curricular | {area_sel} |
-| Docente de Aula | {docente} |
-| Fecha | {fecha_sugerida} |
-
-• TABLA II: NUESTRO PROPÓSITO DE HOY (PROPÓSITO DE APRENDIZAJE)
-| 🎯 ¿QUÉ APRENDEREMOS Y LOGRAREMOS HOY? |
-| [Propósito central de la sesión en frase amigable para {grado_seccion}] |
-
-• TABLA III: IDEAS FUERZA Y CONCEPTOS CLAVE (SÍNTESIS VISUAL DE LA SESIÓN)
-| 📌 CONCEPTO / IDEA CLAVE | 🔍 ¿QUÉ SIGNIFICA? | 💡 EJEMPLO / APLICACIÓN PRÁCTICA |
-| [Concepto 1 de la sesión] | [Explicación sencilla] | [Ejemplo práctico] |
-| [Concepto 2 de la sesión] | [Explicación sencilla] | [Ejemplo práctico] |
-| [Concepto 3 de la sesión] | [Explicación sencilla] | [Ejemplo práctico] |
-
-• TABLA IV: NUESTRO CAMINO DE APRENDIZAJE (PASO A PASO DE LAS ACTIVIDADES DE LA SESIÓN - ÁREA: {area_sel})
-| 🚀 PASO / MOMENTO | 🎬 ¿QUÉ HACEMOS Y CÓMO LO RESOLVEMOS EN EL AULA? | 🛠️ PISTA O ESTRATEGIA CLAVE |
-| **PASO 1** | [Primer paso de la actividad de aprendizaje CNEB] | [Estrategia o consejo] |
-| **PASO 2** | [Segundo paso de la actividad de aprendizaje CNEB] | [Estrategia o consejo] |
-| **PASO 3** | [Tercer paso de la actividad de aprendizaje CNEB] | [Estrategia o consejo] |
-
-• TABLA V: DATO CURIOSO / ¿SABÍAS QUE...?
-| 🌟 ¿SABÍAS QUE...? (DATO CURIOSO DIVERTIMEDU) |
-| [Dato curioso relacionado directamente con {problema_contexto}] |
-
-• TABLA VI: RETO EXPRESS Y MI AUTOEVALUACIÓN
-| ❓ RETO EXPRESS / PREGUNTAS CLAVE | ✏️ MI RESPUESTA Y REFLEXIÓN |
-| 1. [Pregunta rápida de comprensión sobre la sesión] | _____________________________________________ |
-| 2. [Pregunta de aplicación cotidiana] | _____________________________________________ |
-
-| 🎯 MIS LOGROS DE HOY | ¡Lo logré! 😀 | Estoy en proceso 😐 | Necesito ayuda 😕 |
-| Reconocí las ideas principales sobre {problema_contexto}. | | | |
-| Apliqué lo aprendido en la solución del reto de hoy. | | | |
-"""
-
 def generar_prompt_proyecto():
     val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO innovador para el proyecto.'
     return f"""
@@ -782,65 +724,77 @@ if st.button(f"✨ Generar {tipo_documento}"):
         try:
             client = genai.Client(api_key=api_key)
             
-            if tipo_documento == "Sesión de Aprendizaje":
-                prompt_maestro = generar_prompt_sesion()
-                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
-            elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
-                prompt_maestro = generar_prompt_ficha_trabajo()
-                sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú."
-            elif tipo_documento == "Infografía MINEDU de la Sesión":
-                prompt_maestro = generar_prompt_infografia()
-                sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo del MINEDU Perú. Creas infografías educativas altamente estructuradas en tablas y recuadros visuales sobre la sesión de aprendizaje."
-            elif tipo_documento == "Proyecto de Aprendizaje":
-                prompt_maestro = generar_prompt_proyecto()
-                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
-            else:
-                prompt_maestro = generar_prompt_unidad_sara()
-                sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
-                
-            with st.spinner(f"🧠 Google Gemini ({model_choice}) está procesando y generando tu {tipo_documento} para {grado_seccion}..."):
-                
-                config = types.GenerateContentConfig(
-                    system_instruction=sys_inst,
-                    temperature=0.2
-                )
-                
-                try:
-                    response = client.models.generate_content(
-                        model=model_choice,
-                        contents=prompt_maestro,
-                        config=config
+            # SI SE SELECCIONA EL AFICHE DE NANO BANANA:
+            if tipo_documento == "Afiche Educativo de la Sesión (Nano Banana)":
+                with st.spinner("🎨 Nano Banana está diseñando la Lámina / Afiche Educativo Ilustrado en HD para tu sesión..."):
+                    img_obj, img_bytes = generar_imagen_nanobanana(
+                        client, 
+                        tema=problema_contexto, 
+                        grado=grado_seccion, 
+                        area=area_sel
                     )
-                except Exception as model_err:
-                    err_text = str(model_err)
-                    if "404" in err_text or "NOT_FOUND" in err_text:
+                    
+                    if img_obj is not None:
+                        st.session_state['imagen_nanobanana'] = img_obj
+                        st.session_state['imagen_bytes'] = img_bytes
+                        st.session_state['tipo_doc_generado'] = tipo_documento
+                        st.session_state['resultado_md'] = f"""
+# 🖼️ **AFICHE EDUCATIVO DE LA SESIÓN (NANO BANANA AI)**
+**Tema:** {problema_contexto} | **Área:** {area_sel} | **Grado:** {grado_seccion}  
+**Institución Educativa:** {ie_nombre} | **Docente:** {docente}  
+
+---
+*El afiche e infografía educativa ilustrada ha sido generado en alta resolución. Puedes observarlo en la vista previa y descargarlo directamente en formato JPG listo para imprimir o proyectar en el aula.*
+"""
+                        st.success("✅ ¡Afiche Educativo Ilustrado de Nano Banana generado con éxito!")
+                    else:
+                        st.error("❌ Ocurrió un inconveniente al generar la imagen. Intenta de nuevo.")
+
+            # SI SE SELECCIONA OTRA HERRAMIENTA (PROYECTO, UNIDAD, SESIÓN, FICHA):
+            else:
+                if tipo_documento == "Sesión de Aprendizaje":
+                    prompt_maestro = generar_prompt_sesion()
+                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
+                elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
+                    prompt_maestro = generar_prompt_ficha_trabajo()
+                    sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú."
+                elif tipo_documento == "Proyecto de Aprendizaje":
+                    prompt_maestro = generar_prompt_proyecto()
+                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
+                else:
+                    prompt_maestro = generar_prompt_unidad_sara()
+                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
+                    
+                with st.spinner(f"🧠 Google Gemini ({model_choice}) está procesando tu {tipo_documento} para {grado_seccion}..."):
+                    config = types.GenerateContentConfig(
+                        system_instruction=sys_inst,
+                        temperature=0.2
+                    )
+                    try:
                         response = client.models.generate_content(
-                            model="gemini-2.0-flash",
+                            model=model_choice,
                             contents=prompt_maestro,
                             config=config
                         )
-                    else:
-                        raise model_err
-                
-                # GUARDAR RESULTADO DE TEXTO EN SESSION STATE
-                st.session_state['resultado_md'] = response.text
-                st.session_state['tipo_doc_generado'] = tipo_documento
-                st.session_state['fname_clean'] = f"{tipo_documento.replace(' ', '_')}_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx"
-                st.session_state['ie_nombre_generado'] = ie_nombre
-                
-                # SI ES INFOGRAFÍA, GENERAMOS LA LÁMINA DE ACTIVIDADES CON NANO BANANA
-                if tipo_documento == "Infografía MINEDU de la Sesión":
-                    with st.spinner("🎨 Nano Banana está diseñando la Lámina de Actividades de la Sesión (Estilo Oficial MINEDU)..."):
-                        img_obj, img_bytes = generar_imagen_nanobanana(
-                            client, 
-                            tema=problema_contexto, 
-                            grado=grado_seccion, 
-                            area=area_sel
-                        )
-                        st.session_state['imagen_nanobanana'] = img_obj
-                        st.session_state['imagen_bytes'] = img_bytes
-
-                st.success(f"✅ ¡{tipo_documento} generado con éxito!")
+                    except Exception as model_err:
+                        err_text = str(model_err)
+                        if "404" in err_text or "NOT_FOUND" in err_text:
+                            response = client.models.generate_content(
+                                model="gemini-2.0-flash",
+                                contents=prompt_maestro,
+                                config=config
+                            )
+                        else:
+                            raise model_err
+                    
+                    st.session_state['resultado_md'] = response.text
+                    st.session_state['tipo_doc_generado'] = tipo_documento
+                    st.session_state['fname_clean'] = f"{tipo_documento.replace(' ', '_')}_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx"
+                    st.session_state['ie_nombre_generado'] = ie_nombre
+                    st.session_state['imagen_nanobanana'] = None
+                    st.session_state['imagen_bytes'] = None
+                    
+                    st.success(f"✅ ¡{tipo_documento} generado con éxito!")
 
         except Exception as e:
             err_str = str(e)
@@ -857,40 +811,44 @@ if st.button(f"✨ Generar {tipo_documento}"):
 if st.session_state['resultado_md'] is not None:
     st.markdown("---")
     
-    tab_preview, tab_download = st.tabs(["📄 Vista Previa (Permanente)", "📥 Descargar Word / Imagen"])
+    tab_preview, tab_download = st.tabs(["📄 Vista Previa (Permanente)", "📥 Descargar Afiche / Documento"])
     
     with tab_preview:
-        # Muestra la lámina ilustrada de actividades generada por Nano Banana
+        # Muestra el afiche ilustrado generado por Nano Banana
         if st.session_state.get('imagen_nanobanana') is not None:
-            st.markdown("### 🖼️ Lámina Didáctica de Actividades - Estilo MINEDU (Nano Banana AI)")
-            st.image(st.session_state['imagen_nanobanana'], caption=f"Lámina Ilustrada de Actividades para {grado_seccion} - {problema_contexto}", use_container_width=True)
+            st.markdown("### 🖼️ Afiche Educativo Ilustrado (Nano Banana AI)")
+            st.image(st.session_state['imagen_nanobanana'], caption=f"Afiche para {grado_seccion} - {problema_contexto}", use_container_width=True)
             st.markdown("---")
 
         st.markdown(st.session_state['resultado_md'])
         
     with tab_download:
-        es_horizontal_doc = st.session_state['tipo_doc_generado'] in ["Proyecto de Aprendizaje", "Unidad de Aprendizaje (Modelo SARA)"]
-        
-        buffer_doc = markdown_to_docx(
-            st.session_state['resultado_md'], 
-            ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre),
-            es_horizontal=es_horizontal_doc
-        )
-        
-        st.download_button(
-            label=f"💾 Descargar {st.session_state['tipo_doc_generado']} en Word (.docx)",
-            data=buffer_doc,
-            file_name=st.session_state['fname_clean'],
-            mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
-        )
-
-        # Botón para descargar la Lámina de Actividades de Nano Banana en JPG
+        # Botón principal para descargar el AFICHE DE NANO BANANA en JPG
         if st.session_state.get('imagen_bytes') is not None:
+            st.markdown("### 🖼️ Descarga tu Afiche Educativo")
             st.download_button(
-                label="🖼️ Descargar Lámina de Actividades en JPG (Nano Banana)",
+                label="💾 Descargar Afiche Ilustrado en Alta Calidad (.jpg)",
                 data=st.session_state['imagen_bytes'],
-                file_name=f"Lamina_Actividades_MINEDU_{grado_seccion.replace(' ', '_')}.jpg",
-                mime="image/jpeg"
+                file_name=f"Afiche_NanoBanana_{grado_seccion.replace(' ', '_')}.jpg",
+                mime="image/jpeg",
+                use_container_width=True
+            )
+            st.success("✨ ¡Tu afiche en JPG está listo para imprimir o enviar por WhatsApp a los alumnos!")
+
+        # Botón para descargar documentos Word (.docx) cuando sea Proyecto, Unidad, Sesión o Ficha
+        else:
+            es_horizontal_doc = st.session_state['tipo_doc_generado'] in ["Proyecto de Aprendizaje", "Unidad de Aprendizaje (Modelo SARA)"]
+            
+            buffer_doc = markdown_to_docx(
+                st.session_state['resultado_md'], 
+                ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre),
+                es_horizontal=es_horizontal_doc
             )
             
-        st.info("💡 **Nota:** El documento Word generado incluye los recuadros y tablas en tonos pasteles.")
+            st.download_button(
+                label=f"💾 Descargar {st.session_state['tipo_doc_generado']} en Word (.docx)",
+                data=buffer_doc,
+                file_name=st.session_state['fname_clean'],
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+            )
+            st.info("💡 **Nota:** El documento Word generado incluye los recuadros y tablas en tonos pasteles.")
