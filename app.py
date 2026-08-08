@@ -108,7 +108,7 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
+    /* Botón 2: UNIDAD DE APRENDIZAJE (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
@@ -333,8 +333,8 @@ with col_b1:
         st.rerun()
 
 with col_b2:
-    if st.button("📘 Unidad SARA", key="btn_unidad", use_container_width=True):
-        st.session_state['tipo_documento'] = "Unidad de Aprendizaje (Modelo SARA)"
+    if st.button("📘 Unidad de aprendizaje", key="btn_unidad", use_container_width=True):
+        st.session_state['tipo_documento'] = "Unidad de Aprendizaje"
         st.rerun()
 
 with col_b3:
