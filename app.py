@@ -16,7 +16,7 @@ import cneb_primaria_datos as cneb
 # CONFIGURACIÓN DE LA PÁGINA STREAMLIT
 # ==============================================================================
 st.set_page_config(
-    page_title="PlanificaPrimaria - Plataforma para Docentes de Aula",
+    page_title="PLANIFICA PRIMARIA - PLATAFORMA PARA DOCENTE DE AULA",
     page_icon="🍎",
     layout="wide"
 )
@@ -234,7 +234,7 @@ window.addEventListener('load', injectKillStyle);
 </script>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🍎 PLANIFICA PRIMARIA - SISTEMA PARA DOCENTE DE AULA</div>', unsafe_allow_html=True)
 st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 # ==============================================================================
@@ -255,7 +255,7 @@ def check_password():
         pwd_input = st.text_input("Contraseña de acceso:", type="password", key="pwd_input")
         
         if st.button("Ingresar 🚀"):
-            target_pwd = st.secrets.get("APP_PASSWORD", "docente2026")
+            target_pwd = st.secrets.get("APP_PASSWORD", "docente52026")
             if pwd_input == target_pwd:
                 st.session_state["password_correct"] = True
                 st.rerun()
@@ -356,7 +356,7 @@ tipo_documento = st.session_state['tipo_documento']
 
 COLOR_MAP = {
     "Proyecto de Aprendizaje": "#059669",
-    "Unidad de Aprendizaje (Modelo SARA)": "#7C3AED",
+    "Unidad de Aprendizaje": "#7C3AED",
     "Sesión de Aprendizaje": "#2563EB",
     "Ficha de Aplicación / Trabajo (Para Alumnos)": "#D97706",
     "Infografía MINEDU de la Sesión": "#DC2626"
@@ -381,7 +381,7 @@ def add_formatted_text(paragraph, text):
         else:
             paragraph.add_run(part)
 
-def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
+def markdown_to_docx(md_text, ie_nombre="I.E. N°      ", es_horizontal=False):
     doc = docx.Document()
     PASTEL_COLORS = ['D9E1F2', 'E2EFDA', 'FFF2CC', 'E8D8F8', 'E0F2FE', 'FCE4D6']
     table_count = 0
@@ -537,12 +537,12 @@ st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 c1, c2, c3 = st.columns(3)
 with c1:
     dre_ugel = st.text_input("DRE / UGEL:", "Ica / Ica")
-    ie_nombre = st.text_input("Institución Educativa:", "N° 22303 'Santa Rosa de Lima'")
+    ie_nombre = st.text_input("Institución Educativa:", "N°")
 with c2:
-    director = st.text_input("Director:", "Lic. Bernardo Francisco Salcedo Barrientos")
-    subdirector = st.text_input("Subdirector(es):", "Mg. Mariela Velásquez Cárdenas / Mg. Frank Bernaola Pérez")
+    director = st.text_input("Director:", "  ")
+    subdirector = st.text_input("Subdirector(es):", "   ")
 with c3:
-    docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
+    docente = st.text_input("Docente de Aula:", "   ")
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Infografía MINEDU de la Sesión"]:
@@ -570,7 +570,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
 
-else:  # Unidad SARA
+else:  # Unidad de Aprendizaje
     f1, f2, f3 = st.columns(3)
     with f1:
         num_doc = st.text_input("N.° de Unidad:", "01")
