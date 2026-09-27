@@ -324,8 +324,20 @@ if not check_password():
     st.stop()
 
 # ==============================================================================
-# INICIALIZACIÓN DE MEMORIA PERSISTENTE (st.session_state)
+# LISTA DE MODELOS OFICIALES Y ESTABLES DE GEMINI
 # ==============================================================================
+MODELOS_DISPONIBLES = [
+    "gemini-1.5-flash",       # Más compatible en todas las cuentas
+    "gemini-2.0-flash",       # Alta velocidad y última generación
+    "gemini-2.5-flash",       # Con razonamiento pedagógico
+    "gemini-3.8-flash",       # Modelo frontier de alta velocidad
+    "gemini-3.5-flash",       # Modelo frontier equilibrado
+    "gemini-1.5-pro",         # Máxima calidad y redacción extensa
+    "gemini-2.0-flash-lite",  # Ultra ligero y económico
+    "gemini-3.1-pro"          # Razonamiento avanzado
+]
+
+# INICIALIZACIÓN DE MEMORIA PERSISTENTE (st.session_state)
 if 'resultado_md' not in st.session_state:
     st.session_state['resultado_md'] = None
 if 'tipo_doc_generado' not in st.session_state:
@@ -341,32 +353,21 @@ if 'imagen_nanobanana' not in st.session_state:
 if 'imagen_bytes' not in st.session_state:
     st.session_state['imagen_bytes'] = None
 if 'model_choice' not in st.session_state:
-    st.session_state['model_choice'] = "gemini-2.5-flash"
-
-# LISTA ACTUALIZADA DE MODELOS OFICIALES DISPONIBLES
-MODELOS_DISPONIBLES = [
-    "gemini-2.5-flash",
-    "gemini-2.5-pro",
-    "gemini-2.0-flash",
-    "gemini-2.0-flash-lite",
-    "gemini-1.5-flash",
-    "gemini-1.5-pro"
-]
+    st.session_state['model_choice'] = "gemini-1.5-flash"
 
 # ==============================================================================
 # ENCABEZADO PRINCIPAL CON SELECTOR DE MODELO GEMINI INTEGRADO A UN LADO
 # ==============================================================================
-col_tit, col_mod = st.columns([2.7, 1.3])
+col_tit, col_mod = st.columns([2.6, 1.4])
 
 with col_tit:
     st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
     st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
 
 with col_mod:
-    # 🤖 Panel visible para seleccionar y supervisar el modelo de IA Gemini
     st.markdown("""
     <div style="background-color: #FFFFFF; border: 1.5px solid #2563EB; border-radius: 10px; padding: 6px 12px; margin-bottom: 5px; box-shadow: 0 2px 6px rgba(37,99,235,0.12);">
-        <span style="font-weight: 800; color: #1E3A8A; font-size: 0.88rem;">🤖 MODELO GEMINI ACTIVO:</span>
+        <span style="font-weight: 800; color: #1E3A8A; font-size: 0.88rem;">🤖 MOTOR GEMINI ACTIVO:</span>
     </div>
     """, unsafe_allow_html=True)
     
@@ -402,7 +403,7 @@ else:
         help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
     )
 
-st.sidebar.markdown(f"**🤖 Modelo activo actual:** `{model_choice}`")
+st.sidebar.markdown(f"**🤖 Modelo activo:** `{model_choice}`")
 
 st.sidebar.markdown("---")
 st.sidebar.info("""
@@ -476,7 +477,7 @@ def add_formatted_text(paragraph, text):
             paragraph.add_run(part)
 
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
-    """Genera el documento Word (.docx) aplicando tonos pasteles profesionales en cada tabla"""
+    """Genera el documento Word (.docx) aplicando tonos pasteles en cada tabla"""
     doc = docx.Document()
     PASTEL_COLORS = ['D9E1F2', 'E2EFDA', 'FFF2CC', 'E8D8F8', 'E0F2FE', 'FCE4D6']
     table_count = 0
@@ -532,7 +533,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
                                 for run in paragraph.runs:
                                     run.font.color.rgb = RGBColor(30, 58, 138)
                                     run.font.bold = True
-                        # Filas alternas suaves para alta legibilidad
+                        # Filas alternas suaves
                         elif r_idx % 2 == 1:
                             shading_elm = OxmlElement('w:shd')
                             shading_elm.set(qn('w:val'), 'clear')
@@ -1032,24 +1033,39 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         system_instruction=sys_inst,
                         temperature=0.2
                     )
-                    try:
-                        response = client.models.generate_content(
-                            model=model_choice,
-                            contents=prompt_maestro,
-                            config=config
-                        )
-                    except Exception as model_err:
-                        err_text = str(model_err)
-                        if "404" in err_text or "NOT_FOUND" in err_text:
-                            # Reintento de seguridad con gemini-2.0-flash si el modelo no existe
+                    
+                    # CASCADA INTELIGENTE ANTI-404:
+                    # Intenta primero con el modelo que seleccionaste; si tu clave no tiene acceso, prueba los demás modelos de forma transparente.
+                    modelos_a_probar = [model_choice]
+                    for fallback in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-pro", "gemini-3.8-flash", "gemini-3.5-flash"]:
+                        if fallback not in modelos_a_probar:
+                            modelos_a_probar.append(fallback)
+                    
+                    response = None
+                    modelo_exitoso = None
+                    ultimo_err = None
+                    
+                    for mod in modelos_a_probar:
+                        try:
                             response = client.models.generate_content(
-                                model="gemini-2.0-flash",
+                                model=mod,
                                 contents=prompt_maestro,
                                 config=config
                             )
-                        else:
-                            raise model_err
-                    
+                            if response and response.text:
+                                modelo_exitoso = mod
+                                break
+                        except Exception as m_err:
+                            err_str_m = str(m_err)
+                            ultimo_err = m_err
+                            if "404" in err_str_m or "NOT_FOUND" in err_str_m or "not supported" in err_str_m.lower() or "not found" in err_str_m.lower():
+                                continue  # Pasa automáticamente al siguiente modelo
+                            else:
+                                raise m_err
+
+                    if response is None or not response.text:
+                        raise ultimo_err if ultimo_err else Exception("No se pudo obtener respuesta del modelo.")
+
                     st.session_state['resultado_md'] = response.text
                     st.session_state['tipo_doc_generado'] = tipo_documento
                     st.session_state['fname_clean'] = f"{tipo_documento.replace(' ', '_')}_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx"
@@ -1057,14 +1073,12 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     st.session_state['imagen_nanobanana'] = None
                     st.session_state['imagen_bytes'] = None
                     
-                    st.success(f"✅ ¡{tipo_documento} generado con éxito!")
+                    st.success(f"✅ ¡{tipo_documento} generado con éxito utilizando {modelo_exitoso}!")
 
         except Exception as e:
             err_str = str(e)
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                st.warning("⏳ Límite de velocidad alcanzado. Por favor, espera 60 segundos y vuelve a intentarlo.")
-            elif "404" in err_str or "NOT_FOUND" in err_str:
-                st.error("⚠️ El modelo seleccionado no está disponible en tu cuenta. Selecciona 'gemini-2.0-flash' o 'gemini-2.5-flash'.")
+                st.warning("⏳ Límite de velocidad o cuota por minuto alcanzado. Por favor, espera 60 segundos y vuelve a presionar el botón Generar.")
             else:
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
 
