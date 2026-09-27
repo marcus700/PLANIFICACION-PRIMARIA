@@ -22,7 +22,7 @@ st.set_page_config(
 )
 
 # ==============================================================================
-# INYECCIÓN CSS/JS NIVEL INGENIERÍA PARA ELIMINACIÓN DE INSIGNIAS FLOTANTES
+# INYECCIÓN CSS/JS NIVEL INGENIERÍA PARA ESTILOS, TABLAS CON COLOR Y LIMPIEZA
 # ==============================================================================
 st.markdown("""
 <style>
@@ -53,7 +53,7 @@ st.markdown("""
         transform: scale(0) !important;
     }
     
-    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA Y PANTALLA DE LOGIN */
+    /* 2. FONDO CLARO Y ELEGANTE PARA TODA LA PÁGINA */
     html, body, [data-testid="stAppViewContainer"], .stApp {
         background-color: #F8FAFC !important;
         color: #0F172A !important;
@@ -67,20 +67,19 @@ st.markdown("""
     
     /* Encabezados */
     .main-header {
-        font-size: 2.3rem;
+        font-size: 2.1rem;
         color: #1E3A8A;
-        text-align: center;
         font-weight: 800;
         margin-bottom: 0.2rem;
+        line-height: 1.2;
     }
     .sub-header {
-        font-size: 1.05rem;
+        font-size: 1.0rem;
         color: #4B5563;
-        text-align: center;
-        margin-bottom: 1.5rem;
+        margin-bottom: 1.2rem;
     }
 
-    /* 3. CAMPOS DE ENTRADA Y TEXTOS LEGIBLES */
+    /* 3. CAMPOS DE ENTRADA Y TEXTOS */
     .stTextInput input, .stTextArea textarea, .stSelectbox [data-baseweb="select"] {
         background-color: #FFFFFF !important;
         color: #0F172A !important;
@@ -92,15 +91,13 @@ st.markdown("""
         font-weight: 600 !important;
     }
 
-    /* 4. COLORES EXCLUSIVOS Y VISIBLES PARA CADA BOTÓN DE HERRAMIENTA */
-    
-    /* Botón 1: PROYECTO DE APRENDIZAJE (VERDE) */
+    /* 4. COLORES EXCLUSIVOS PARA CADA BOTÓN DE HERRAMIENTA */
     div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
         background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
         background-color: #059669 !important;
         border-radius: 12px !important;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.4) !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
     }
     div.st-key-btn_proyecto > button p, button[key="btn_proyecto"] p, div.st-key-btn_proyecto > button span {
         color: #FFFFFF !important;
@@ -108,13 +105,12 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 2: UNIDAD SARA (PURPURA / MORADO) */
     div.st-key-btn_unidad > button, button[key="btn_unidad"] {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
         border-radius: 12px !important;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.4) !important;
+        box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35) !important;
     }
     div.st-key-btn_unidad > button p, button[key="btn_unidad"] p, div.st-key-btn_unidad > button span {
         color: #FFFFFF !important;
@@ -122,13 +118,12 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 3: SESIÓN DE APRENDIZAJE (AZUL) */
     div.st-key-btn_sesion > button, button[key="btn_sesion"] {
         background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
         background-color: #2563EB !important;
         border-radius: 12px !important;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.4) !important;
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35) !important;
     }
     div.st-key-btn_sesion > button p, button[key="btn_sesion"] p, div.st-key-btn_sesion > button span {
         color: #FFFFFF !important;
@@ -136,13 +131,12 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 4: FICHA DE APLICACIÓN (NARANJA) */
     div.st-key-btn_ficha > button, button[key="btn_ficha"] {
         background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
         background-color: #D97706 !important;
         border-radius: 12px !important;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.4) !important;
+        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35) !important;
     }
     div.st-key-btn_ficha > button p, button[key="btn_ficha"] p, div.st-key-btn_ficha > button span {
         color: #FFFFFF !important;
@@ -150,13 +144,12 @@ st.markdown("""
         font-size: 1.05rem !important;
     }
 
-    /* Botón 5: AFICHE NANO BANANA (ROJO / CARMESÍ) */
     div.st-key-btn_afiche > button, button[key="btn_afiche"] {
         background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
         background-color: #DC2626 !important;
         border-radius: 12px !important;
         border: none !important;
-        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.4) !important;
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35) !important;
     }
     div.st-key-btn_afiche > button p, button[key="btn_afiche"] p, div.st-key-btn_afiche > button span {
         color: #FFFFFF !important;
@@ -177,10 +170,77 @@ st.markdown("""
         font-weight: 800 !important;
         font-size: 1.1rem !important;
     }
+
+    /* 5. 🎨 ESTILOS PEDAGÓGICOS A COLOR PARA CUADROS Y TABLAS EN STREAMLIT */
+    div[data-testid="stMarkdownContainer"] table {
+        width: 100% !important;
+        border-collapse: separate !important;
+        border-spacing: 0 !important;
+        border-radius: 10px !important;
+        overflow: hidden !important;
+        margin: 1.4rem 0 !important;
+        border: 1px solid #CBD5E1 !important;
+        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.06), 0 2px 4px -1px rgba(0, 0, 0, 0.04) !important;
+    }
+
+    div[data-testid="stMarkdownContainer"] table thead tr th {
+        color: #FFFFFF !important;
+        font-weight: 700 !important;
+        text-align: center !important;
+        padding: 10px 14px !important;
+        font-size: 0.94rem !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+        text-transform: uppercase !important;
+        letter-spacing: 0.3px !important;
+    }
+
+    /* Variación armónica de colores de cabecera por cada tabla */
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+1) thead tr th {
+        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%) !important;
+    }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+2) thead tr th {
+        background: linear-gradient(135deg, #065F46 0%, #10B981 100%) !important;
+    }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+3) thead tr th {
+        background: linear-gradient(135deg, #6B21A8 0%, #8B5CF6 100%) !important;
+    }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+4) thead tr th {
+        background: linear-gradient(135deg, #9A3412 0%, #F97316 100%) !important;
+    }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+5) thead tr th {
+        background: linear-gradient(135deg, #0E7490 0%, #06B6D4 100%) !important;
+    }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+6) thead tr th {
+        background: linear-gradient(135deg, #BE123C 0%, #F43F5E 100%) !important;
+    }
+
+    /* Filas alternadas suaves (Zebra) */
+    div[data-testid="stMarkdownContainer"] table tbody tr:nth-child(even) {
+        background-color: #F8FAFC !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tbody tr:nth-child(odd) {
+        background-color: #FFFFFF !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tbody tr:hover {
+        background-color: #FEF3C7 !important;
+        transition: background-color 0.2s ease-in-out;
+    }
+    div[data-testid="stMarkdownContainer"] table tbody td {
+        padding: 9px 12px !important;
+        border: 1px solid #E2E8F0 !important;
+        color: #1E293B !important;
+        font-size: 0.92rem !important;
+        vertical-align: top !important;
+    }
+    div[data-testid="stMarkdownContainer"] table tbody td:first-child {
+        font-weight: 600 !important;
+        background-color: #F1F5F9 !important;
+        color: #1E3A8A !important;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# SCRIPT JAVASCRIPT GLOBAL QUE SE EJECUTA EN EL MARCO PADRE
+# SCRIPT JAVASCRIPT GLOBAL
 st.markdown("""
 <script>
 function injectKillStyle() {
@@ -234,14 +294,10 @@ window.addEventListener('load', injectKillStyle);
 </script>
 """, unsafe_allow_html=True)
 
-st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
-
 # ==============================================================================
 # CONTROL DE ACCESO MEDIANTE CONTRASEÑA
 # ==============================================================================
 def check_password():
-    """Retorna True si el usuario ingresó la contraseña correcta."""
     if "password_correct" not in st.session_state:
         st.session_state["password_correct"] = False
 
@@ -284,6 +340,46 @@ if 'imagen_nanobanana' not in st.session_state:
     st.session_state['imagen_nanobanana'] = None
 if 'imagen_bytes' not in st.session_state:
     st.session_state['imagen_bytes'] = None
+if 'model_choice' not in st.session_state:
+    st.session_state['model_choice'] = "gemini-2.5-flash"
+
+# LISTA ACTUALIZADA DE MODELOS OFICIALES DISPONIBLES
+MODELOS_DISPONIBLES = [
+    "gemini-2.5-flash",
+    "gemini-2.5-pro",
+    "gemini-2.0-flash",
+    "gemini-2.0-flash-lite",
+    "gemini-1.5-flash",
+    "gemini-1.5-pro"
+]
+
+# ==============================================================================
+# ENCABEZADO PRINCIPAL CON SELECTOR DE MODELO GEMINI INTEGRADO A UN LADO
+# ==============================================================================
+col_tit, col_mod = st.columns([2.7, 1.3])
+
+with col_tit:
+    st.markdown('<div class="main-header">🍎 PlanificaPrimaria - Sistema para Docentes de Aula</div>', unsafe_allow_html=True)
+    st.markdown('<div class="sub-header">Plataforma Inteligente de Planificación Curricular para Educación Primaria (CNEB - MINEDU)</div>', unsafe_allow_html=True)
+
+with col_mod:
+    # 🤖 Panel visible para seleccionar y supervisar el modelo de IA Gemini
+    st.markdown("""
+    <div style="background-color: #FFFFFF; border: 1.5px solid #2563EB; border-radius: 10px; padding: 6px 12px; margin-bottom: 5px; box-shadow: 0 2px 6px rgba(37,99,235,0.12);">
+        <span style="font-weight: 800; color: #1E3A8A; font-size: 0.88rem;">🤖 MODELO GEMINI ACTIVO:</span>
+    </div>
+    """, unsafe_allow_html=True)
+    
+    idx_actual = MODELOS_DISPONIBLES.index(st.session_state['model_choice']) if st.session_state['model_choice'] in MODELOS_DISPONIBLES else 0
+    modelo_seleccionado = st.selectbox(
+        "Selecciona el modelo de Gemini a utilizar:",
+        options=MODELOS_DISPONIBLES,
+        index=idx_actual,
+        label_visibility="collapsed",
+        key="top_model_selector"
+    )
+    st.session_state['model_choice'] = modelo_seleccionado
+    model_choice = modelo_seleccionado
 
 # ==============================================================================
 # BARRA LATERAL (SIDEBAR) - CONFIGURACIÓN Y API KEY
@@ -306,10 +402,7 @@ else:
         help="Consigue tu clave gratuita en https://aistudio.google.com/app/apikey"
     )
 
-model_choice = st.sidebar.selectbox(
-    "Modelo de Gemini:", 
-    ["gemini-3.8-flash", "gemini-3.7-flash", "gemini-3.6-flash", "gemini-3.5-flash", "gemini-2.5-flash", "gemini-2.0-flash"]
-)
+st.sidebar.markdown(f"**🤖 Modelo activo actual:** `{model_choice}`")
 
 st.sidebar.markdown("---")
 st.sidebar.info("""
@@ -318,7 +411,7 @@ st.sidebar.info("""
 • Estándares y Desempeños CNEB Íntegros
 • Turno Único: 2 a 3 Sesiones diarias de 90 min
 • Nivel Educación Primaria (1.° a 6.° Grado)
-• Tablas en Colores Pasteles Variados
+• Tablas coloreadas y exportables a Word
 """)
 
 # ==============================================================================
@@ -365,8 +458,8 @@ COLOR_MAP = {
 banner_color = COLOR_MAP.get(tipo_documento, "#059669")
 
 st.markdown(f"""
-<div style="background-color: {banner_color}; color: white; padding: 0.6rem 1rem; border-radius: 8px; font-weight: bold; font-size: 1.1rem; margin-top: 0.8rem; margin-bottom: 1.2rem; text-align: center;">
-    📍 Herramienta Seleccionada: {tipo_documento.upper()}
+<div style="background-color: {banner_color}; color: white; padding: 0.6rem 1rem; border-radius: 8px; font-weight: bold; font-size: 1.05rem; margin-top: 0.8rem; margin-bottom: 1.2rem; text-align: center;">
+    📍 Herramienta Seleccionada: {tipo_documento.upper()} | 🤖 Procesado con: {model_choice}
 </div>
 """, unsafe_allow_html=True)
 
@@ -383,6 +476,7 @@ def add_formatted_text(paragraph, text):
             paragraph.add_run(part)
 
 def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
+    """Genera el documento Word (.docx) aplicando tonos pasteles profesionales en cada tabla"""
     doc = docx.Document()
     PASTEL_COLORS = ['D9E1F2', 'E2EFDA', 'FFF2CC', 'E8D8F8', 'E0F2FE', 'FCE4D6']
     table_count = 0
@@ -427,6 +521,7 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
                         p_cell.text = ""
                         add_formatted_text(p_cell, cell_value)
                         
+                        # Cabecera coloreada
                         if r_idx == 0:
                             shading_elm = OxmlElement('w:shd')
                             shading_elm.set(qn('w:val'), 'clear')
@@ -437,6 +532,13 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
                                 for run in paragraph.runs:
                                     run.font.color.rgb = RGBColor(30, 58, 138)
                                     run.font.bold = True
+                        # Filas alternas suaves para alta legibilidad
+                        elif r_idx % 2 == 1:
+                            shading_elm = OxmlElement('w:shd')
+                            shading_elm.set(qn('w:val'), 'clear')
+                            shading_elm.set(qn('w:color'), 'auto')
+                            shading_elm.set(qn('w:fill'), 'F8FAFC')
+                            cell._tc.get_or_add_tcPr().append(shading_elm)
 
     for line in lines:
         line_str = line.strip()
@@ -517,7 +619,6 @@ def generar_imagen_nanobanana(client, tema, grado, area):
     
     ultimo_error = None
     
-    # MÉTODO 1: Probar modelos de Imagen
     modelos_imagen = [
         'imagen-4.0-generate-001',
         'imagen-3.0-generate-002',
@@ -544,7 +645,6 @@ def generar_imagen_nanobanana(client, tema, grado, area):
             ultimo_error = str(err)
             continue
 
-    # MÉTODO 2: Probar generación multimodal nativa vía generate_content
     modelos_multimodal = ['gemini-2.0-flash-exp', 'gemini-2.0-flash']
     for mod in modelos_multimodal:
         try:
@@ -941,6 +1041,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     except Exception as model_err:
                         err_text = str(model_err)
                         if "404" in err_text or "NOT_FOUND" in err_text:
+                            # Reintento de seguridad con gemini-2.0-flash si el modelo no existe
                             response = client.models.generate_content(
                                 model="gemini-2.0-flash",
                                 contents=prompt_maestro,
@@ -963,7 +1064,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
             if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
                 st.warning("⏳ Límite de velocidad alcanzado. Por favor, espera 60 segundos y vuelve a intentarlo.")
             elif "404" in err_str or "NOT_FOUND" in err_str:
-                st.error("⚠️ El modelo seleccionado no está disponible. Selecciona gemini-2.0-flash o gemini-2.5-flash.")
+                st.error("⚠️ El modelo seleccionado no está disponible en tu cuenta. Selecciona 'gemini-2.0-flash' o 'gemini-2.5-flash'.")
             else:
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
 
@@ -976,7 +1077,6 @@ if st.session_state['resultado_md'] is not None:
     tab_preview, tab_download = st.tabs(["📄 Vista Previa (Permanente)", "📥 Descargar Afiche / Documento"])
     
     with tab_preview:
-        # Muestra el afiche ilustrado generado por Nano Banana
         if st.session_state.get('imagen_nanobanana') is not None:
             st.markdown("### 🖼️ Afiche Educativo Ilustrado (Nano Banana AI)")
             st.image(st.session_state['imagen_nanobanana'], caption=f"Afiche para {grado_seccion} - {problema_contexto}", use_container_width=True)
@@ -985,7 +1085,6 @@ if st.session_state['resultado_md'] is not None:
         st.markdown(st.session_state['resultado_md'])
         
     with tab_download:
-        # CASO A: Si el documento solicitado es el Afiche Nano Banana
         if st.session_state.get('tipo_doc_generado') == "Afiche Educativo de la Sesión (Nano Banana)":
             st.markdown("### 🖼️ Descarga tu Afiche Educativo Ilustrado")
             if st.session_state.get('imagen_bytes') is not None:
@@ -1000,7 +1099,6 @@ if st.session_state['resultado_md'] is not None:
             else:
                 st.warning("⚠️ No se pudo generar la foto del afiche. Por favor verifica los permisos de tu API Key de Google AI Studio.")
 
-        # CASO B: Para los demás documentos en Word (Proyecto, Unidad, Sesión, Ficha)
         else:
             es_horizontal_doc = st.session_state['tipo_doc_generado'] in ["Proyecto de Aprendizaje", "Unidad de Aprendizaje (Modelo SARA)"]
             
