@@ -762,10 +762,14 @@ Datos para la sesión (Configuración):
 • Duración Total: {duracion_sesion}
 
 INSTRUCCIONES DE FORMATO Y CONTENIDO (OBLIGATORIO):
-• Estructura de Cuadros: Utiliza exactamente los mismos cuadros del modelo (Datos Informativos, Propósitos, Enfoques, Metas, Preparación, Momentos de la sesión y Escala de Valoración). NO INCLUYAS NINGUNA SITUACIÓN SIGNIFICATIVA.
-• Alineación CNEB: Selecciona la Competencia, Capacidades y Desempeños (precisados si es necesario) directamente del Programa Curricular de Educación Primaria del MINEDU correspondiente al grado ({grado_seccion}). Para el Estándar de Aprendizaje del CNEB, escríbelo EN SU TOTALIDAD Y DE MANERA ÍNTEGRA sin ningún corte, resumen ni omisión, resaltando en **negrita** únicamente el fragmento trabajado.
-• Criterios de Evaluación: Deben redactarse bajo la estructura implícita de ACCIÓN + CONTENIDO + CONDICIÓN.
-• Redacción de Actividades: Las actividades en los momentos de Inicio, Desarrollo y Cierre deben estar redactadas en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE.
+1. FORMATO: Estructura toda la respuesta en Markdown limpio con tablas estándar. PROHIBIDO USAR CÓDIGO O ETIQUETAS HTML (no uses <table>, <tr>, <td>, <br>).
+2. ESTÁNDAR DE APRENDIZAJE ÍNTEGRO: Copia el texto completo del estándar de ciclo según el CNEB sin cortar ni resumir ninguna palabra. Resalta en **negrita** únicamente el fragmento que se trabaja directamente en esta sesión.
+3. DESEMPEÑO OFICIAL: Extrae el desempeño oficial del grado ({grado_seccion}) tal cual figura en el programa curricular, resaltando en **negrita** la precisión contextualizada al tema.
+4. CRITERIOS DE EVALUACIÓN: Redacta de 3 a 4 criterios con la fórmula: Acción + Contenido + Condición.
+5. ENFOQUE DUA: Incluye obligatoriamente la tabla con las 3 dimensiones: Múltiples formas de representación, Múltiples formas de acción/expresión y Múltiples formas de compromiso.
+6. PROCESOS DIDÁCTICOS DEL ÁREA: En el momento del Desarrollo, conduce la clase utilizando obligatoriamente los procesos didácticos oficiales del área de {area_sel}, redactando en primera persona del plural (tiempo presente).
+7. PAUSA ACTIVA OBLIGATORIA: Incluye dentro del Desarrollo un recuadro destacado de 2 minutos con ejercicios físicos o lúdicos de estiramiento.
+8. INSTRUMENTO CON CALIFICACIÓN A, B, C: Genera una tabla de evaluación con columnas para estudiantes y criterios desglosados en niveles literales de primaria: A, B y C.
 
 ESTRUCTURA DE SALIDA REQUERIDA:
 # **SESIÓN DE APRENDIZAJE Nº {num_doc}**
