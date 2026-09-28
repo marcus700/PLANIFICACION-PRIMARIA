@@ -328,14 +328,13 @@ if not check_password():
 # LISTA DE MODELOS OFICIALES Y ESTABLES DE GEMINI
 # ==============================================================================
 MODELOS_DISPONIBLES = [
-    "gemini-2.0-flash",       # Alta velocidad, estable y sin saturación (Recomendado)
-    "gemini-1.5-flash",       # Compatible universal
+    "gemini-3.5-flash-lite",  # Recomendado oficial por Google: Rápido y sin saturación
+    "gemini-3.5-flash",       # Gran velocidad y alta precisión pedagógica
+    "gemini-3.8-flash",       # Modelo frontier de última generación
     "gemini-2.5-flash",       # Razonamiento pedagógico
-    "gemini-1.5-pro",         # Máxima calidad y redacción extensa
-    "gemini-2.0-flash-lite",  # Ultra ligero y rápido
-    "gemini-3.8-flash",       # Modelo frontier
-    "gemini-3.5-flash",       # Modelo frontier equilibrado
-    "gemini-3.1-pro"          # Razonamiento avanzado
+    "gemini-2.0-flash",       # Versión 2.0 Flash
+    "gemini-1.5-flash",       # Compatible universal
+    "gemini-1.5-pro"          # Máxima calidad y redacción extensa
 ]
 
 # INICIALIZACIÓN DE MEMORIA PERSISTENTE (st.session_state)
@@ -354,7 +353,7 @@ if 'imagen_nanobanana' not in st.session_state:
 if 'imagen_bytes' not in st.session_state:
     st.session_state['imagen_bytes'] = None
 if 'model_choice' not in st.session_state:
-    st.session_state['model_choice'] = "gemini-2.0-flash"
+    st.session_state['model_choice'] = "gemini-3.5-flash-lite"
 
 # ==============================================================================
 # ENCABEZADO PRINCIPAL CON SELECTOR DE MODELO GEMINI INTEGRADO A UN LADO
@@ -787,7 +786,7 @@ ESTRUCTURA DE SALIDA REQUERIDA:
 
 • II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS
 (Genera una tabla markdown detallada con las siguientes columnas):
-| Área, competencias y capacidades | Copia el desempeño completo  resaltando en negrita la parte precisada (CNEB) | Criterios de evaluación (2 a 3 claros y medibles) |
+| Área, competencias y capacidades | Copia el desempeño completo resaltando en negrita la parte precisada (CNEB) | Criterios de evaluación (2 a 3 claros y medibles) |
 | :--- | :--- | :--- |
 | **{area_sel}**<br>• [Desglosa la competencia seleccionada del CNEB]<br>• [Desglosa sus capacidades correspondientes] | [Extrae los desempeños oficiales del Currículo Nacional adecuados para el grado ({grado_seccion}) y tema, resaltando en negrita la parte precisada] | 1. [Acción + Contenido + Condición]<br>2. [Criterio 2]<br>3. [Criterio 3]<br>4. [Criterio 4] |
 
@@ -1080,10 +1079,17 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         temperature=0.2
                     )
                     
-                    # CASCADA AUTOMÁTICA BLINDADA ANTI-503 Y ANTI-404:
-                    # Prueba primero el modelo seleccionado; si da 503 o 404, prueba los demás automáticamente
+                    # CASCADA AUTOMÁTICA BLINDADA CON LOS MODELOS VIGENTES:
                     modelos_a_probar = [model_choice]
-                    for fallback in ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-2.0-flash-lite"]:
+                    for fallback in [
+                        "gemini-3.5-flash-lite",
+                        "gemini-3.5-flash",
+                        "gemini-3.8-flash",
+                        "gemini-2.5-flash",
+                        "gemini-2.0-flash",
+                        "gemini-1.5-flash",
+                        "gemini-1.5-pro"
+                    ]:
                         if fallback not in modelos_a_probar:
                             modelos_a_probar.append(fallback)
                     
@@ -1093,7 +1099,6 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     
                     for mod in modelos_a_probar:
                         logrado = False
-                        # Intenta hasta 2 veces por modelo si hay saturación temporal (503)
                         for intento in range(2):
                             try:
                                 response = client.models.generate_content(
@@ -1109,16 +1114,16 @@ if st.button(f"✨ Generar {tipo_documento}"):
                                 err_str_m = str(m_err)
                                 ultimo_err = m_err
                                 
-                                # Si hay 503 (servidor saturado con alta demanda), pausa y salta al siguiente modelo
+                                # Si hay saturación (503), pausa y salta
                                 if "503" in err_str_m or "UNAVAILABLE" in err_str_m or "high demand" in err_str_m.lower():
                                     if intento == 0:
                                         time.sleep(1.5)
                                         continue
                                     else:
-                                        break  # Salta al siguiente modelo de la lista
-                                # Si el modelo no existe o no tiene permiso en la cuenta
-                                elif "404" in err_str_m or "NOT_FOUND" in err_str_m or "not supported" in err_str_m.lower() or "not found" in err_str_m.lower():
-                                    break  # Salta al siguiente modelo inmediatamente
+                                        break
+                                # Si el modelo fue retirado o no existe (404), salta de inmediato
+                                elif "404" in err_str_m or "NOT_FOUND" in err_str_m or "no longer available" in err_str_m.lower() or "not supported" in err_str_m.lower() or "not found" in err_str_m.lower():
+                                    break
                                 elif "429" in err_str_m or "RESOURCE_EXHAUSTED" in err_str_m:
                                     time.sleep(2)
                                     break
@@ -1145,6 +1150,8 @@ if st.button(f"✨ Generar {tipo_documento}"):
                 st.warning("⚡ **Google AI Studio está experimentando una alta demanda momentánea (Error 503).**\n\nPor favor, espera unos 15 segundos y vuelve a presionar el botón Generar.")
             elif "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
                 st.warning("⏳ **Límite de velocidad por minuto alcanzado.** Por favor, espera 60 segundos y vuelve a presionar el botón Generar.")
+            elif "404" in err_str or "NOT_FOUND" in err_str or "no longer available" in err_str.lower():
+                st.error("⚠️ El modelo seleccionado no está disponible en tu cuenta. Por favor selecciona **gemini-3.5-flash-lite** o **gemini-3.5-flash** en el menú superior.")
             else:
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
 
