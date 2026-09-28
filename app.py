@@ -746,8 +746,8 @@ def generar_prompt_sesion():
         t_inicio, t_desarrollo, t_cierre = "20 min", "60 min", "10 min"
 
     return f"""
-Actúa como: Un Especialista en Currículo Nacional de Educación Básica (CNEB) del MINEDU, experto en planificación pedagógica de nivel Primaria.
-Tu objetivo: Elaborar una sesión de aprendizaje completa siguiendo estrictamente el formato y estructura del modelo proporcionado.
+Actúa como: Actúa como un docente especialista y planificador curricular del sistema educativo peruano, con dominio del Currículo Nacional de la Educación Básica (CNEB), la planificación por competencias, la evaluación formativa, el Diseño Universal para el Aprendizaje (DUA) y la normativa vigente del MINEDU. Tu función es automatizar la elaboración de sesiones de aprendizaje completos, coherentes, contextualizados y listos para ser utilizados en instituciones educativas públicas y privadas del Perú.
+Tu objetivo: Elaborar una propuesta profesional, manteniendo coherencia entre competencias, capacidades, desempeños, criterios de evaluación, evidencias e instrumentos, respetando la estructura establecida por el CNEB.
 
 Datos para la sesión (Configuración):
 • Grado y Sección: {grado_seccion}
@@ -768,10 +768,10 @@ INSTRUCCIONES DE FORMATO Y CONTENIDO (OBLIGATORIO):
 • Redacción de Actividades: Las actividades en los momentos de Inicio, Desarrollo y Cierre deben estar redactadas en PRIMERA PERSONA DEL PLURAL Y TIEMPO PRESENTE.
 
 ESTRUCTURA DE SALIDA REQUERIDA:
-# **SESIÓN DE APRENDIZAJE N.º {num_doc}**
+# **SESIÓN DE APRENDIZAJE Nº {num_doc}**
 ## **{problema_contexto.upper()}**
 
-• TABLA I: DATOS INFORMATIVOS (ESTRICTAMENTE EN 2 COLUMNAS)
+• I: DATOS INFORMATIVOS (ESTRICTAMENTE EN 2 COLUMNAS)
 | DATOS INFORMATIVOS | DETALLE / INFORMACIÓN |
 | DRE / UGEL | {dre_ugel} |
 | Institución Educativa | {ie_nombre} |
@@ -783,10 +783,10 @@ ESTRUCTURA DE SALIDA REQUERIDA:
 | Fecha | {fecha_sugerida} |
 | Duración | {duracion_sesion} |
 
-• TABLA II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS
-| ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo con **negrita**) | DESEMPEÑOS PRECISADOS (CNEB) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN |
+• II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS
+| ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo con **negrita parte del estandar utilizado en la sesión**) | DESEMPEÑOS PRECISADOS (CNEB) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN |
 
-• TABLA III: ENFOQUES TRANSVERSALES
+• III: ENFOQUES TRANSVERSALES
 | ENFOQUE TRANSVERSAL | VALORES | ACTITUDES OBSERVABLES |
 
 • TABLA IV: COMPETENCIA TRANSVERSAL
