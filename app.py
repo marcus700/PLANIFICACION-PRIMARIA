@@ -771,40 +771,73 @@ ESTRUCTURA DE SALIDA REQUERIDA:
 # **SESIÓN DE APRENDIZAJE Nº {num_doc}**
 ## **{problema_contexto.upper()}**
 
-• I: DATOS INFORMATIVOS (ESTRICTAMENTE EN 2 COLUMNAS)
+• I. DATOS INFORMATIVOS:
 | DATOS INFORMATIVOS | DETALLE / INFORMACIÓN |
-| DRE / UGEL | {dre_ugel} |
+| :--- | :--- |
 | Institución Educativa | {ie_nombre} |
-| Director | {director} |
-| Subdirector(es) | {subdirector} |
 | Docente de Aula | {docente} |
 | Grado y Sección | {grado_seccion} |
-| Área Curricular | {area_sel} |
 | Fecha | {fecha_sugerida} |
 | Duración | {duracion_sesion} |
 
 • II: PROPÓSITOS DE APRENDIZAJE Y EVIDENCIAS
-| ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE (CNEB completo con **negrita parte del estandar utilizado en la sesión**) | DESEMPEÑOS PRECISADOS (CNEB) | CRITERIOS DE EVALUACIÓN | PROPÓSITO DE LA SESIÓN | EVIDENCIA DE APRENDIZAJE | INSTRUMENTO DE EVALUACIÓN |
+(Genera una tabla markdown detallada con las siguientes columnas):
+| Área, competencias y capacidades | Copia el desempeño completo  resaltando en negrita la parte precisada (CNEB) | Criterios de evaluación (2 a 3 claros y medibles) |
+| :--- | :--- | :--- |
+| **{area_sel}**<br>• [Desglosa la competencia seleccionada del CNEB]<br>• [Desglosa sus capacidades correspondientes] | [Extrae los desempeños oficiales del Currículo Nacional adecuados para el grado ({grado_seccion}) y tema, resaltando en negrita la parte precisada] | 1. [Acción + Contenido + Condición]<br>2. [Criterio 2]<br>3. [Criterio 3]<br>4. [Criterio 4] |
 
-• III: ENFOQUES TRANSVERSALES
+Debajo de la tabla, incluye de forma independiente y clara:
+• **Propósito:** [Redacta en un párrafo corto qué aprenderán hoy los estudiantes y bajo qué contexto en lenguaje infantil y claro]
+• **Evidencia de aprendizaje:** [Define un producto o actuación tangible que realizarán los alumnos para demostrar su aprendizaje]
+• **Instrumento de evaluación:** [Escala valorativa / Lista de cotejo con niveles A, B, C]
+• **Estándar de aprendizaje:** [Copia el estándar de aprendizaje completo e íntegro del ciclo correspondiente según el CNEB, resaltando en **negrita la parte de la sesion que se esta utilizando en la sesión** la porción específica trabajada]
+
+• III. ENFOQUE DUA APLICADO:
+| Dimensión | Estrategia aplicada en la sesión |
+| :--- | :--- |
+| **Múltiples formas de representación** | [Detalla cómo se presentará la información de forma visual, auditiva, concreta o textual] |
+| **Múltiples formas de acción y expresión** | [Detalla las opciones diferenciadas que tendrán los alumnos para demostrar lo aprendido] |
+| **Múltiples formas de compromiso** | [Explica cómo se motivará, conectará con sus intereses y mantendrá el foco de los estudiantes] |
+
+• IV: ENFOQUES TRANSVERSALES
 | ENFOQUE TRANSVERSAL | VALORES | ACTITUDES OBSERVABLES |
 
-• TABLA IV: COMPETENCIA TRANSVERSAL
+• V: COMPETENCIA TRANSVERSAL
 | COMPETENCIA TRANSVERSAL | CAPACIDADES | DESEMPEÑOS PRECISADOS |
 
-• TABLA V: META DE APRENDIZAJE
-| META DE APRENDIZAJE ({grado_seccion}) | DESCRIPCIÓN DE LA META |
-
-• TABLA VI: PREPARACIÓN DE LA SESIÓN
+• VI: PREPARACIÓN DE LA SESIÓN
 | ¿Qué necesitamos hacer antes de la sesión? | ¿Qué recursos o materiales se utilizarán en esta sesión? |
 
-• MOMENTOS DE LA SESIÓN:
-- **INICIO ({t_inicio})**
-- **DESARROLLO ({t_desarrollo})**
-- **CIERRE ({t_cierre})**
+• VII: SECUENCIA DIDÁCTICA
+#### **INICIO (Tiempo aproximado: {t_inicio})**
+• **Actividad permanente:** Saludo cordial, control de asistencia, soporte socioemocional y oración del día.
+• **Motivación y Saberes Previos:** [Plantea una dinámica lúdica breve, canción, imagen misteriosa o juego que active vivencias previas y capte la atención de los niños de {grado_seccion}].
+• **Conflicto cognitivo:** [Pregunta retadora y abierta que los haga reflexionar y dudar constructivamente].
+• **Presentación:** Comunicamos explícitamente el Propósito de la sesión y los Criterios con los que serán evaluados en lenguaje cercano.
+• **Acuerdos:** Establecemos juntos 2 o 3 normas de convivencia clave para la jornada.
 
-• TABLA VII: ESCALA DE VALORACIÓN (30 alumnos ficticios)
+#### **DESARROLLO (Tiempo aproximado: {t_desarrollo})**
+(Desarrolla esta sección aplicando los PROCESOS DIDÁCTICOS OFICIALES del área de {area_sel}: por ejemplo, si es Ciencia y Tecnología usa: Planteamiento del problema, Planteamiento de hipótesis, Elaboración del plan de acción, Recojo de datos y análisis de resultados, Estructuración del saber construido y Evaluación/Comunicación; si es Personal Social: Problematización, Análisis de la información y Toma de decisiones; si es Comunicación o Matemática usa sus respectivos procesos oficiales). Redacta en primera persona del plural de forma narrativa y viva las acciones del docente y las respuestas/participación activa de los niños.
+
+> 🏃‍♂️ **PAUSA ACTIVA (2 minutos):** [Describe aquí una rutina breve de 2 minutos con ejercicios de respiración, estiramiento lúdico o juego corporal motor para recargar energía y recuperar la concentración de los niños].
+
+(Continúa con el cierre de los procesos didácticos del área, la consolidación y la elaboración de la evidencia).
+
+#### **CIERRE (Tiempo aproximado: {t_cierre})**
+• **Sistematización:** Construimos junto a los estudiantes la idea fuerza o conclusión central en la pizarra o papelote.
+• **Metacognición:** Formulamos 4 a 5 preguntas directas de autorreflexión:
+  - ¿Qué aprendimos el día de hoy?
+  - ¿Cómo lo aprendimos y qué pasos seguimos?
+  - ¿Qué dificultades tuvimos y cómo las superamos?
+  - ¿Para qué nos servirá lo aprendido en nuestra vida diaria?
+• **Despedida:** Felicitamos calurosamente a los estudiantes por su participación y esfuerzo en la sesión.
+
+• VII: INSTRUMENTO DE EVALUACIÓN (30 alumnos ficticios)
 """
+**ÁREA:** {area_sel.upper()} | **GRADO Y SECCIÓN:** {grado_seccion} | **FECHA:** {fecha_sugerida}  
+**ACTIVIDAD:** {problema_contexto}  
+| N.° | ESTUDIANTES | Criterio 1: [Nombre Criterio 1] | Criterio 2: [Nombre Criterio 2] | Criterio 3: [Nombre Criterio 3] | 
+| :---: | :--- | :---: | :---: | :---: | 
 
 def generar_prompt_ficha_trabajo():
     return f"""
