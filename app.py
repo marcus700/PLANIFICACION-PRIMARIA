@@ -834,8 +834,6 @@ Debajo de la tabla, incluye de forma independiente y clara:
 
 • VII: INSTRUMENTO DE EVALUACIÓN (30 alumnos ficticios)
 """
-**ÁREA:** {area_sel.upper()} | **GRADO Y SECCIÓN:** {grado_seccion} | **FECHA:** {fecha_sugerida}  
-**ACTIVIDAD:** {problema_contexto}  
 
 def generar_prompt_ficha_trabajo():
     return f"""
