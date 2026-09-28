@@ -93,70 +93,50 @@ st.markdown("""
     }
 
     /* 4. COLORES EXCLUSIVOS PARA CADA BOTÓN DE HERRAMIENTA */
-    div.st-key-btn_proyecto > button, button[key="btn_proyecto"] {
+    div.st-key-btn_proyecto > button {
         background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
         background-color: #059669 !important;
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
     }
-    div.st-key-btn_proyecto > button p, button[key="btn_proyecto"] p, div.st-key-btn_proyecto > button span {
-        color: #FFFFFF !important;
-        font-weight: 800 !important;
-        font-size: 1.05rem !important;
-    }
+    div.st-key-btn_proyecto > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
 
-    div.st-key-btn_unidad > button, button[key="btn_unidad"] {
+    div.st-key-btn_unidad > button {
         background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%) !important;
         background-color: #7C3AED !important;
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(139, 92, 246, 0.35) !important;
     }
-    div.st-key-btn_unidad > button p, button[key="btn_unidad"] p, div.st-key-btn_unidad > button span {
-        color: #FFFFFF !important;
-        font-weight: 800 !important;
-        font-size: 1.05rem !important;
-    }
+    div.st-key-btn_unidad > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
 
-    div.st-key-btn_sesion > button, button[key="btn_sesion"] {
+    div.st-key-btn_sesion > button {
         background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
         background-color: #2563EB !important;
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(59, 130, 246, 0.35) !important;
     }
-    div.st-key-btn_sesion > button p, button[key="btn_sesion"] p, div.st-key-btn_sesion > button span {
-        color: #FFFFFF !important;
-        font-weight: 800 !important;
-        font-size: 1.05rem !important;
-    }
+    div.st-key-btn_sesion > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
 
-    div.st-key-btn_ficha > button, button[key="btn_ficha"] {
+    div.st-key-btn_ficha > button {
         background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
         background-color: #D97706 !important;
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35) !important;
     }
-    div.st-key-btn_ficha > button p, button[key="btn_ficha"] p, div.st-key-btn_ficha > button span {
-        color: #FFFFFF !important;
-        font-weight: 800 !important;
-        font-size: 1.05rem !important;
-    }
+    div.st-key-btn_ficha > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
 
-    div.st-key-btn_afiche > button, button[key="btn_afiche"] {
+    div.st-key-btn_afiche > button {
         background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
         background-color: #DC2626 !important;
         border-radius: 12px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(239, 68, 68, 0.35) !important;
     }
-    div.st-key-btn_afiche > button p, button[key="btn_afiche"] p, div.st-key-btn_afiche > button span {
-        color: #FFFFFF !important;
-        font-weight: 800 !important;
-        font-size: 1.05rem !important;
-    }
+    div.st-key-btn_afiche > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
 
     /* BOTÓN PRINCIPAL DE GENERACIÓN */
     div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]):not([key="btn_afiche"]) {
@@ -195,37 +175,16 @@ st.markdown("""
         letter-spacing: 0.3px !important;
     }
 
-    /* Variación armónica de colores de cabecera por cada tabla */
-    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+1) thead tr th {
-        background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%) !important;
-    }
-    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+2) thead tr th {
-        background: linear-gradient(135deg, #065F46 0%, #10B981 100%) !important;
-    }
-    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+3) thead tr th {
-        background: linear-gradient(135deg, #6B21A8 0%, #8B5CF6 100%) !important;
-    }
-    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+4) thead tr th {
-        background: linear-gradient(135deg, #9A3412 0%, #F97316 100%) !important;
-    }
-    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+5) thead tr th {
-        background: linear-gradient(135deg, #0E7490 0%, #06B6D4 100%) !important;
-    }
-    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+6) thead tr th {
-        background: linear-gradient(135deg, #BE123C 0%, #F43F5E 100%) !important;
-    }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+1) thead tr th { background: linear-gradient(135deg, #1E3A8A 0%, #3B82F6 100%) !important; }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+2) thead tr th { background: linear-gradient(135deg, #065F46 0%, #10B981 100%) !important; }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+3) thead tr th { background: linear-gradient(135deg, #6B21A8 0%, #8B5CF6 100%) !important; }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+4) thead tr th { background: linear-gradient(135deg, #9A3412 0%, #F97316 100%) !important; }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+5) thead tr th { background: linear-gradient(135deg, #0E7490 0%, #06B6D4 100%) !important; }
+    div[data-testid="stMarkdownContainer"] table:nth-of-type(6n+6) thead tr th { background: linear-gradient(135deg, #BE123C 0%, #F43F5E 100%) !important; }
 
-    /* Filas alternadas suaves (Zebra) */
-    div[data-testid="stMarkdownContainer"] table tbody tr:nth-child(even) {
-        background-color: #F8FAFC !important;
-    }
-    div[data-testid="stMarkdownContainer"] table tbody tr:nth-child(odd) {
-        background-color: #FFFFFF !important;
-    }
-    div[data-testid="stMarkdownContainer"] table tbody tr:hover {
-        background-color: #FEF3C7 !important;
-        transition: background-color 0.2s ease-in-out;
-    }
+    div[data-testid="stMarkdownContainer"] table tbody tr:nth-child(even) { background-color: #F8FAFC !important; }
+    div[data-testid="stMarkdownContainer"] table tbody tr:nth-child(odd) { background-color: #FFFFFF !important; }
+    div[data-testid="stMarkdownContainer"] table tbody tr:hover { background-color: #FEF3C7 !important; transition: background-color 0.2s ease-in-out; }
     div[data-testid="stMarkdownContainer"] table tbody td {
         padding: 9px 12px !important;
         border: 1px solid #E2E8F0 !important;
@@ -252,41 +211,19 @@ function injectKillStyle() {
                 const style = doc.createElement('style');
                 style.id = 'sys-kill-style';
                 style.innerHTML = `
-                    [data-testid="stViewerBadge"],
-                    [data-testid="manage-app-button"],
-                    .viewerBadge_container__1613n,
-                    .stAppDeployButton,
-                    div[class*="viewerBadge"],
-                    div[class*="ViewerBadge"],
-                    a[class*="viewerBadge"],
-                    a[class*="ViewerBadge"],
-                    div[class*="profile"],
-                    div[class*="Profile"],
-                    div[class*="crown"],
-                    div[class*="Crown"],
-                    div[class*="badge"],
-                    div[class*="Badge"],
+                    [data-testid="stViewerBadge"], [data-testid="manage-app-button"],
+                    .viewerBadge_container__1613n, .stAppDeployButton,
+                    div[class*="viewerBadge"], div[class*="ViewerBadge"],
+                    a[class*="viewerBadge"], a[class*="ViewerBadge"],
+                    div[class*="profile"], div[class*="Profile"],
+                    div[class*="crown"], div[class*="Crown"],
+                    div[class*="badge"], div[class*="Badge"],
                     a[href*="streamlit"] {
-                        display: none !important;
-                        visibility: hidden !important;
-                        opacity: 0 !important;
-                        pointer-events: none !important;
-                        width: 0 !important;
-                        height: 0 !important;
+                        display: none !important; visibility: hidden !important; opacity: 0 !important; width: 0 !important; height: 0 !important;
                     }
                 `;
                 doc.head.appendChild(style);
             }
-            const badSelectors = [
-                '[data-testid="stViewerBadge"]',
-                '[data-testid="manage-app-button"]',
-                '.stAppDeployButton',
-                '.viewerBadge_container__1613n',
-                'a[href*="streamlit"]'
-            ];
-            badSelectors.forEach(s => {
-                doc.querySelectorAll(s).forEach(el => el.remove());
-            });
         } catch(e) {}
     });
 }
@@ -337,23 +274,15 @@ MODELOS_DISPONIBLES = [
     "gemini-1.5-pro"          # Máxima calidad y redacción extensa
 ]
 
-# INICIALIZACIÓN DE MEMORIA PERSISTENTE (st.session_state)
-if 'resultado_md' not in st.session_state:
-    st.session_state['resultado_md'] = None
-if 'tipo_doc_generado' not in st.session_state:
-    st.session_state['tipo_doc_generado'] = None
-if 'fname_clean' not in st.session_state:
-    st.session_state['fname_clean'] = None
-if 'ie_nombre_generado' not in st.session_state:
-    st.session_state['ie_nombre_generado'] = None
-if 'tipo_documento' not in st.session_state:
-    st.session_state['tipo_documento'] = "Proyecto de Aprendizaje"
-if 'imagen_nanobanana' not in st.session_state:
-    st.session_state['imagen_nanobanana'] = None
-if 'imagen_bytes' not in st.session_state:
-    st.session_state['imagen_bytes'] = None
-if 'model_choice' not in st.session_state:
-    st.session_state['model_choice'] = "gemini-3.5-flash-lite"
+# INICIALIZACIÓN DE MEMORIA PERSISTENTE
+if 'resultado_md' not in st.session_state: st.session_state['resultado_md'] = None
+if 'tipo_doc_generado' not in st.session_state: st.session_state['tipo_doc_generado'] = None
+if 'fname_clean' not in st.session_state: st.session_state['fname_clean'] = None
+if 'ie_nombre_generado' not in st.session_state: st.session_state['ie_nombre_generado'] = None
+if 'tipo_documento' not in st.session_state: st.session_state['tipo_documento'] = "Proyecto de Aprendizaje"
+if 'imagen_nanobanana' not in st.session_state: st.session_state['imagen_nanobanana'] = None
+if 'imagen_bytes' not in st.session_state: st.session_state['imagen_bytes'] = None
+if 'model_choice' not in st.session_state: st.session_state['model_choice'] = "gemini-3.5-flash-lite"
 
 # ==============================================================================
 # ENCABEZADO PRINCIPAL CON SELECTOR DE MODELO GEMINI INTEGRADO A UN LADO
@@ -404,12 +333,12 @@ else:
     )
 
 st.sidebar.markdown(f"**🤖 Modelo activo:** `{model_choice}`")
-
 st.sidebar.markdown("---")
 st.sidebar.info("""
 **Alineamiento CNEB Perú:**
 • RM N.° 649-2016-MINEDU
 • Estándares y Desempeños CNEB Íntegros
+• Conexión directa a cneb_primaria_datos.py
 • Turno Único: 2 a 3 Sesiones diarias de 90 min
 • Nivel Educación Primaria (1.° a 6.° Grado)
 • Tablas coloreadas y exportables a Word
@@ -522,7 +451,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
                         p_cell.text = ""
                         add_formatted_text(p_cell, cell_value)
                         
-                        # Cabecera coloreada
                         if r_idx == 0:
                             shading_elm = OxmlElement('w:shd')
                             shading_elm.set(qn('w:val'), 'clear')
@@ -533,7 +461,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
                                 for run in paragraph.runs:
                                     run.font.color.rgb = RGBColor(30, 58, 138)
                                     run.font.bold = True
-                        # Filas alternas suaves
                         elif r_idx % 2 == 1:
                             shading_elm = OxmlElement('w:shd')
                             shading_elm.set(qn('w:val'), 'clear')
@@ -595,8 +522,6 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
         table_count += 1
         header_color = PASTEL_COLORS[(table_count - 1) % len(PASTEL_COLORS)]
         render_table(table_data, header_color)
-        in_table = False
-        table_data = []
             
     buffer = io.BytesIO()
     doc.save(buffer)
@@ -604,72 +529,26 @@ def markdown_to_docx(md_text, ie_nombre="I.E. N° 22303", es_horizontal=False):
     return buffer
 
 def generar_imagen_nanobanana(client, tema, grado, area):
-    """Genera la imagen infográfica educativa con sistema dual (Imagen / Gemini Multimodal)"""
     prompt_nanobanana = f"""
     Full educational primary school session infographic poster (Estilo Sesión de Aprendizaje e Infografía Oficial MINEDU Perú).
     Grade: {grado}. Subject: {area}. Topic: '{tema}'.
-    
-    Visual Poster Layout & Structure:
-    - TOP HEADER BANNER: Bold title "SESIÓN DE APRENDIZAJE: {tema.upper()}" with cute primary school children cartoon mascot icons.
-    - TOP SECTION (DATOS Y PROPÓSITO): Small pastel information card boxes with checkmark icons detailing learning goals.
-    - MAIN SECTION (DESARROLLO DE ACTIVIDADES EN SECUENCIA): Numbered activity step cards (1, 2, 3, 4) with timer clock icons, showing friendly Peruvian primary school students actively performing the learning activities step-by-step for '{tema}' in a safe classroom/school setting.
-    - BOTTOM SECTION (REFLEXIÓN Y RECUERDA): A bottom "RECUERDA" bar with small safety tip badges and smile icons.
-    
-    Art Style: Highly detailed vector educational infographic poster layout, pastel blue/green/yellow/orange cards with rounded borders, white background, clean outlines, cute Peruvian primary school children illustrations, 3:4 vertical poster format.
+    Visual Poster Layout & Structure: Top title 'SESIÓN DE APRENDIZAJE: {tema.upper()}', step activity cards, cute primary students in classroom, vector clean layout 3:4.
     """
-    
-    ultimo_error = None
-    
-    modelos_imagen = [
-        'imagen-4.0-generate-001',
-        'imagen-3.0-generate-002',
-        'imagen-3.0-fast-generate-001',
-        'imagen-3.0-generate-001'
-    ]
-    for mod in modelos_imagen:
+    for mod in ['imagen-4.0-generate-001', 'imagen-3.0-generate-002', 'imagen-3.0-fast-generate-001']:
         try:
             result = client.models.generate_images(
-                model=mod,
-                prompt=prompt_nanobanana,
-                config=types.GenerateImagesConfig(
-                    number_of_images=1,
-                    output_mime_type="image/jpeg",
-                    aspect_ratio="3:4",
-                )
+                model=mod, prompt=prompt_nanobanana,
+                config=types.GenerateImagesConfig(number_of_images=1, output_mime_type="image/jpeg", aspect_ratio="3:4")
             )
             if hasattr(result, 'generated_images') and result.generated_images:
-                for gen_img in result.generated_images:
-                    img_bytes = gen_img.image.image_bytes
-                    img = Image.open(io.BytesIO(img_bytes))
-                    return img, img_bytes, None
-        except Exception as err:
-            ultimo_error = str(err)
+                img_bytes = result.generated_images[0].image.image_bytes
+                return Image.open(io.BytesIO(img_bytes)), img_bytes, None
+        except Exception:
             continue
-
-    modelos_multimodal = ['gemini-2.0-flash-exp', 'gemini-2.0-flash']
-    for mod in modelos_multimodal:
-        try:
-            response = client.models.generate_content(
-                model=mod,
-                contents=f"Genera la imagen de un afiche educativo visual: {prompt_nanobanana}",
-                config=types.GenerateContentConfig(
-                    response_modalities=["TEXT", "IMAGE"]
-                )
-            )
-            if hasattr(response, 'candidates') and response.candidates:
-                for part in response.candidates[0].content.parts:
-                    if hasattr(part, 'inline_data') and part.inline_data and part.inline_data.data:
-                        img_bytes = part.inline_data.data
-                        img = Image.open(io.BytesIO(img_bytes))
-                        return img, img_bytes, None
-        except Exception as err:
-            ultimo_error = str(err)
-            continue
-
-    return None, None, ultimo_error
+    return None, None, "No se pudo generar la imagen."
 
 # ==============================================================================
-# FORMULARIO DE DATOS DE AULA
+# FORMULARIO DE DATOS DE AULA CONECTADO A CNEB
 # ==============================================================================
 st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
 
@@ -684,17 +563,26 @@ with c3:
     docente = st.text_input("Docente de Aula:", "Sara María Quiroz Rodríguez")
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
+competencia_sel = ""
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     f1, f2, f3, f4 = st.columns(4)
     with f1:
         num_doc = st.text_input("N.° de Documento / Sesión / Ficha / Afiche:", "01")
     with f2:
-        area_sel = st.selectbox("Área Curricular:", cneb.obtener_lista_areas(), index=0)
+        lista_areas = cneb.obtener_lista_areas()
+        area_sel = st.selectbox("Área Curricular:", lista_areas if lista_areas else ["Personal Social", "Comunicación", "Matemática", "Ciencia y Tecnología"], index=0)
     with f3:
         fecha_sugerida = st.text_input("Fecha:", "05 de mayo de 2026")
     with f4:
         duracion_sesion = st.selectbox("Duración de la Sesión:", ["45 minutos", "90 minutos", "135 minutos"], index=1)
     
+    # 🎯 JALA LAS COMPETENCIAS EN VIVO DESDE CNEB_PRIMARIA_DATOS.PY
+    comps_disponibles = cneb.obtener_competencias(area_sel)
+    if comps_disponibles:
+        competencia_sel = st.selectbox("🎯 Competencia Oficial CNEB a desarrollar:", comps_disponibles, index=0)
+    else:
+        competencia_sel = ""
+
     fechas_duracion = fecha_sugerida
     duracion_semanas = 1
 
@@ -745,6 +633,14 @@ def generar_prompt_sesion():
     else:
         t_inicio, t_desarrollo, t_cierre = "20 min", "60 min", "10 min"
 
+    # 🔗 JALA EN VIVO LOS DATOS OFICIALES DE CNEB_PRIMARIA_DATOS.PY
+    estandar_oficial = cneb.obtener_estandar(area_sel, competencia_sel, grado_seccion)
+    desempenos_oficiales = cneb.obtener_desempenos(area_sel, competencia_sel, grado_seccion)
+    capacidades_oficiales = cneb.obtener_capacidades(area_sel, competencia_sel)
+
+    desempenos_texto = "\n".join([f"  • {d}" for d in desempenos_oficiales]) if desempenos_oficiales else "  • Desempeño oficial del grado según CNEB."
+    capacidades_texto = ", ".join(capacidades_oficiales) if capacidades_oficiales else "Capacidades oficiales de la competencia seleccionada"
+
     return f"""
 Actúa como: Actúa como un docente especialista y planificador curricular del sistema educativo peruano, con dominio del Currículo Nacional de la Educación Básica (CNEB), la planificación por competencias, la evaluación formativa, el Diseño Universal para el Aprendizaje (DUA) y la normativa vigente del MINEDU. Tu función es automatizar la elaboración de sesiones de aprendizaje completos, coherentes, contextualizados y listos para ser utilizados en instituciones educativas públicas y privadas del Perú.
 Tu objetivo: Elaborar una propuesta profesional, manteniendo coherencia entre competencias, capacidades, desempeños, criterios de evaluación, evidencias e instrumentos, respetando la estructura establecida por el CNEB.
@@ -752,6 +648,7 @@ Tu objetivo: Elaborar una propuesta profesional, manteniendo coherencia entre co
 Datos para la sesión (Configuración):
 • Grado y Sección: {grado_seccion}
 • Área Curricular: {area_sel}
+• Competencia Seleccionada: {competencia_sel}
 • Tema/Título de la sesión: {problema_contexto}
 • Fecha sugerida: {fecha_sugerida}
 • DRE / UGEL: {dre_ugel}
@@ -761,9 +658,18 @@ Datos para la sesión (Configuración):
 • Docente de Aula: {docente}
 • Duración Total: {duracion_sesion}
 
+INFORMACIÓN CURRICULAR OFICIAL JALADA DE CNEB_PRIMARIA_DATOS (OBLIGATORIO UTILIZAR):
+• CAPACIDADES OFICIALES: {capacidades_texto}
+• ESTÁNDAR DE APRENDIZAJE ÍNTEGRO (Copia este texto completo e idéntico en la sección correspondiente sin resumir ni alterar, resaltando en **negrita** únicamente el fragmento trabajado):
+"{estandar_oficial}"
+
+• BANCO DE DESEMPEÑOS OFICIALES PARA {grado_seccion.upper()}:
+{desempenos_texto}
+(Selecciona de este banco el desempeño oficial más pertinente para '{problema_contexto}' y resalta en **negrita** la precisión contextualizada).
+
 INSTRUCCIONES DE FORMATO Y CONTENIDO (OBLIGATORIO):
 1. FORMATO: Estructura toda la respuesta en Markdown limpio con tablas estándar. PROHIBIDO USAR CÓDIGO O ETIQUETAS HTML (no uses <table>, <tr>, <td>, <br>).
-2. ESTÁNDAR DE APRENDIZAJE ÍNTEGRO: Copia el texto completo del estándar de ciclo  tal cual figura en CNEB sin cortar ni resumir ni alterar ninguna palabra del ciclo correspondiente. Resalta en **negrita** únicamente el fragmento que se trabaja directamente en esta sesión.
+2. ESTÁNDAR DE APRENDIZAJE ÍNTEGRO: Copia el texto completo del estándar de ciclo tal cual figura en CNEB sin cortar ni resumir ni alterar ninguna palabra del ciclo correspondiente. Resalta en **negrita** únicamente el fragmento que se trabaja directamente en esta sesión.
 3. DESEMPEÑO OFICIAL: Extrae el desempeño oficial del grado ({grado_seccion}) tal cual figura en el cneb, resaltando en **negrita** la precisión contextualizada al tema.
 4. CRITERIOS DE EVALUACIÓN: Redacta de 2 a 3 criterios con la fórmula: Acción + Contenido + Condición.
 5. ENFOQUE DUA: Incluye obligatoriamente la tabla con las 3 dimensiones: Múltiples formas de representación, Múltiples formas de acción/expresión y Múltiples formas de compromiso.
@@ -781,6 +687,7 @@ ESTRUCTURA DE SALIDA REQUERIDA:
 | Institución Educativa | {ie_nombre} |
 | Docente de Aula | {docente} |
 | Grado y Sección | {grado_seccion} |
+| Área Curricular | {area_sel} |
 | Fecha | {fecha_sugerida} |
 | Duración | {duracion_sesion} |
 
@@ -788,7 +695,7 @@ ESTRUCTURA DE SALIDA REQUERIDA:
 (Genera una tabla markdown detallada con las siguientes columnas):
 | Área, competencias y capacidades | Copia el desempeño completo resaltando en negrita la parte precisada (CNEB) | Criterios de evaluación (2 a 3 claros y medibles) |
 | :--- | :--- | :--- |
-| **{area_sel}**<br>• [Desglosa la competencia seleccionada del CNEB]<br>• [Desglosa sus capacidades correspondientes] | [Extrae los desempeños oficiales del Currículo Nacional adecuados para el grado ({grado_seccion}) y tema, resaltando en negrita la parte precisada] | 1. [Acción + Contenido + Condición]<br>2. [Criterio 2]<br>3. [Criterio 3]<br>4. [Criterio 4] |
+| **{area_sel}**<br>• **{competencia_sel}**<br>• {capacidades_texto} | [Copia el desempeño oficial elegido resaltando en **negrita** la parte precisada] | 1. [Acción + Contenido + Condición]<br>2. [Criterio 2]<br>3. [Criterio 3] |
 
 Debajo de la tabla, incluye de forma independiente y clara:
 |Propósito | [Redacta en un párrafo corto qué aprenderán hoy los estudiantes y bajo qué contexto en lenguaje infantil y claro]|
@@ -797,7 +704,7 @@ Debajo de la tabla, incluye de forma independiente y clara:
 | :--- | :--- |
 |Instrumento de evaluación | [Escala valorativa / Lista de cotejo con niveles A, B, C] |
 | :--- | :--- |
-|Estándar de aprendizaje | [Copia el estándar de aprendizaje completo e íntegro sin cortar ni alterar ni resumir ninguna palabra  del ciclo correspondiente según el CNEB, resaltando en **negrita unicamente el fragmento que se trabaja directamente  en la sesión** la porción específica trabajada]|
+|Estándar de aprendizaje | [Copia el estándar de aprendizaje completo e íntegro sin cortar ni alterar ni resumir ninguna palabra del ciclo correspondiente según el CNEB: "{estandar_oficial}", resaltando en **negrita únicamente el fragmento que se trabaja directamente en la sesión**]|
 | :--- | :--- |
 
 • III. ENFOQUE DUA APLICADO:
@@ -841,8 +748,8 @@ Debajo de la tabla, incluye de forma independiente y clara:
 • **Despedida:** Felicitamos calurosamente a los estudiantes por su participación y esfuerzo en la sesión.
 
 • VII: INSTRUMENTO DE EVALUACIÓN (30 alumnos ficticios)
-| Area: .........| Grado y Sección:..........| fecha:(fecha de hoy) |
-|competencia:..........| Capacidad:..........|evidencia:.........|
+| Area: {area_sel} | Grado y Sección: {grado_seccion} | Fecha: {fecha_sugerida} |
+| Competencia: {competencia_sel} | Capacidad: {capacidades_texto} | Evidencia: Evidencia de aprendizaje de la sesión |
 """
 
 def generar_prompt_ficha_trabajo():
