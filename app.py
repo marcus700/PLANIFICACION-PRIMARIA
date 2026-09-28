@@ -841,6 +841,8 @@ Debajo de la tabla, incluye de forma independiente y clara:
 • **Despedida:** Felicitamos calurosamente a los estudiantes por su participación y esfuerzo en la sesión.
 
 • VII: INSTRUMENTO DE EVALUACIÓN (30 alumnos ficticios)
+| Area: .........| Grado y Sección:..........| fecha:(fecha de hoy) |
+|competencia:..........| Capacidad:..........|evidencia:.........|
 """
 
 def generar_prompt_ficha_trabajo():
