@@ -9,6 +9,7 @@ from docx.oxml import OxmlElement
 from docx.oxml.ns import qn
 import io
 import re
+import time
 from PIL import Image
 import cneb_primaria_datos as cneb
 
@@ -327,13 +328,13 @@ if not check_password():
 # LISTA DE MODELOS OFICIALES Y ESTABLES DE GEMINI
 # ==============================================================================
 MODELOS_DISPONIBLES = [
-    "gemini-1.5-flash",       # Más compatible en todas las cuentas
-    "gemini-2.0-flash",       # Alta velocidad y última generación
-    "gemini-2.5-flash",       # Con razonamiento pedagógico
-    "gemini-3.8-flash",       # Modelo frontier de alta velocidad
-    "gemini-3.5-flash",       # Modelo frontier equilibrado
+    "gemini-2.0-flash",       # Alta velocidad, estable y sin saturación (Recomendado)
+    "gemini-1.5-flash",       # Compatible universal
+    "gemini-2.5-flash",       # Razonamiento pedagógico
     "gemini-1.5-pro",         # Máxima calidad y redacción extensa
-    "gemini-2.0-flash-lite",  # Ultra ligero y económico
+    "gemini-2.0-flash-lite",  # Ultra ligero y rápido
+    "gemini-3.8-flash",       # Modelo frontier
+    "gemini-3.5-flash",       # Modelo frontier equilibrado
     "gemini-3.1-pro"          # Razonamiento avanzado
 ]
 
@@ -353,7 +354,7 @@ if 'imagen_nanobanana' not in st.session_state:
 if 'imagen_bytes' not in st.session_state:
     st.session_state['imagen_bytes'] = None
 if 'model_choice' not in st.session_state:
-    st.session_state['model_choice'] = "gemini-1.5-flash"
+    st.session_state['model_choice'] = "gemini-2.0-flash"
 
 # ==============================================================================
 # ENCABEZADO PRINCIPAL CON SELECTOR DE MODELO GEMINI INTEGRADO A UN LADO
@@ -460,7 +461,7 @@ banner_color = COLOR_MAP.get(tipo_documento, "#059669")
 
 st.markdown(f"""
 <div style="background-color: {banner_color}; color: white; padding: 0.6rem 1rem; border-radius: 8px; font-weight: bold; font-size: 1.05rem; margin-top: 0.8rem; margin-bottom: 1.2rem; text-align: center;">
-    📍 Herramienta Seleccionada: {tipo_documento.upper()} | 🤖 Procesado con: {model_choice}
+    📍 Herramienta Seleccionada: {tipo_documento.upper()} | 🤖 Motor Activo: {model_choice}
 </div>
 """, unsafe_allow_html=True)
 
@@ -1049,7 +1050,13 @@ if st.button(f"✨ Generar {tipo_documento}"):
             else:
                 if tipo_documento == "Sesión de Aprendizaje":
                     prompt_maestro = generar_prompt_sesion()
-                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Creas sesiones de aprendizaje en tablas sin incluir situación significativa, incluyendo datos informativos en 2 columnas, propósitos de aprendizaje, enfoques, competencia transversal, meta de aprendizaje, preparación, momentos con procesos didácticos del área en 1ra persona plural tiempo presente, y escala de valoración con 30 estudiantes ficticios."
+                    sys_inst = (
+                        "Eres un Especialista Curricular y docente de Educación Primaria del MINEDU Perú. "
+                        "Elaboras sesiones de aprendizaje oficiales completas aplicando el enfoque DUA, "
+                        "procesos didácticos del área en el Desarrollo, pausa activa de 2 minutos, "
+                        "estándar íntegro del CNEB con negrita en lo trabajado y evaluación con escala A, B y C. "
+                        "Toda tu respuesta debe estar en formato Markdown limpio y en tablas, sin etiquetas HTML."
+                    )
                 elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
                     prompt_maestro = generar_prompt_ficha_trabajo()
                     sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo aplicando el proceso didáctico del área elegida. Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
@@ -1067,16 +1074,16 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         "Si el docente proporciona su propia Situación Significativa o actividades, utilízalas y respétalas íntegramente; si solo indica un problema breve, genera la Situación Significativa automáticamente."
                     )
                     
-                with st.spinner(f"🧠 Google Gemini ({model_choice}) está procesando tu {tipo_documento} para {grado_seccion}..."):
+                with st.spinner(f"🧠 Generando tu {tipo_documento} con Google Gemini ({model_choice})..."):
                     config = types.GenerateContentConfig(
                         system_instruction=sys_inst,
                         temperature=0.2
                     )
                     
-                    # CASCADA INTELIGENTE ANTI-404:
-                    # Intenta primero con el modelo que seleccionaste; si tu clave no tiene acceso, prueba los demás modelos de forma transparente.
+                    # CASCADA AUTOMÁTICA BLINDADA ANTI-503 Y ANTI-404:
+                    # Prueba primero el modelo seleccionado; si da 503 o 404, prueba los demás automáticamente
                     modelos_a_probar = [model_choice]
-                    for fallback in ["gemini-1.5-flash", "gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-pro", "gemini-3.8-flash", "gemini-3.5-flash"]:
+                    for fallback in ["gemini-2.0-flash", "gemini-2.5-flash", "gemini-1.5-pro", "gemini-1.5-flash", "gemini-2.0-flash-lite"]:
                         if fallback not in modelos_a_probar:
                             modelos_a_probar.append(fallback)
                     
@@ -1085,22 +1092,40 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     ultimo_err = None
                     
                     for mod in modelos_a_probar:
-                        try:
-                            response = client.models.generate_content(
-                                model=mod,
-                                contents=prompt_maestro,
-                                config=config
-                            )
-                            if response and response.text:
-                                modelo_exitoso = mod
-                                break
-                        except Exception as m_err:
-                            err_str_m = str(m_err)
-                            ultimo_err = m_err
-                            if "404" in err_str_m or "NOT_FOUND" in err_str_m or "not supported" in err_str_m.lower() or "not found" in err_str_m.lower():
-                                continue  # Pasa automáticamente al siguiente modelo
-                            else:
-                                raise m_err
+                        logrado = False
+                        # Intenta hasta 2 veces por modelo si hay saturación temporal (503)
+                        for intento in range(2):
+                            try:
+                                response = client.models.generate_content(
+                                    model=mod,
+                                    contents=prompt_maestro,
+                                    config=config
+                                )
+                                if response and response.text:
+                                    modelo_exitoso = mod
+                                    logrado = True
+                                    break
+                            except Exception as m_err:
+                                err_str_m = str(m_err)
+                                ultimo_err = m_err
+                                
+                                # Si hay 503 (servidor saturado con alta demanda), pausa y salta al siguiente modelo
+                                if "503" in err_str_m or "UNAVAILABLE" in err_str_m or "high demand" in err_str_m.lower():
+                                    if intento == 0:
+                                        time.sleep(1.5)
+                                        continue
+                                    else:
+                                        break  # Salta al siguiente modelo de la lista
+                                # Si el modelo no existe o no tiene permiso en la cuenta
+                                elif "404" in err_str_m or "NOT_FOUND" in err_str_m or "not supported" in err_str_m.lower() or "not found" in err_str_m.lower():
+                                    break  # Salta al siguiente modelo inmediatamente
+                                elif "429" in err_str_m or "RESOURCE_EXHAUSTED" in err_str_m:
+                                    time.sleep(2)
+                                    break
+                                else:
+                                    break
+                        if logrado:
+                            break
 
                     if response is None or not response.text:
                         raise ultimo_err if ultimo_err else Exception("No se pudo obtener respuesta del modelo.")
@@ -1116,8 +1141,10 @@ if st.button(f"✨ Generar {tipo_documento}"):
 
         except Exception as e:
             err_str = str(e)
-            if "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
-                st.warning("⏳ Límite de velocidad o cuota por minuto alcanzado. Por favor, espera 60 segundos y vuelve a presionar el botón Generar.")
+            if "503" in err_str or "UNAVAILABLE" in err_str or "high demand" in err_str.lower():
+                st.warning("⚡ **Google AI Studio está experimentando una alta demanda momentánea (Error 503).**\n\nPor favor, espera unos 15 segundos y vuelve a presionar el botón Generar.")
+            elif "429" in err_str or "RESOURCE_EXHAUSTED" in err_str:
+                st.warning("⏳ **Límite de velocidad por minuto alcanzado.** Por favor, espera 60 segundos y vuelve a presionar el botón Generar.")
             else:
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
 
