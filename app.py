@@ -836,8 +836,6 @@ Debajo de la tabla, incluye de forma independiente y clara:
 """
 **ÁREA:** {area_sel.upper()} | **GRADO Y SECCIÓN:** {grado_seccion} | **FECHA:** {fecha_sugerida}  
 **ACTIVIDAD:** {problema_contexto}  
-| N.° | ESTUDIANTES | Criterio 1: [Nombre Criterio 1] | Criterio 2: [Nombre Criterio 2] | Criterio 3: [Nombre Criterio 3] | 
-| :---: | :--- | :---: | :---: | :---: | 
 
 def generar_prompt_ficha_trabajo():
     return f"""
