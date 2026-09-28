@@ -763,7 +763,7 @@ Datos para la sesión (Configuración):
 
 INSTRUCCIONES DE FORMATO Y CONTENIDO (OBLIGATORIO):
 1. FORMATO: Estructura toda la respuesta en Markdown limpio con tablas estándar. PROHIBIDO USAR CÓDIGO O ETIQUETAS HTML (no uses <table>, <tr>, <td>, <br>).
-2. ESTÁNDAR DE APRENDIZAJE ÍNTEGRO: Copia el texto completo del estándar de ciclo según el CNEB sin cortar ni resumir ninguna palabra del grado correspondiente. Resalta en **negrita** únicamente el fragmento que se trabaja directamente en esta sesión.
+2. ESTÁNDAR DE APRENDIZAJE ÍNTEGRO: Copia el texto completo del estándar de ciclo según  tal cual figura en CNEB sin cortar ni resumir ninguna palabra del grado correspondiente. Resalta en **negrita** únicamente el fragmento que se trabaja directamente en esta sesión.
 3. DESEMPEÑO OFICIAL: Extrae el desempeño oficial del grado ({grado_seccion}) tal cual figura en el cneb, resaltando en **negrita** la precisión contextualizada al tema.
 4. CRITERIOS DE EVALUACIÓN: Redacta de 2 a 3 criterios con la fórmula: Acción + Contenido + Condición.
 5. ENFOQUE DUA: Incluye obligatoriamente la tabla con las 3 dimensiones: Múltiples formas de representación, Múltiples formas de acción/expresión y Múltiples formas de compromiso.
@@ -797,7 +797,7 @@ Debajo de la tabla, incluye de forma independiente y clara:
 | :--- | :--- |
 |Instrumento de evaluación | [Escala valorativa / Lista de cotejo con niveles A, B, C] |
 | :--- | :--- |
-|Estándar de aprendizaje | [Copia el estándar de aprendizaje completo e íntegro del ciclo correspondiente según el CNEB, resaltando en **negrita la parte del estandar que se esta utilizando en la sesión** la porción específica trabajada]|
+|Estándar de aprendizaje | [Copia el estándar de aprendizaje completo e íntegro sin cortar ni resumir ninguna palabra  del ciclo correspondiente según el CNEB, resaltando en **negrita unicamente el fragmento que se trabaja directamente  en la sesión** la porción específica trabajada]|
 | :--- | :--- |
 
 • III. ENFOQUE DUA APLICADO:
