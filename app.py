@@ -791,10 +791,10 @@ ESTRUCTURA DE SALIDA REQUERIDA:
 | **{area_sel}**<br>• [Desglosa la competencia seleccionada del CNEB]<br>• [Desglosa sus capacidades correspondientes] | [Extrae los desempeños oficiales del Currículo Nacional adecuados para el grado ({grado_seccion}) y tema, resaltando en negrita la parte precisada] | 1. [Acción + Contenido + Condición]<br>2. [Criterio 2]<br>3. [Criterio 3]<br>4. [Criterio 4] |
 
 Debajo de la tabla, incluye de forma independiente y clara:
-• |**Propósito:** | [Redacta en un párrafo corto qué aprenderán hoy los estudiantes y bajo qué contexto en lenguaje infantil y claro]|
-• |**Evidencia de aprendizaje:** | [Define un producto o actuación tangible que realizarán los alumnos para demostrar su aprendizaje]|
-• |**Instrumento de evaluación:** | [Escala valorativa / Lista de cotejo con niveles A, B, C] |
-• |**Estándar de aprendizaje:** | [Copia el estándar de aprendizaje completo e íntegro del ciclo correspondiente según el CNEB, resaltando en **negrita la parte de la sesion que se esta utilizando en la sesión** la porción específica trabajada] |
+• |Propósito | [Redacta en un párrafo corto qué aprenderán hoy los estudiantes y bajo qué contexto en lenguaje infantil y claro]|
+• |Evidencia de aprendizaje | [Define un producto o actuación tangible que realizarán los alumnos para demostrar su aprendizaje]|
+• |Instrumento de evaluación | [Escala valorativa / Lista de cotejo con niveles A, B, C] |
+• |Estándar de aprendizaje | [Copia el estándar de aprendizaje completo e íntegro del ciclo correspondiente según el CNEB, resaltando en **negrita la parte de la sesion que se esta utilizando en la sesión** la porción específica trabajada] |
 
 • III. ENFOQUE DUA APLICADO:
 | Dimensión | Estrategia aplicada en la sesión |
