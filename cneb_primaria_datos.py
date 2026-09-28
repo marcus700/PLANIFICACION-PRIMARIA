@@ -1724,48 +1724,144 @@ CNEB_PRIMARIA = {
 # ==============================================================================
 # FUNCIONES AUXILIARES DE CONSULTA
 # ==============================================================================
+import re
+
+CAPACIDADES_OFICIALES = {
+    "Construye su identidad": [
+        "Se valora a sí mismo.", "Autorregula sus emociones.", "Reflexiona y argumenta éticamente.",
+        "Vive su sexualidad de manera integral y responsable."
+    ],
+    "Convive y participa democráticamente en la búsqueda del bien común": [
+        "Interactúa con todas las personas.", "Construye normas y asume acuerdos y leyes.",
+        "Maneja conflictos de manera constructiva.", "Delibera sobre asuntos públicos.",
+        "Participa en acciones que promueven el bienestar común."
+    ],
+    "Construye interpretaciones históricas": [
+        "Interpreta críticamente fuentes diversas.", "Comprende el tiempo histórico.",
+        "Elabora explicaciones sobre procesos históricos."
+    ],
+    "Gestiona responsablemente el espacio y el ambiente": [
+        "Comprende las relaciones entre los elementos naturales y sociales.",
+        "Maneja fuentes de información para comprender el espacio geográfico.",
+        "Genera acciones para conservar el ambiente local y global."
+    ],
+    "Gestiona responsablemente los recursos económicos": [
+        "Comprende las relaciones entre los elementos del sistema económico y financiero.",
+        "Toma decisiones económicas y financieras."
+    ],
+    "Se desenvuelve de manera autónoma a través de su motricidad": [
+        "Comprende su cuerpo.", "Se expresa corporalmente."
+    ],
+    "Asume una vida saludable": [
+        "Comprende las relaciones entre la actividad física, alimentación, postura e higiene y la salud.",
+        "Incorpora prácticas que mejoran su calidad de vida."
+    ],
+    "Interactúa a través de sus habilidades sociomotrices": [
+        "Se relaciona utilizando sus habilidades sociomotrices.", "Crea y aplica estrategias y tácticas de juego."
+    ],
+    "Se comunica oralmente en su lengua materna": [
+        "Obtiene información del texto oral.", "Infiere e interpreta información del texto oral.",
+        "Adecúa, organiza y desarrolla las ideas de forma coherente y cohesionada.",
+        "Utiliza recursos no verbales y paraverbales de forma estratégica.",
+        "Interactúa estratégicamente con distintos interlocutores.",
+        "Reflexiona y evalúa la forma, el contenido y contexto del texto oral."
+    ],
+    "Lee diversos tipos de textos escritos en su lengua materna": [
+        "Obtiene información del texto escrito.", "Infiere e interpreta información del texto.",
+        "Reflexiona y evalúa la forma, el contenido y contexto del texto."
+    ],
+    "Escribe diversos tipos de textos en su lengua materna": [
+        "Adecúa el texto a la situación comunicativa.",
+        "Organiza y desarrolla las ideas de forma coherente y cohesionada.",
+        "Utiliza convenciones del lenguaje escrito de forma pertinente.",
+        "Reflexiona y evalúa la forma, el contenido y contexto del texto escrito."
+    ],
+    "Aprecia de manera crítica manifestaciones artístico-culturales": [
+        "Percibe manifestaciones artístico-culturales.", "Contextualiza manifestaciones artístico-culturales.",
+        "Reflexiona creativa y críticamente sobre manifestaciones artístico-culturales."
+    ],
+    "Crea proyectos desde los lenguajes artísticos": [
+        "Explora y experimenta los lenguajes del arte.", "Aplica procesos creativos.",
+        "Evalúa y comunica sus procesos y proyectos."
+    ]
+}
+
+def normalizar_area(area: str) -> str:
+    a = str(area).strip()
+    if a in CNEB_PRIMARIA:
+        return a
+    if "matem" in a.lower():
+        return "AREA_MATEMATICA" if "AREA_MATEMATICA" in CNEB_PRIMARIA else "Matemática"
+    if "relig" in a.lower():
+        for k in CNEB_PRIMARIA.keys():
+            if "relig" in k.lower():
+                return k
+    for k in CNEB_PRIMARIA.keys():
+        if k.lower() == a.lower():
+            return k
+    return a
+
+def normalizar_ciclo_key(grado_o_ciclo: str) -> str:
+    t = str(grado_o_ciclo).upper()
+    if "1" in t or "2" in t or "III" in t: return "III_CICLO"
+    elif "3" in t or "4" in t or "IV" in t: return "IV_CICLO"
+    elif "5" in t or "6" in t or "V" in t: return "V_CICLO"
+    return "IV_CICLO"
+
+def normalizar_grado_key(grado: str) -> str:
+    m = re.search(r'[1-6]', str(grado))
+    return f"{m.group(0)}_GRADO" if m else "3_GRADO"
+
+def obtener_ciclo_por_grado(grado: str) -> str:
+    k = normalizar_ciclo_key(grado)
+    return k.replace("_", " ")
 
 def obtener_lista_areas():
-    """Devuelve la lista con los nombres de todas las áreas curriculares."""
-    return [area for area in CNEB_PRIMARIA.keys() if area != "Enfoques Transversales"]
+    areas = []
+    for area in CNEB_PRIMARIA.keys():
+        if area == "Enfoques Transversales": continue
+        if area == "AREA_MATEMATICA": areas.append("Matemática")
+        elif "Religiosa" in area: areas.append("Educación Religiosa")
+        else: areas.append(area)
+    return areas
 
 def obtener_competencias(area: str):
-    """Devuelve los nombres de las competencias asociadas a un área curricular."""
-    if area in CNEB_PRIMARIA and "competencias" in CNEB_PRIMARIA[area]:
-        return [c["nombre"] for c in CNEB_PRIMARIA[area]["competencias"]]
+    area_norm = normalizar_area(area)
+    if area_norm in CNEB_PRIMARIA and isinstance(CNEB_PRIMARIA[area_norm], dict):
+        return list(CNEB_PRIMARIA[area_norm].keys())
     return []
 
 def obtener_capacidades(area: str, competencia_nombre: str):
-    """Devuelve las capacidades asociadas a una competencia de un área."""
-    if area in CNEB_PRIMARIA and "competencias" in CNEB_PRIMARIA[area]:
-        for c in CNEB_PRIMARIA[area]["competencias"]:
-            if c["nombre"].strip().upper() == competencia_nombre.strip().upper():
-                return c.get("capacidades", [])
+    area_norm = normalizar_area(area)
+    if area_norm in CNEB_PRIMARIA and isinstance(CNEB_PRIMARIA[area_norm], dict):
+        for comp_k, comp_v in CNEB_PRIMARIA[area_norm].items():
+            if comp_k.strip().lower() == competencia_nombre.strip().lower():
+                if "capacidades" in comp_v:
+                    return comp_v["capacidades"]
+    for c_k, c_v in CAPACIDADES_OFICIALES.items():
+        if c_k.strip().lower() == competencia_nombre.strip().lower():
+            return c_v
     return []
 
 def obtener_estandar(area: str, competencia_nombre: str, grado_o_ciclo: str):
-    """Devuelve el texto completo del estándar de aprendizaje según ciclo o grado."""
-    ciclo = obtener_ciclo_por_grado(grado_o_ciclo) if ("grado" in grado_o_ciclo.lower() or "°" in grado_o_ciclo) else grado_o_ciclo.upper()
-    if area in CNEB_PRIMARIA and "competencias" in CNEB_PRIMARIA[area]:
-        for c in CNEB_PRIMARIA[area]["competencias"]:
-            if c["nombre"].strip().upper() == competencia_nombre.strip().upper():
-                return c.get("estandares", {}).get(ciclo, "Estándar no disponible para el ciclo especificado.")
+    area_norm = normalizar_area(area)
+    ciclo_key = normalizar_ciclo_key(grado_o_ciclo)
+    if area_norm in CNEB_PRIMARIA and isinstance(CNEB_PRIMARIA[area_norm], dict):
+        for comp_k, comp_v in CNEB_PRIMARIA[area_norm].items():
+            if comp_k.strip().lower() == competencia_nombre.strip().lower():
+                estandares = comp_v.get("estandares", {})
+                return estandares.get(ciclo_key, "Estándar no disponible.")
     return "Estándar no encontrado."
 
 def obtener_desempenos(area: str, competencia_nombre: str, grado: str):
-    """Devuelve los desempeños para un grado determinado (ej. '3° GRADO' o '3')."""
-    grado_clean = str(grado).upper().strip()
-    if "°" not in grado_clean and "GRADO" not in grado_clean:
-        grado_clean = f"{grado_clean}° GRADO"
-    elif "GRADO" not in grado_clean:
-        grado_clean = f"{grado_clean} GRADO"
-
-    if area in CNEB_PRIMARIA and "competencias" in CNEB_PRIMARIA[area]:
-        for c in CNEB_PRIMARIA[area]["competencias"]:
-            if c["nombre"].strip().upper() == competencia_nombre.strip().upper():
-                return c.get("desempenos", {}).get(grado_clean, ["Desempeño no disponible para el grado seleccionado."])
+    area_norm = normalizar_area(area)
+    grado_key = normalizar_grado_key(grado)
+    if area_norm in CNEB_PRIMARIA and isinstance(CNEB_PRIMARIA[area_norm], dict):
+        for comp_k, comp_v in CNEB_PRIMARIA[area_norm].items():
+            if comp_k.strip().lower() == competencia_nombre.strip().lower():
+                desempenos = comp_v.get("desempenos", {})
+                return desempenos.get(grado_key, ["Desempeño no disponible."])
     return []
 
 def obtener_enfoques_transversales():
-    """Devuelve la lista completa de enfoques transversales, valores y actitudes."""
     return CNEB_PRIMARIA.get("Enfoques Transversales", [])
