@@ -845,7 +845,7 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 UNIDAD DE APRENDIZAJE N.º {num_doc}
 {val_titulo}
 
-I. TABLA I: DATOS GENERALES (Muestra exactamente: DRE/UGEL: {dre_ugel}, IE: {ie_nombre}, Director: {director}, Subdirector: {subdirector}, Docente: {docente}, Grado/Sección: {grado_seccion}, Fechas y Duración: {fechas_duracion}, Duración en Semanas: {duracion_semanas} semanas).
+I. DATOS GENERALES (Muestra exactamente: DRE/UGEL: {dre_ugel}, IE: {ie_nombre}, Director: {director}, Subdirector: {subdirector}, Docente: {docente}, Grado/Sección: {grado_seccion}, Fechas y Duración: {fechas_duracion}, Duración en Semanas: {duracion_semanas} semanas).
 
 II. SITUACIÓN (RETO):
 (Muestra la SITUACIÓN SIGNIFICATIVA provista por el docente o la generada automáticamente por la IA con sus 3 párrafos y retos justo debajo de los Datos Generales).
@@ -858,7 +858,7 @@ IV. ACTIVIDADES PERTINENTES AL PROPÓSITO DE APRENDIZAJE:
 
 V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (MATRIZ DE APRENDIZAJES POR ÁREA):
    - Presenta la Matriz Curricular completa en sus 8 COLUMNAS EXACTAS:
-     | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
+     | ÁREA | ACTIVIDAD DE LA SEMANA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN| ACTIVIDADES ESPECIFICAS | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
    
    - REGLA CRÍTICA OBLIGATORIA PARA MATEMÁTICA Y COMUNICACIÓN:
      1. En el área de MATEMÁTICA debes abordar e incluir OBLIGATORIAMENTE LAS 4 COMPETENCIAS del CNEB distribuida a lo largo de la unidad:
@@ -872,7 +872,7 @@ V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (
         - Escribe diversos tipos de textos en su lengua materna.
 
    - REGLA STRICTA Y ABSOLUTA PARA EL ESTÁNDAR DE APRENDIZAJE:
-     1. El Estándar de Aprendizaje del ciclo correspondiente debe escribirse TAL CUAL figura de forma oficial en el CNEB (RM N.º 649-2016-MINEDU).
+     1. El Estándar de Aprendizaje del ciclo correspondiente debe escribirse TAL CUAL figura de forma oficial en el CNEB  (RM N.º 649-2016-MINEDU).
      2. Queda STRICTAMENTE PROHIBIDO modificar, parafrasear, resumir, cortar u omitir cualquier parte del texto del estándar. Debe incluirse el texto completo e íntegro del estándar del ciclo.
      3. ÚNICAMENTE debes resaltar en NEGRITA (`**texto en negrita**`) el fragmento o porción específica del estándar que se está abordando o movilizando en esa actividad. El resto del texto del estándar debe permanecer en texto plano normal.
 
