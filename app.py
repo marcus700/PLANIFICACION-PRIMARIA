@@ -566,6 +566,7 @@ with c3:
 competencia_sel = ""
 feriados_custom = ""
 tabla_horario_md = ""
+reglas_sesiones_diarias_md = ""
 
 lista_areas_completa = [
     "Comunicación", "Matemática", "Personal Social", 
@@ -573,6 +574,30 @@ lista_areas_completa = [
     "Arte y Cultura", "Educación Física", "Tutoría"
 ]
 opciones_bloque3 = ["(Ninguna / Solo 2 áreas)"] + lista_areas_completa
+
+def limpiar_texto_bloque3(val):
+    if val == "(Ninguna / Solo 2 áreas)":
+        return "--- (Solo 2 sesiones este día)"
+    return val
+
+def compilar_reglas_diarias(dias_lista):
+    reglas = []
+    for nombre_dia, a1, a2, a3 in dias_lista:
+        if a3 == "(Ninguna / Solo 2 áreas)":
+            reglas.append(
+                f"  • **{nombre_dia} (OBLIGATORIO: EXACTAMENTE 2 SESIONES - PROHIBIDO COLOCAR SOLO 1 SESIÓN):**\n"
+                f"      - Sesión 1 (90 min): **[{a1}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
+                f"      - Sesión 2 (90 min): **[{a2}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
+                f"      *(En {nombre_dia} DEBES redactar ambas sesiones completas: Sesión 1 de {a1} Y Sesión 2 de {a2}. No omitas ni fusiones ninguna)*"
+            )
+        else:
+            reglas.append(
+                f"  • **{nombre_dia} (OBLIGATORIO: EXACTAMENTE 3 SESIONES COMPLETAS):**\n"
+                f"      - Sesión 1 (90 min): **[{a1}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
+                f"      - Sesión 2 (90 min): **[{a2}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
+                f"      - Sesión 3 (90 min): **[{a3}]**: [Competencia específica] - [Actividad en 1ª persona plural]"
+            )
+    return "\n".join(reglas)
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     f1, f2, f3, f4 = st.columns(4)
@@ -625,7 +650,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         st.markdown("**🟢 MARTES**")
         m_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="proy_m1")
         m_a2 = st.selectbox("Área 2:", lista_areas_completa, index=0, key="proy_m2")
-        m_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=4, key="proy_m3")
+        m_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=0, key="proy_m3")
     with col_mi:
         st.markdown("**🟢 MIÉRCOLES**")
         mi_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="proy_mi1")
@@ -635,7 +660,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         st.markdown("**🟢 JUEVES**")
         j_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="proy_j1")
         j_a2 = st.selectbox("Área 2:", lista_areas_completa, index=3, key="proy_j2")
-        j_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=5, key="proy_j3")
+        j_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=0, key="proy_j3")
     with col_v:
         st.markdown("**🟢 VIERNES**")
         v_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="proy_v1")
@@ -649,12 +674,21 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         key="feriados_proy"
     )
 
+    dias_proy = [
+        ("LUNES", l_a1, l_a2, l_a3),
+        ("MARTES", m_a1, m_a2, m_a3),
+        ("MIÉRCOLES", mi_a1, mi_a2, mi_a3),
+        ("JUEVES", j_a1, j_a2, j_a3),
+        ("VIERNES", v_a1, v_a2, v_a3),
+    ]
+    reglas_sesiones_diarias_md = compilar_reglas_diarias(dias_proy)
+
     tabla_horario_md = f"""
 | BLOQUE / HORA | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Sesión 1 (90 min)** | {l_a1} | {m_a1} | {mi_a1} | {j_a1} | {v_a1} |
 | **Sesión 2 (90 min)** | {l_a2} | {m_a2} | {mi_a2} | {j_a2} | {v_a2} |
-| **Sesión 3 (90 min)** | {l_a3} | {m_a3} | {mi_a3} | {j_a3} | {v_a3} |
+| **Sesión 3 (90 min)** | {limpiar_texto_bloque3(l_a3)} | {limpiar_texto_bloque3(m_a3)} | {limpiar_texto_bloque3(mi_a3)} | {limpiar_texto_bloque3(j_a3)} | {limpiar_texto_bloque3(v_a3)} |
 """
 
 else:  # Unidad SARA
@@ -686,7 +720,7 @@ else:  # Unidad SARA
         st.markdown("**🟣 MARTES**")
         m_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="uni_m1")
         m_a2 = st.selectbox("Área 2:", lista_areas_completa, index=0, key="uni_m2")
-        m_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=4, key="uni_m3")
+        m_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=0, key="uni_m3")
     with col_mi:
         st.markdown("**🟣 MIÉRCOLES**")
         mi_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="uni_mi1")
@@ -696,7 +730,7 @@ else:  # Unidad SARA
         st.markdown("**🟣 JUEVES**")
         j_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="uni_j1")
         j_a2 = st.selectbox("Área 2:", lista_areas_completa, index=3, key="uni_j2")
-        j_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=5, key="uni_j3")
+        j_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=0, key="uni_j3")
     with col_v:
         st.markdown("**🟣 VIERNES**")
         v_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="uni_v1")
@@ -710,12 +744,21 @@ else:  # Unidad SARA
         key="feriados_uni"
     )
 
+    dias_uni = [
+        ("LUNES", l_a1, l_a2, l_a3),
+        ("MARTES", m_a1, m_a2, m_a3),
+        ("MIÉRCOLES", mi_a1, mi_a2, mi_a3),
+        ("JUEVES", j_a1, j_a2, j_a3),
+        ("VIERNES", v_a1, v_a2, v_a3),
+    ]
+    reglas_sesiones_diarias_md = compilar_reglas_diarias(dias_uni)
+
     tabla_horario_md = f"""
 | BLOQUE / HORA | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
 | :--- | :--- | :--- | :--- | :--- | :--- |
 | **Sesión 1 (90 min)** | {l_a1} | {m_a1} | {mi_a1} | {j_a1} | {v_a1} |
 | **Sesión 2 (90 min)** | {l_a2} | {m_a2} | {mi_a2} | {j_a2} | {v_a2} |
-| **Sesión 3 (90 min)** | {l_a3} | {m_a3} | {mi_a3} | {j_a3} | {v_a3} |
+| **Sesión 3 (90 min)** | {limpiar_texto_bloque3(l_a3)} | {limpiar_texto_bloque3(m_a3)} | {limpiar_texto_bloque3(mi_a3)} | {limpiar_texto_bloque3(j_a3)} | {limpiar_texto_bloque3(v_a3)} |
 """
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
@@ -901,7 +944,7 @@ PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y es
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
 
-CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES - 2 A 3 ÁREAS POR DÍA):
+CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES):
 {tabla_horario_md}
 
 FERIADOS SEÑALADOS DEL PERÍODO:
@@ -927,21 +970,36 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
    - Copia el DESEMPEÑO ÍNTEGRO del CNEB con la parte trabajada en **negrita**.
    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
-5. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 A 3 SESIONES DIARIAS DE 90 MINUTOS EN TURNO ÚNICO - 10 A 15 SESIONES POR SEMANA):
+5. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
+   - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
+{tabla_horario_md}
+   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
+     Justo debajo de esta tabla de horarios, agrega un recuadro o texto destacado titulado:
+     `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
+     ({info_feriados})
+     Indica la fecha exacta y la conmemoración/festividad de cada feriado comprendido en el proyecto. Si no hubiese ningún feriado en ese periodo, indícalo expresamente.
+
+6. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (PROGRAMACIÓN CRONOLÓGICA SEMANAL):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - REGLA CRÍTICA DE COHERENCIA CON EL CUADRO DE HORARIOS: Las actividades programadas en cada casillero diario DEBEN COINCIDIR EXACTAMENTE con las 2 o 3 áreas fijadas en el Cuadro de Horarios previo para ese día.
-   - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único, indicando el **ÁREA CURRICULAR DESTACADA**:
-     • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-     • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-     • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+
+   🚨 REGLA ESTRICTA CONTRA LA OMISIÓN DE SESIONES (CERO RESÚMENES):
+   En cada día de la semana DEBES generar exactamente las sesiones que el docente fijó en su horario:
+{reglas_sesiones_diarias_md}
+
+   ⚠️ ADVERTENCIA CRÍTICA:
+   Si el Martes o Jueves tienen 2 áreas programadas, DEBES REDACTAR OBLIGATORIAMENTE LAS DOS SESIONES COMPLETAS:
+   • Sesión 1 (90 min): **[Primera Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   • Sesión 2 (90 min): **[Segunda Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   ¡ESTÁ TOTALMENTE PROHIBIDO EMITIR SOLO UNA SESIÓN EN DÍAS DE DOS ÁREAS! El docente configuró dos áreas para esos días y ambas sesiones deben figurar obligatoriamente en cada casilla de martes y jueves.
+   
    - REGLA DE FERIADOS: Si en el cronograma semanal coincide un día feriado de los indicados al pie del cuadro de horarios, en la columna correspondiente a ese día coloca claramente: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, sin programar sesiones curriculares dicho día.
 
-6. TABLA DE ENFOQUES TRANSVERSALES.
-7. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
-8. LISTA CLASIFICADA DE MATERIALES Y RECURSOS.
-19. VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
+7. TABLA DE ENFOQUES TRANSVERSALES.
+8. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
+9. LISTA CLASIFICADA DE MATERIALES Y RECURSOS.
+10. TABLA VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
 """
 
 def generar_prompt_unidad_sara():
@@ -955,7 +1013,7 @@ PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y es
 ENTRADA PROVISTA POR EL DOCENTE (PROBLEMA DE CONTEXTO, SITUACIÓN SIGNIFICATIVA COMPLETA Y/O ACTIVIDADES PROPUESTAS):
 {problema_contexto}
 
-CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES - 2 A 3 ÁREAS POR DÍA):
+CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES):
 {tabla_horario_md}
 
 FERIADOS SEÑALADOS DEL PERÍODO:
@@ -1016,22 +1074,37 @@ VII. COMPETENCIAS TRANSVERSALES:
 - "Se desenvuelve en los entornos virtuales generados por las TIC" (capacidades y desempeños precisados).
 - "Gestiona su aprendizaje de manera autónoma" (capacidades y desempeños precisados).
 
-VIII. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
+VIII. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
+   - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
+{tabla_horario_md}
+   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
+     Justo al pie de esta tabla de horarios, agrega un recuadro o detalle titulado:
+     `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
+     ({info_feriados})
+     Indica las fechas y conmemoraciones de feriados en el periodo de la unidad. Si no hubiese feriados, déjalo constar expresamente.
+
+IX. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - REGLA CRÍTICA DE COHERENCIA CON EL CUADRO DE HORARIOS: Las actividades pedagógicas sugeridas para cada día DEBEN GUARDAR ESTRICTA RELACIÓN Y COINCIDENCIA con las 2 o 3 áreas asignadas en el Cuadro de Horarios previo.
-   - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único (sin dividir en mañana/tarde), indicando el **ÁREA CURRICULAR DESTACADA**:
-     • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-     • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-     • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
+
+   🚨 REGLA ESTRICTA CONTRA LA OMISIÓN DE SESIONES (CERO RESÚMENES):
+   En cada día de la semana DEBES generar exactamente las sesiones que el docente fijó en su horario:
+{reglas_sesiones_diarias_md}
+
+   ⚠️ ADVERTENCIA CRÍTICA:
+   Si el Martes o Jueves tienen 2 áreas programadas, DEBES REDACTAR OBLIGATORIAMENTE LAS DOS SESIONES COMPLETAS:
+   • Sesión 1 (90 min): **[Primera Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   • Sesión 2 (90 min): **[Segunda Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   ¡ESTÁ TOTALMENTE PROHIBIDO EMITIR SOLO UNA SESIÓN EN DÍAS DE DOS ÁREAS! El docente configuró dos áreas para esos días y ambas sesiones deben figurar obligatoriamente en cada casilla de martes y jueves.
+
    - REGLA DE FERIADOS: Si en algún día de la semana coincide un feriado señalado en la sección anterior, consigna en su casilla: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, omitiendo el desarrollo de sesiones en dicha fecha para mantener coherencia total.
 
-IX. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
+X. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
 - Para el estudiante.
 - Para el docente.
 
-X. REFLEXIONES SOBRE LOS APRENDIZAJES:
+XI. REFLEXIONES SOBRE LOS APRENDIZAJES:
 - Incluye la tabla o lista de preguntas de reflexión y metacognición del docente sobre el desarrollo de la unidad.
 """
 
@@ -1094,7 +1167,12 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo aplicando el proceso didáctico del área elegida. Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
                 elif tipo_documento == "Proyecto de Aprendizaje":
                     prompt_maestro = generar_prompt_proyecto()
-                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Elaboras Proyectos de Aprendizaje respetando estrictamente el Cuadro de Horarios Semanal configurado por el docente (2 a 3 áreas por día de lunes a viernes) con feriados al pie, garantizando coherencia con la secuencia de actividades."
+                    sys_inst = (
+                        "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
+                        "Elaboras Proyectos de Aprendizaje respetando estrictamente el Cuadro de Horarios Semanal configurado por el docente. "
+                        "ATENCIÓN CRÍTICA: En los días configurados con 2 áreas (como martes o jueves), es OBLIGATORIO generar 2 sesiones completas (Sesión 1 y Sesión 2). "
+                        "ESTÁ ESTRICTAMENTE PROHIBIDO emitir solo 1 sesión en días de 2 áreas."
+                    )
                 else:
                     prompt_maestro = generar_prompt_unidad_sara()
                     sys_inst = (
@@ -1103,8 +1181,8 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         "REGLA CRÍTICA PARA MATEMÁTICA Y COMUNICACIÓN: Debes incluir OBLIGATORIAMENTE las 4 competencias del área de Matemática y las 3 competencias del área de Comunicación a lo largo de la unidad. "
                         "REGLA CRÍTICA PARA EL ESTÁNDAR Y DESEMPEÑO: Debes copiar el texto completo e íntegro tanto del Estándar de Aprendizaje como del Desempeño oficial del CNEB (RM N.° 649-2016-MINEDU) para el grado/ciclo, sin modificar, resumir, alterar ni recortar ninguna palabra. "
                         "Resalta en NEGRITA (**texto**) únicamente el fragmento o precisión que se moviliza o evalúa en la actividad. El resto del texto del estándar y del desempeño debe permanecer exactamente en texto normal. "
-                        "Respeta estrictamente el Cuadro de Horarios Semanal configurado por el docente (2 a 3 áreas por día de lunes a viernes) con la indicación de feriados al pie, asegurando absoluta correspondencia con la programación cronológica de actividades. "
-                        "Si el docente proporciona su propia Situación Significativa o actividades, utilízalas y respétalas íntegramente; si solo indica un problema breve, genera la Situación Significativa automáticamente."
+                        "ATENCIÓN CRÍTICA PARA EL HORARIO: En los días configurados con 2 áreas (como martes y jueves), es OBLIGATORIO generar 2 sesiones completas (Sesión 1 y Sesión 2) en la tabla semanal. "
+                        "QUEDA TERMINANTEMENTE PROHIBIDO poner solo 1 sesión en días que tienen 2 áreas programadas."
                     )
                     
                 with st.spinner(f"🧠 Generando tu {tipo_documento} con Google Gemini ({model_choice})..."):
