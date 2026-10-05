@@ -283,6 +283,7 @@ if 'tipo_documento' not in st.session_state: st.session_state['tipo_documento'] 
 if 'imagen_nanobanana' not in st.session_state: st.session_state['imagen_nanobanana'] = None
 if 'imagen_bytes' not in st.session_state: st.session_state['imagen_bytes'] = None
 if 'model_choice' not in st.session_state: st.session_state['model_choice'] = "gemini-3.5-flash-lite"
+if 'ultima_sesion_texto' not in st.session_state: st.session_state['ultima_sesion_texto'] = None
 
 # ==============================================================================
 # ENCABEZADO PRINCIPAL CON SELECTOR DE MODELO GEMINI INTEGRADO A UN LADO
@@ -940,31 +941,91 @@ Debajo de la tabla, incluye de forma independiente y clara:
 """
 
 def generar_prompt_ficha_trabajo():
-    return f"""
-Actúa como: Especialista en Educación Primaria (CNEB - MINEDU Perú) y diseñador experto de material educativo impreso.
-Elabora una FICHA DE TRABAJO / APLICACIÓN PARA EL ESTUDIANTE sobre {problema_contexto} para {grado_seccion} en el área de {area_sel}.
+    # 🔗 JALA EN VIVO LOS DATOS OFICIALES DE CNEB_PRIMARIA_DATOS.PY
+    estandar_oficial = cneb.obtener_estandar(area_sel, competencia_sel, grado_seccion)
+    desempenos_oficiales = cneb.obtener_desempenos(area_sel, competencia_sel, grado_seccion)
+    capacidades_oficiales = cneb.obtener_capacidades(area_sel, competencia_sel)
+    capacidades_texto = ", ".join(capacidades_oficiales) if capacidades_oficiales else "Capacidades oficiales de la competencia"
+    desempenos_texto = "\n".join([f"  • {d}" for d in desempenos_oficiales]) if desempenos_oficiales else "Desempeño oficial del CNEB"
 
-ESTRUCTURA DE SALIDA REQUERIDA (MARKDOWN PURA EN TABLAS):
+    # VINCULACIÓN DIRECTA SI SE GENERÓ UNA SESIÓN DE APRENDIZAJE PREVIAMENTE:
+    contexto_sesion_vinc = ""
+    if st.session_state.get('ultima_sesion_texto'):
+        contexto_sesion_vinc = f"""
+VINCULACIÓN DIRECTA Y OBLIGATORIA CON LA SESIÓN DE APRENDIZAJE:
+El docente ha elaborado previamente una Sesión de Aprendizaje sobre este tema. Tu tarea OBLIGATORIA es diseñar la FICHA DE APLICACIÓN / TRABAJO directamente articulada con esa sesión:
+- Emplea los MISMOS propósitos y criterios de evaluación de la sesión.
+- Plantea actividades secuenciadas que permitan al estudiante construir la MISMA evidencia de aprendizaje propuesta en la sesión.
+- Aplica los mismos procesos didácticos y desafíos pedagógicos planteados.
+
+--- SESIÓN DE APRENDIZAJE DE REFERENCIA (VINCULAR DIRECTAMENTE) ---
+{st.session_state.get('ultima_sesion_texto')[:3600]}
+--- FIN DE LA SESIÓN DE REFERENCIA ---
+"""
+
+    return f"""
+Actúa como: Especialista en Educación Primaria (CNEB - MINEDU Perú) y diseñador experto de material educativo impreso para estudiantes.
+Tu objetivo: Elaborar una FICHA DE APLICACIÓN / TRABAJO PARA EL ESTUDIANTE completamente articulada y relacionada directamente con la Sesión de Aprendizaje de {area_sel} sobre '{problema_contexto}' para {grado_seccion}.
+
+DATOS CURRICULARES OFICIALES:
+• Grado y Sección: {grado_seccion}
+• Área Curricular: {area_sel}
+• Competencia CNEB: {competencia_sel}
+• Capacidades oficiales: {capacidades_texto}
+• Tema / Título: {problema_contexto}
+• Desempeños de referencia:
+{desempenos_texto}
+
+{contexto_sesion_vinc}
+
+INSTRUCCIONES DE DISEÑO PEDAGÓGICO DE LA FICHA:
+1. LENGUAJE DIRECTO AL ESTUDIANTE: Redacta en segunda persona ("Tú", "Observa", "Resuelve", "Explica", "Escribe") con consignas claras, atractivas y acordes a la edad de {grado_seccion}.
+2. SECUENCIA DIDÁCTICA VINCULADA A LA SESIÓN:
+   - SECCIÓN 1: "ME PREPARO Y DESCUBRO" (Problematización, activación de saberes previos o lectura motivadora inicial de la sesión).
+   - SECCIÓN 2: "MANOS A LA OBRA / APLICO LO APRENDIDO" (Ejercicios prácticos, esquemas, situaciones problema o actividades de aplicación directa de los procesos didácticos de {area_sel}).
+   - SECCIÓN 3: "MI RETO FINAL / MI COMPROMISO" (Construcción tangible de la evidencia de aprendizaje de la sesión y toma de decisiones/compromiso personal).
+3. EVALUACIÓN FORMATIVA AL FINAL: Incluye obligatoriamente una tabla de Autoevaluación del Estudiante utilizando exactamente los mismos criterios de evaluación de la sesión, con columnas: "Lo logré", "Lo estoy intentando" y "¿Qué necesito mejorar?".
+4. FORMATO: Markdown limpio en tablas y recuadros estructurados para que quede lista para imprimir y fotocopiar. Prohibido usar etiquetas HTML.
+
+ESTRUCTURA DE SALIDA REQUERIDA:
 # **FICHA DE TRABAJO DE {area_sel.upper()} N.º {num_doc}**
 ## **{problema_contexto.upper()}**
 
 ## **DATOS INFORMATIVOS**
 | DATOS INFORMATIVOS | DETALLE / INFORMACIÓN |
+| :--- | :--- |
 | Institución Educativa | {ie_nombre} |
 | Grado y Sección | {grado_seccion} |
 | Área Curricular | {area_sel} |
+| Competencia | {competencia_sel} |
 | Docente de Aula | {docente} |
 | Fecha | {fecha_sugerida} |
 | Estudiante | __________________________________________________ |
 
 ## **PROPÓSITO DE HOY**
-[Propósito amigable para el estudiante]
+[Explica en un recuadro o párrafo corto en lenguaje infantil y motivador qué aprenderá el niño hoy y para qué le servirá, alineado a la sesión].
 
-• SECCIÓN 1: "ME PREPARO Y DESCUBRO"
-• SECCIÓN 2: "MANOS A LA OBRA / APLICO LO APRENDIDO"
-• SECCIÓN 3: "MI RETO FINAL / MI COMPROMISO"
+---
+### 🔍 **SECCIÓN 1: ME PREPARO Y DESCUBRO**
+[Plantea la situación problemática, imagen de análisis, diálogo o caso motivador inicial de la sesión con 2 preguntas de reflexión previa].
 
-• TABLA II: AUTOEVALUACIÓN DE MIS LOGROS
+---
+### ✍️ **SECCIÓN 2: MANOS A LA OBRA / APLICO LO APRENDIDO**
+[Desarrolla 3 a 4 actividades o ejercicios secuenciados aplicando los procesos didácticos oficiales del área de {area_sel}: esquemas, tablas de completar, organizadores visuales o problemas prácticos directamente conectados a la sesión].
+
+---
+### 🏆 **SECCIÓN 3: MI RETO FINAL / MI PRODUCCIÓN**
+[Plantea el reto central que consolida la EVIDENCIA DE APRENDIZAJE de la sesión. Deja espacio o pauta para que el estudiante elabore su producto final tangible].
+
+---
+### 📋 **AUTOEVALUACIÓN DE MIS LOGROS**
+*Marca con una (X) en el recuadro según corresponda a tu desempeño en esta ficha:*
+
+| MIS CRITERIOS DE EVALUACIÓN | LO LOGRÉ 🟢 | LO ESTOY INTENTANDO 🟡 | ¿QUÉ NECESITO MEJORAR? 🔵 |
+| :--- | :---: | :---: | :--- |
+| [Criterio de evaluación 1 idéntico al de la sesión] | | | |
+| [Criterio de evaluación 2 idéntico al de la sesión] | | | |
+| [Criterio de evaluación 3 idéntico al de la sesión] | | | |
 """
 
 def generar_prompt_proyecto():
@@ -1243,7 +1304,13 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     )
                 elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
                     prompt_maestro = generar_prompt_ficha_trabajo()
-                    sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo aplicando el proceso didáctico del área elegida. Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
+                    sys_inst = (
+                        "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. "
+                        "Creas fichas de trabajo para el estudiante directamente vinculadas y articuladas con la Sesión de Aprendizaje, "
+                        "respetando el mismo propósito, criterios de evaluación, procesos didácticos y evidencia de aprendizaje de la sesión. "
+                        "Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. "
+                        "PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
+                    )
                 elif tipo_documento == "Proyecto de Aprendizaje":
                     prompt_maestro = generar_prompt_proyecto()
                     sys_inst = (
@@ -1341,6 +1408,10 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     st.session_state['ie_nombre_generado'] = ie_nombre
                     st.session_state['imagen_nanobanana'] = None
                     st.session_state['imagen_bytes'] = None
+                    
+                    # GUARDAR MEMORIA DE LA SESIÓN DE APRENDIZAJE PARA VINCULAR DIRECTAMENTE LA FICHA:
+                    if tipo_documento == "Sesión de Aprendizaje":
+                        st.session_state['ultima_sesion_texto'] = response.text
                     
                     st.success(f"✅ ¡{tipo_documento} generado con éxito utilizando {modelo_exitoso}!")
 
