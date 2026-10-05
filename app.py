@@ -962,13 +962,16 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 
 3. PLANIFICACIÓN DEL PROYECTO CON LOS ESTUDIANTES (Tabla: ¿Qué haremos?, ¿Qué sabemos?, ¿Qué queremos saber?, ¿Cómo lo haremos?, ¿Qué necesitamos?, ¿Cómo nos organizamos?).
 
-4. MATRIZ DE PROPÓSITOS DE APRENDIZAJE POR SEMANA (SECCIÓN CONTINUA COMPLETA DESDE LA SEMANA 1 HASTA LA SEMANA {duracion_semanas}):
-   - Para CADA una de las {duracion_semanas} semanas, coloca el **TÍTULO CREATIVO DE LA ACTIVIDAD DE LA SEMANA** (Ejemplo: SEMANA 1: "Investigamos los problemas ambientales de nuestro colegio").
-   - Debajo del título de la semana, presenta la Matriz de Propósitos en sus 8 COLUMNAS EXACTAS:
-     | ÁREA | ACTIVIDAD | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
+4. MATRIZ DE PROPÓSITOS DE APRENDIZAJE (UN SOLO CUADRO UNIFICADO PARA TODAS LAS SEMANAS):
+   🚨 REGLA CRÍTICA OBLIGATORIA DE TABLA ÚNICA (NO SEPARAR POR SEMANAS):
+   - Presenta TODA esta matriz en UN SOLO CUADRO / UNA SOLA TABLA INTEGRADA Y CONTINUA para todo el proyecto ({duracion_semanas} semanas).
+   - QUEDA TERMINANTEMENTE PROHIBIDO CORTAR, FRAGMENTAR O DIVIDIR LA MATRIZ EN CUADROS SEPARADOS POR CADA SEMANA (No hagas una tabla para la semana 1, otra tabla para la semana 2, etc.).
+   - En este ÚNICO cuadro, organiza las filas por ÁREA y COMPETENCIA, abordando de manera articulada las {duracion_semanas} semanas completas.
+   - Presenta la Matriz en sus 8 COLUMNAS EXACTAS dentro de la TABLA ÚNICA:
+     | ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | ACTIVIDADES DEL PROYECTO (Semanas 1 a {duracion_semanas}) | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
    - REGLA OBLIGATORIA DEL ESTÁNDAR: Copia el **ESTÁNDAR DE APRENDIZAJE EN SU TOTALIDAD Y DE MANERA ÍNTEGRA** tal cual figura en el CNEB oficial (RM N.º 649-2016-MINEDU) sin ningún corte ni resumen, y RESALTA EN **NEGRITA** (`**la parte específica movilizada en la actividad**`).
    - Copia el DESEMPEÑO ÍNTEGRO del CNEB con la parte trabajada en **negrita**.
-   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
+   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: Debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
 5. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
    - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
@@ -1040,8 +1043,12 @@ IV. ACTIVIDADES PERTINENTES AL PROPÓSITO DE APRENDIZAJE:
 (Presenta una lista ordenada de las grandes actividades pedagógicas planificadas por semana, respetando las propuestas por el docente si las incluyó).
 
 V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (MATRIZ DE APRENDIZAJES POR ÁREA):
-   - Presenta la Matriz Curricular completa en sus 8 COLUMNAS EXACTAS:
-     | ÁREA | ACTIVIDAD DE LA SEMANA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN| ACTIVIDADES ESPECIFICAS | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
+   🚨 REGLA CRÍTICA OBLIGATORIA DE TABLA ÚNICA (UN SOLO CUADRO PARA TODA LA UNIDAD - NO SEPARAR POR SEMANAS):
+   - Presenta TODA la matriz curricular en UN SOLO CUADRO / UNA SOLA TABLA INTEGRADA Y CONTINUA para toda la unidad ({duracion_semanas} semanas).
+   - QUEDA TERMINANTEMENTE PROHIBIDO CORTAR, SEPARAR O FRAGMENTAR LA MATRIZ EN CUADROS INDIVIDUALES POR SEMANA (No pongas una tabla para la semana 1, otra tabla para la semana 2, otra para la semana 3, etc.).
+   - En este ÚNICO cuadro, organiza las filas agrupando por ÁREA y COMPETENCIA, detallando en la columna de actividades sugeridas el trabajo integral de todas las {duracion_semanas} semanas en un solo flujo continuo.
+   - Presenta la Matriz Curricular en sus 8 COLUMNAS EXACTAS dentro de la TABLA ÚNICA:
+     | ÁREA | COMPETENCIA Y CAPACIDADES | ESTÁNDAR DE APRENDIZAJE | DESEMPEÑO PRECISADO | CRITERIOS DE EVALUACIÓN | ACTIVIDADES SUGERIDAS POR SEMANA (Semanas 1 a {duracion_semanas}) | EVIDENCIA | INSTRUMENTO DE EVALUACIÓN |
    
    - REGLA CRÍTICA OBLIGATORIA PARA MATEMÁTICA Y COMUNICACIÓN:
      1. En el área de MATEMÁTICA debes abordar e incluir OBLIGATORIAMENTE LAS 4 COMPETENCIAS del CNEB distribuida a lo largo de la unidad:
@@ -1065,7 +1072,7 @@ V. PROPÓSITO DE APRENDIZAJE, CRITERIOS DE EVALUACIÓN Y ACTIVIDADES SUGERIDAS (
      3. ÚNICAMENTE debes resaltar en NEGRITA (`**texto precisado**`) la precisión del desempeño o la porción específica que se está trabajando directamente en la actividad. El resto del desempeño debe permanecer en texto plano normal.
    
    - Formula CRITERIOS DE EVALUACIÓN claros basados en: Verbo de acción + Contenido disciplinar + Condición/Contexto.
-   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 competencias), Matemática (4 competencias), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
+   - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En la matriz debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 competencias), Matemática (4 competencias), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
 VI. TUTORÍA Y EDUCACIÓN EDUCATIVA:
 | DIMENSIÓN | SESIÓN | ¿QUÉ BUSCAMOS? |
@@ -1170,6 +1177,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     sys_inst = (
                         "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
                         "Elaboras Proyectos de Aprendizaje respetando estrictamente el Cuadro de Horarios Semanal configurado por el docente. "
+                        "REGLA CRÍTICA DE MATRIZ DE APRENDIZAJES: Presenta la matriz de aprendizajes en UN SOLO CUADRO continuo para todo el proyecto, PROHIBIDO fragmentarla en tablas por semana. "
                         "ATENCIÓN CRÍTICA: En los días configurados con 2 áreas (como martes o jueves), es OBLIGATORIO generar 2 sesiones completas (Sesión 1 y Sesión 2). "
                         "ESTÁ ESTRICTAMENTE PROHIBIDO emitir solo 1 sesión en días de 2 áreas."
                     )
@@ -1178,6 +1186,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     sys_inst = (
                         "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
                         "Elaboras Unidades de Aprendizaje completas en formato Markdown. "
+                        "REGLA CRÍTICA DE MATRIZ DE APRENDIZAJES (SECCIÓN V): Presenta la matriz de propósitos y aprendizajes en UN SOLO CUADRO O TABLA UNIFICADA Y CONTINUA para toda la unidad. QUEDA ESTRICTAMENTE PROHIBIDO separar o dividir la matriz en tablas individuales por cada semana. "
                         "REGLA CRÍTICA PARA MATEMÁTICA Y COMUNICACIÓN: Debes incluir OBLIGATORIAMENTE las 4 competencias del área de Matemática y las 3 competencias del área de Comunicación a lo largo de la unidad. "
                         "REGLA CRÍTICA PARA EL ESTÁNDAR Y DESEMPEÑO: Debes copiar el texto completo e íntegro tanto del Estándar de Aprendizaje como del Desempeño oficial del CNEB (RM N.° 649-2016-MINEDU) para el grado/ciclo, sin modificar, resumir, alterar ni recortar ninguna palabra. "
                         "Resalta en NEGRITA (**texto**) únicamente el fragmento o precisión que se moviliza o evalúa en la actividad. El resto del texto del estándar y del desempeño debe permanecer exactamente en texto normal. "
