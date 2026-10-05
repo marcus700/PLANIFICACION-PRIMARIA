@@ -927,16 +927,7 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
    - Copia el DESEMPEÑO ÍNTEGRO del CNEB con la parte trabajada en **negrita**.
    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
-5. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
-   - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único (2 a 3 áreas por día):
-{tabla_horario_md}
-   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
-     Justo debajo de esta tabla de horarios, agrega un recuadro o texto destacado titulado:
-     `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
-     ({info_feriados})
-     Indica la fecha exacta y la conmemoración/festividad de cada feriado comprendido en el proyecto. Si no hubiese ningún feriado en ese periodo, indícalo expresamente.
-
-6. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 A 3 SESIONES DIARIAS DE 90 MINUTOS EN TURNO ÚNICO - 10 A 15 SESIONES POR SEMANA):
+5. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 A 3 SESIONES DIARIAS DE 90 MINUTOS EN TURNO ÚNICO - 10 A 15 SESIONES POR SEMANA):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
@@ -947,10 +938,10 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
      • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
    - REGLA DE FERIADOS: Si en el cronograma semanal coincide un día feriado de los indicados al pie del cuadro de horarios, en la columna correspondiente a ese día coloca claramente: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, sin programar sesiones curriculares dicho día.
 
-7. TABLA DE ENFOQUES TRANSVERSALES.
-8. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
-9. LISTA CLASIFICADA DE MATERIALES Y RECURSOS.
-10. TABLA VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
+6. TABLA DE ENFOQUES TRANSVERSALES.
+7. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
+8. LISTA CLASIFICADA DE MATERIALES Y RECURSOS.
+19. VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
 """
 
 def generar_prompt_unidad_sara():
@@ -1025,16 +1016,7 @@ VII. COMPETENCIAS TRANSVERSALES:
 - "Se desenvuelve en los entornos virtuales generados por las TIC" (capacidades y desempeños precisados).
 - "Gestiona su aprendizaje de manera autónoma" (capacidades y desempeños precisados).
 
-VIII. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
-   - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único (2 a 3 áreas por día):
-{tabla_horario_md}
-   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
-     Justo al pie de esta tabla de horarios, agrega un recuadro o detalle titulado:
-     `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
-     ({info_feriados})
-     Indica las fechas y conmemoraciones de feriados en el periodo de la unidad. Si no hubiese feriados, déjalo constar expresamente.
-
-IX. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
+VIII. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
@@ -1045,11 +1027,11 @@ IX. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERID
      • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
    - REGLA DE FERIADOS: Si en algún día de la semana coincide un feriado señalado en la sección anterior, consigna en su casilla: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, omitiendo el desarrollo de sesiones en dicha fecha para mantener coherencia total.
 
-X. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
+IX. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
 - Para el estudiante.
 - Para el docente.
 
-XI. REFLEXIONES SOBRE LOS APRENDIZAJES:
+X. REFLEXIONES SOBRE LOS APRENDIZAJES:
 - Incluye la tabla o lista de preguntas de reflexión y metacognición del docente sobre el desarrollo de la unidad.
 """
 
