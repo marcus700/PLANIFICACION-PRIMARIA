@@ -565,6 +565,14 @@ with c3:
 
 competencia_sel = ""
 feriados_custom = ""
+tabla_horario_md = ""
+
+lista_areas_completa = [
+    "Comunicación", "Matemática", "Personal Social", 
+    "Ciencia y Tecnología", "Educación Religiosa", 
+    "Arte y Cultura", "Educación Física", "Tutoría"
+]
+opciones_bloque3 = ["(Ninguna / Solo 2 áreas)"] + lista_areas_completa
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     f1, f2, f3, f4 = st.columns(4)
@@ -598,12 +606,56 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         duracion_semanas = st.slider("Número de Semanas del Proyecto:", min_value=2, max_value=5, value=4)
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
-    
+
+    # CUADRO DE HORARIOS DE ÁREAS POR CADA DÍA DE LA SEMANA (LUNES A VIERNES)
+    st.markdown("""
+    <div style="background-color: #ECFDF5; border: 1.5px solid #10B981; border-radius: 10px; padding: 10px 14px; margin-top: 14px; margin-bottom: 12px;">
+        <span style="font-weight: 800; color: #065F46; font-size: 1.0rem;">🕒 CUADRO DE HORARIOS DE ÁREAS (DE LUNES A VIERNES - 2 A 3 ÁREAS POR DÍA)</span><br>
+        <span style="font-size: 0.88rem; color: #047857;">Configura las áreas pedagógicas que se trabajarán cada día en turno único. Estas áreas determinarán de forma coherente la programación cronológica de actividades.</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col_l, col_m, col_mi, col_j, col_v = st.columns(5)
+    with col_l:
+        st.markdown("**🟢 LUNES**")
+        l_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="proy_l1")
+        l_a2 = st.selectbox("Área 2:", lista_areas_completa, index=1, key="proy_l2")
+        l_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=3, key="proy_l3")
+    with col_m:
+        st.markdown("**🟢 MARTES**")
+        m_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="proy_m1")
+        m_a2 = st.selectbox("Área 2:", lista_areas_completa, index=0, key="proy_m2")
+        m_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=4, key="proy_m3")
+    with col_mi:
+        st.markdown("**🟢 MIÉRCOLES**")
+        mi_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="proy_mi1")
+        mi_a2 = st.selectbox("Área 2:", lista_areas_completa, index=2, key="proy_mi2")
+        mi_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=6, key="proy_mi3")
+    with col_j:
+        st.markdown("**🟢 JUEVES**")
+        j_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="proy_j1")
+        j_a2 = st.selectbox("Área 2:", lista_areas_completa, index=3, key="proy_j2")
+        j_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=5, key="proy_j3")
+    with col_v:
+        st.markdown("**🟢 VIERNES**")
+        v_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="proy_v1")
+        v_a2 = st.selectbox("Área 2:", lista_areas_completa, index=7, key="proy_v2")
+        v_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=8, key="proy_v3")
+
     feriados_custom = st.text_input(
-        "📅 Feriados o Días No Laborables durante el período del proyecto (Opcional):",
+        "📌 Feriados o Días No Laborables durante el período (Se indicarán al pie de este cuadro de horarios):",
         value="",
-        placeholder="Ej: Jueves y Viernes Santo (2 y 3 de abril), 1 de Mayo. Si lo dejas vacío, la IA los identificará automáticamente."
+        placeholder="Ej: Jueves y Viernes Santo (02 y 03 de abril), 01 de Mayo. Si lo dejas vacío, la IA identificará feriados oficiales.",
+        key="feriados_proy"
     )
+
+    tabla_horario_md = f"""
+| BLOQUE / HORA | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Sesión 1 (90 min)** | {l_a1} | {m_a1} | {mi_a1} | {j_a1} | {v_a1} |
+| **Sesión 2 (90 min)** | {l_a2} | {m_a2} | {mi_a2} | {j_a2} | {v_a2} |
+| **Sesión 3 (90 min)** | {l_a3} | {m_a3} | {mi_a3} | {j_a3} | {v_a3} |
+"""
 
 else:  # Unidad SARA
     f1, f2, f3 = st.columns(3)
@@ -615,12 +667,56 @@ else:  # Unidad SARA
         duracion_semanas = st.slider("Número de Semanas de la Unidad:", min_value=2, max_value=5, value=5)
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
-    
+
+    # CUADRO DE HORARIOS DE ÁREAS POR CADA DÍA DE LA SEMANA (LUNES A VIERNES)
+    st.markdown("""
+    <div style="background-color: #F5F3FF; border: 1.5px solid #8B5CF6; border-radius: 10px; padding: 10px 14px; margin-top: 14px; margin-bottom: 12px;">
+        <span style="font-weight: 800; color: #5B21B6; font-size: 1.0rem;">🕒 CUADRO DE HORARIOS DE ÁREAS (DE LUNES A VIERNES - 2 A 3 ÁREAS POR DÍA)</span><br>
+        <span style="font-size: 0.88rem; color: #6D28D9;">Configura las áreas pedagógicas que se trabajarán cada día en turno único. Estas áreas determinarán de forma coherente la programación cronológica de actividades.</span>
+    </div>
+    """, unsafe_allow_html=True)
+
+    col_l, col_m, col_mi, col_j, col_v = st.columns(5)
+    with col_l:
+        st.markdown("**🟣 LUNES**")
+        l_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="uni_l1")
+        l_a2 = st.selectbox("Área 2:", lista_areas_completa, index=1, key="uni_l2")
+        l_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=3, key="uni_l3")
+    with col_m:
+        st.markdown("**🟣 MARTES**")
+        m_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="uni_m1")
+        m_a2 = st.selectbox("Área 2:", lista_areas_completa, index=0, key="uni_m2")
+        m_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=4, key="uni_m3")
+    with col_mi:
+        st.markdown("**🟣 MIÉRCOLES**")
+        mi_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="uni_mi1")
+        mi_a2 = st.selectbox("Área 2:", lista_areas_completa, index=2, key="uni_mi2")
+        mi_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=6, key="uni_mi3")
+    with col_j:
+        st.markdown("**🟣 JUEVES**")
+        j_a1 = st.selectbox("Área 1:", lista_areas_completa, index=1, key="uni_j1")
+        j_a2 = st.selectbox("Área 2:", lista_areas_completa, index=3, key="uni_j2")
+        j_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=5, key="uni_j3")
+    with col_v:
+        st.markdown("**🟣 VIERNES**")
+        v_a1 = st.selectbox("Área 1:", lista_areas_completa, index=0, key="uni_v1")
+        v_a2 = st.selectbox("Área 2:", lista_areas_completa, index=7, key="uni_v2")
+        v_a3 = st.selectbox("Área 3 (opcional):", opciones_bloque3, index=8, key="uni_v3")
+
     feriados_custom = st.text_input(
-        "📅 Feriados o Días No Laborables durante el período de la unidad (Opcional):",
+        "📌 Feriados o Días No Laborables durante el período (Se indicarán al pie de este cuadro de horarios):",
         value="",
-        placeholder="Ej: Jueves y Viernes Santo, 1 de Mayo. Si lo dejas vacío, la IA los identificará automáticamente."
+        placeholder="Ej: Jueves y Viernes Santo (02 y 03 de abril), 01 de Mayo. Si lo dejas vacío, la IA identificará feriados oficiales.",
+        key="feriados_uni"
     )
+
+    tabla_horario_md = f"""
+| BLOQUE / HORA | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+| :--- | :--- | :--- | :--- | :--- | :--- |
+| **Sesión 1 (90 min)** | {l_a1} | {m_a1} | {mi_a1} | {j_a1} | {v_a1} |
+| **Sesión 2 (90 min)** | {l_a2} | {m_a2} | {mi_a2} | {j_a2} | {v_a2} |
+| **Sesión 3 (90 min)** | {l_a3} | {m_a3} | {mi_a3} | {j_a3} | {v_a3} |
+"""
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     problema_contexto = st.text_input(
@@ -805,6 +901,12 @@ PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y es
 A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 {problema_contexto}
 
+CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES - 2 A 3 ÁREAS POR DÍA):
+{tabla_horario_md}
+
+FERIADOS SEÑALADOS DEL PERÍODO:
+{info_feriados}
+
 OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
 1. Genera un TÍTULO del proyecto: {val_titulo}
 2. Redacta la SITUACIÓN SIGNIFICATIVA COMPLETA estructurada en 3 párrafos.
@@ -826,9 +928,8 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
 5. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
-   - Presenta un cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
-     | HORA / BLOQUE | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - Regla obligatoria: Se programan de **2 a 3 áreas como máximo por día** (Turno Único, bloques de 90 min), distribuyendo equilibradamente todas las áreas curriculares (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría).
+   - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único (2 a 3 áreas por día):
+{tabla_horario_md}
    - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
      Justo debajo de esta tabla de horarios, agrega un recuadro o texto destacado titulado:
      `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
@@ -862,6 +963,12 @@ PROHIBIDO usar símbolos #### o ##### y etiquetas HTML. Usa Markdown limpio y es
 
 ENTRADA PROVISTA POR EL DOCENTE (PROBLEMA DE CONTEXTO, SITUACIÓN SIGNIFICATIVA COMPLETA Y/O ACTIVIDADES PROPUESTAS):
 {problema_contexto}
+
+CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES - 2 A 3 ÁREAS POR DÍA):
+{tabla_horario_md}
+
+FERIADOS SEÑALADOS DEL PERÍODO:
+{info_feriados}
 
 REGLA DE PROCESAMIENTO DE LA SITUACIÓN SIGNIFICATIVA Y ACTIVIDADES:
 1. SI EL DOCENTE INGRESÓ UNA SITUACIÓN SIGNIFICATIVA COMPLETA O ACTIVIDADES ESPECÍFICAS: Utiliza, respeta y adapta fielmente dicho texto e ideas dentro de la sección "II. SITUACIÓN (RETO)" y en la matriz curricular.
@@ -919,9 +1026,8 @@ VII. COMPETENCIAS TRANSVERSALES:
 - "Gestiona su aprendizaje de manera autónoma" (capacidades y desempeños precisados).
 
 VIII. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
-   - Presenta un cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
-     | HORA / BLOQUE | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - Regla obligatoria: Se programan de **2 a 3 áreas como máximo por día** (Turno Único, bloques de 90 min), cubriendo armónicamente las áreas curriculares (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría).
+   - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único (2 a 3 áreas por día):
+{tabla_horario_md}
    - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
      Justo al pie de esta tabla de horarios, agrega un recuadro o detalle titulado:
      `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
@@ -1006,7 +1112,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo aplicando el proceso didáctico del área elegida. Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
                 elif tipo_documento == "Proyecto de Aprendizaje":
                     prompt_maestro = generar_prompt_proyecto()
-                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Elaboras Proyectos de Aprendizaje integrando el Cuadro de Horarios Semanal (2 a 3 áreas diarias) con feriados indicados al pie, coherente con la secuencia de actividades."
+                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Elaboras Proyectos de Aprendizaje respetando estrictamente el Cuadro de Horarios Semanal configurado por el docente (2 a 3 áreas por día de lunes a viernes) con feriados al pie, garantizando coherencia con la secuencia de actividades."
                 else:
                     prompt_maestro = generar_prompt_unidad_sara()
                     sys_inst = (
@@ -1015,7 +1121,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         "REGLA CRÍTICA PARA MATEMÁTICA Y COMUNICACIÓN: Debes incluir OBLIGATORIAMENTE las 4 competencias del área de Matemática y las 3 competencias del área de Comunicación a lo largo de la unidad. "
                         "REGLA CRÍTICA PARA EL ESTÁNDAR Y DESEMPEÑO: Debes copiar el texto completo e íntegro tanto del Estándar de Aprendizaje como del Desempeño oficial del CNEB (RM N.° 649-2016-MINEDU) para el grado/ciclo, sin modificar, resumir, alterar ni recortar ninguna palabra. "
                         "Resalta en NEGRITA (**texto**) únicamente el fragmento o precisión que se moviliza o evalúa en la actividad. El resto del texto del estándar y del desempeño debe permanecer exactamente en texto normal. "
-                        "Incorpora el Cuadro de Horarios de Áreas (2 a 3 áreas por día de lunes a viernes) con indicación de feriados en la parte de abajo, asegurando absoluta coherencia con la programación cronológica de actividades. "
+                        "Respeta estrictamente el Cuadro de Horarios Semanal configurado por el docente (2 a 3 áreas por día de lunes a viernes) con la indicación de feriados al pie, asegurando absoluta correspondencia con la programación cronológica de actividades. "
                         "Si el docente proporciona su propia Situación Significativa o actividades, utilízalas y respétalas íntegramente; si solo indica un problema breve, genera la Situación Significativa automáticamente."
                     )
                     
