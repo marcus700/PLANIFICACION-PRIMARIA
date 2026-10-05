@@ -1141,8 +1141,8 @@ IX. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERID
 
    ⚠️ ADVERTENCIA CRÍTICA:
    Si el Martes o Jueves tienen 2 áreas programadas, DEBES REDACTAR OBLIGATORIAMENTE LAS DOS SESIONES COMPLETAS:
-   • Sesión 1 (90 min): **[Primera Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
-   • Sesión 2 (90 min): **[Segunda Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
+   • Sesión 1 (90 min): **Primera Área**:  (Actividad en 1ª persona plural)
+   • Sesión 2 (90 min): **Segunda Área**: (Actividad en 1ª persona plural)
    ¡ESTÁ TOTALMENTE PROHIBIDO EMITIR SOLO UNA SESIÓN EN DÍAS DE DOS ÁREAS! El docente configuró dos áreas para esos días y ambas sesiones deben figurar obligatoriamente en cada casilla de martes y jueves.
 
    - REGLA DE FERIADOS: Si en algún día de la semana coincide un feriado señalado en la sección anterior, consigna en su casilla: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, omitiendo el desarrollo de sesiones en dicha fecha para mantener coherencia total.
