@@ -1115,8 +1115,11 @@ VI. TUTORÍA Y EDUCACIÓN EDUCATIVA:
 | DIMENSIÓN | SESIÓN | ¿QUÉ BUSCAMOS? |
 
 VII. COMPETENCIAS TRANSVERSALES:
-- "Se desenvuelve en los entornos virtuales generados por las TIC" (capacidades y desempeños precisados).
-- "Gestiona su aprendizaje de manera autónoma" (capacidades y desempeños precisados).
+(Presenta obligatoriamente esta sección en un CUADRO / TABLA con las competencias transversales oficiales del CNEB, sus capacidades y desempeños precisados correspondientes a {grado_seccion}):
+| COMPETENCIA TRANSVERSAL | CAPACIDADES | DESEMPEÑOS PRECISADOS |
+| :--- | :--- | :--- |
+| **Se desenvuelve en los entornos virtuales generados por las TIC** | • Personaliza entornos virtuales.<br>• Gestiona información del entorno virtual.<br>• Interactúa en entornos virtuales.<br>• Crea objetos virtuales en diversos formatos. | [Copia el desempeño oficial de esta competencia para {grado_seccion}, resaltando en negrita la precisión contextualizada a la unidad] |
+| **Gestiona su aprendizaje de manera autónoma** | • Define metas de aprendizaje.<br>• Organiza acciones estratégicas para alcanzar sus metas de aprendizaje.<br>• Monitorea y ajusta su desempeño durante el proceso de aprendizaje. | [Copia el desempeño oficial de esta competencia para {grado_seccion}, resaltando en negrita la precisión contextualizada a la unidad] |
 
 VIII. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
    - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
@@ -1226,6 +1229,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         "Elaboras Unidades de Aprendizaje completas en formato Markdown. "
                         "REGLA CRÍTICA DE MATRIZ DE APRENDIZAJES (SECCIÓN V): Presenta la matriz de propósitos y aprendizajes en UN SOLO CUADRO O TABLA UNIFICADA Y CONTINUA para toda la unidad. QUEDA ESTRICTAMENTE PROHIBIDO separar o dividir la matriz en tablas individuales por cada semana. "
                         "REGLA CRÍTICA DE CORRESPONDENCIA 1 A 1 EN LA MATRIZ: En la columna de actividades sugeridas, desglosa obligatoriamente las actividades semana a semana (Semana 1, Semana 2, Semana 3, Semana 4, etc.), y en la columna de Criterios de Evaluación redacta OBLIGATORIAMENTE UN CRITERIO DE EVALUACIÓN POR CADA ACTIVIDAD SUGERIDA de cada semana. "
+                        "REGLA CRÍTICA DE COMPETENCIAS TRANSVERSALES (SECCIÓN VII): Debes presentar las competencias transversales obligatoriamente en un CUADRO O TABLA con columnas: COMPETENCIA TRANSVERSAL | CAPACIDADES | DESEMPEÑOS PRECISADOS. "
                         "REGLA CRÍTICA PARA MATEMÁTICA Y COMUNICACIÓN: Debes incluir OBLIGATORIAMENTE las 4 competencias del área de Matemática y las 3 competencias del área de Comunicación a lo largo de la unidad. "
                         "REGLA CRÍTICA PARA EL ESTÁNDAR Y DESEMPEÑO: Debes copiar el texto completo e íntegro tanto del Estándar de Aprendizaje como del Desempeño oficial del CNEB (RM N.° 649-2016-MINEDU) para el grado/ciclo, sin modificar, resumir, alterar ni recortar ninguna palabra. "
                         "Resalta en NEGRITA (**texto**) únicamente el fragmento o precisión que se moviliza o evalúa en la actividad. El resto del texto del estándar y del desempeño debe permanecer exactamente en texto normal. "
