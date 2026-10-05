@@ -548,6 +548,40 @@ def generar_imagen_nanobanana(client, tema, grado, area):
     return None, None, "No se pudo generar la imagen."
 
 # ==============================================================================
+# DETECCIÓN AUTOMÁTICA DE FERIADOS OFICIALES DEL PERÚ (CALENDARIO MINEDU)
+# ==============================================================================
+def obtener_feriados_periodo(fechas_texto, feriados_input):
+    texto_lower = (fechas_texto or "").lower()
+    
+    mapa_meses = {
+        "enero": ["01 de enero: Año Nuevo"],
+        "marzo": ["Jueves Santo y Viernes Santo (Semana Santa)"],
+        "abril": ["Jueves Santo y Viernes Santo (Semana Santa)"],
+        "mayo": ["01 de mayo: Día del Trabajo"],
+        "junio": ["07 de junio: Batalla de Arica y Día de la Bandera", "29 de junio: San Pedro y San Pablo"],
+        "julio": ["23 de julio: Día de la FAP", "28 y 29 de julio: Fiestas Patrias"],
+        "agosto": ["06 de agosto: Batalla de Junín", "30 de agosto: Santa Rosa de Lima"],
+        "octubre": ["08 de octubre: Conmemoración del Combate de Angamos (Feriado Nacional - Sin clases)"],
+        "noviembre": ["01 de noviembre: Día de Todos los Santos"],
+        "diciembre": ["08 de diciembre: Inmaculada Concepción", "09 de diciembre: Batalla de Ayacucho", "25 de diciembre: Navidad"]
+    }
+    
+    detectados = []
+    for mes, lista_fer in mapa_meses.items():
+        if mes in texto_lower:
+            detectados.extend(lista_fer)
+            
+    if feriados_input and feriados_input.strip():
+        if detectados:
+            return f"{feriados_input.strip()} | Feriados oficiales del Perú detectados: {', '.join(detectados)}"
+        return feriados_input.strip()
+    
+    if detectados:
+        return f"Feriados oficiales del calendario peruano MINEDU detectados en el período: {', '.join(detectados)}"
+    
+    return f"Identifica los feriados oficiales nacionales de Perú según calendario escolar MINEDU para las fechas: {fechas_texto}"
+
+# ==============================================================================
 # FORMULARIO DE DATOS DE AULA CONECTADO A CNEB
 # ==============================================================================
 st.subheader(f"📝 Configuración de Datos: {tipo_documento}")
@@ -585,14 +619,14 @@ def compilar_reglas_diarias(dias_lista):
     for nombre_dia, a1, a2, a3 in dias_lista:
         if a3 == "(Ninguna / Solo 2 áreas)":
             reglas.append(
-                f"  • **{nombre_dia} (OBLIGATORIO: EXACTAMENTE 2 SESIONES - PROHIBIDO COLOCAR SOLO 1 SESIÓN):**\n"
+                f"  • **{nombre_dia} (SI NO ES FERIADO, EXACTAMENTE 2 SESIONES - PROHIBIDO COLOCAR SOLO 1):**\n"
                 f"      - Sesión 1 (90 min): **[{a1}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
                 f"      - Sesión 2 (90 min): **[{a2}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
-                f"      *(En {nombre_dia} DEBES redactar ambas sesiones completas: Sesión 1 de {a1} Y Sesión 2 de {a2}. No omitas ni fusiones ninguna)*"
+                f"      *(En días normales de {nombre_dia}, redactar ambas sesiones completas de {a1} y {a2})*"
             )
         else:
             reglas.append(
-                f"  • **{nombre_dia} (OBLIGATORIO: EXACTAMENTE 3 SESIONES COMPLETAS):**\n"
+                f"  • **{nombre_dia} (SI NO ES FERIADO, EXACTAMENTE 3 SESIONES COMPLETAS):**\n"
                 f"      - Sesión 1 (90 min): **[{a1}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
                 f"      - Sesión 2 (90 min): **[{a2}]**: [Competencia específica] - [Actividad en 1ª persona plural]\n"
                 f"      - Sesión 3 (90 min): **[{a3}]**: [Competencia específica] - [Actividad en 1ª persona plural]"
@@ -670,7 +704,7 @@ elif tipo_documento == "Proyecto de Aprendizaje":
     feriados_custom = st.text_input(
         "📌 Feriados o Días No Laborables durante el período (Se indicarán al pie de este cuadro de horarios):",
         value="",
-        placeholder="Ej: Jueves y Viernes Santo (02 y 03 de abril), 01 de Mayo. Si lo dejas vacío, la IA identificará feriados oficiales.",
+        placeholder="Ej: 8 de Octubre (Combate de Angamos), Jueves y Viernes Santo, 1 de Mayo. Si lo dejas vacío, el sistema detecta feriados oficiales.",
         key="feriados_proy"
     )
 
@@ -740,7 +774,7 @@ else:  # Unidad SARA
     feriados_custom = st.text_input(
         "📌 Feriados o Días No Laborables durante el período (Se indicarán al pie de este cuadro de horarios):",
         value="",
-        placeholder="Ej: Jueves y Viernes Santo (02 y 03 de abril), 01 de Mayo. Si lo dejas vacío, la IA identificará feriados oficiales.",
+        placeholder="Ej: 8 de Octubre (Combate de Angamos), Jueves y Viernes Santo, 1 de Mayo. Si lo dejas vacío, el sistema detecta feriados oficiales.",
         key="feriados_uni"
     )
 
@@ -935,7 +969,7 @@ ESTRUCTURA DE SALIDA REQUERIDA (MARKDOWN PURA EN TABLAS):
 
 def generar_prompt_proyecto():
     val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO innovador y creativo para el proyecto basado en el problema.'
-    info_feriados = f"Feriados o días no laborables indicados por el docente: {feriados_custom}" if feriados_custom.strip() else f"Identifica los feriados oficiales del calendario escolar peruano MINEDU que correspondan al período de fechas: {fechas_duracion}."
+    info_feriados = obtener_feriados_periodo(fechas_duracion, feriados_custom)
 
     return f"""
 Actúa como un docente especialista de Primaria MINEDU Perú. Elabora un PROYECTO DE APRENDIZAJE completo.
@@ -947,7 +981,7 @@ A PARTIR DEL PROBLEMA DEL CONTEXTO DEL DOCENTE:
 CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES):
 {tabla_horario_md}
 
-FERIADOS SEÑALADOS DEL PERÍODO:
+FERIADOS OFICIALES IDENTIFICADOS PARA EL PERÍODO:
 {info_feriados}
 
 OBLIGATORIO - GENERACIÓN AUTOMÁTICA DE TÍTULO Y SITUACIÓN SIGNIFICATIVA:
@@ -965,7 +999,7 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 4. MATRIZ DE PROPÓSITOS DE APRENDIZAJE (UN SOLO CUADRO UNIFICADO PARA TODAS LAS SEMANAS):
    🚨 REGLA CRÍTICA OBLIGATORIA DE TABLA ÚNICA (NO SEPARAR POR SEMANAS):
    - Presenta TODA esta matriz en UN SOLO CUADRO / UNA SOLA TABLA INTEGRADA Y CONTINUA para todo el proyecto ({duracion_semanas} semanas).
-   - QUEDA TERMINANTEMENTE PROHIBIDO CORTAR, FRAGMENTAR O DIVIDIR LA MATRIZ EN CUADROS SEPARADOS POR CADA SEMANA (No hagas una tabla para la semana 1, otra tabla para la semana 2, etc.).
+   - QUEDA TERMINANTEMENTE PROHIBIDO CORTAR, FRAGMENTAR O DIVIDIR LA MATRIZ EN CUADROS SEPARADOS POR CADA SEMANA.
    - En este ÚNICO cuadro, organiza las filas por ÁREA y COMPETENCIA.
    
    🚨 REGLA CRÍTICA PARA LA COLUMNA "ACTIVIDADES SUGERIDAS" (DESGLOSE SEMANAL OBLIGATORIO):
@@ -995,28 +1029,27 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 5. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
    - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
 {tabla_horario_md}
-   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
+   - **INDICACIÓN OBLIGATORIA DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
      Justo debajo de esta tabla de horarios, agrega un recuadro o texto destacado titulado:
      `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
-     ({info_feriados})
-     Indica la fecha exacta y la conmemoración/festividad de cada feriado comprendido en el proyecto. Si no hubiese ningún feriado en ese periodo, indícalo expresamente.
+     Indica con fecha exacta y nombre cada feriado del período ({info_feriados}). Si coincide el 8 de octubre, debe figurar explícitamente:
+     `• 08 de octubre: Conmemoración del Combate de Angamos (Feriado Nacional - Sin clases)`.
 
 6. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (PROGRAMACIÓN CRONOLÓGICA SEMANAL):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
-   - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
-     | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+   - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA CON SUS FECHAS EXACTAS** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS CON SUS FECHAS NUMÉRICAS:
+     | LUNES (fecha) | MARTES (fecha) | MIÉRCOLES (fecha) | JUEVES (fecha) | VIERNES (fecha) |
 
-   🚨 REGLA ESTRICTA CONTRA LA OMISIÓN DE SESIONES (CERO RESÚMENES):
-   En cada día de la semana DEBES generar exactamente las sesiones que el docente fijó en su horario:
+   🚨 REGLA SUPREMA SOBRE FERIADOS (PREVALECE SOBRE TODAS LAS DEMÁS REGLAS):
+   - Si un día coincide con un FERIADO NACIONAL (ejemplo: 8 de Octubre - Combate de Angamos, 1 de Mayo, Semana Santa, etc.):
+     1. QUEDA TERMINANTEMENTE PROHIBIDO PROGRAMAR SESIONES O CLASES ESE DÍA.
+     2. En la casilla de ese día DEBES escribir ÚNICA Y EXCLUSIVAMENTE:
+        `🚫 FERIADO NACIONAL: [Nombre del Feriado, ej. 8 de Octubre: Combate de Angamos]`
+        `*(Suspensión de labores escolares según calendario oficial)*`
+     3. Esta regla de feriados tiene PRIORIDAD ABSOLUTA sobre la regla de sesiones diarias.
+
+   - En los días regulares (no feriados), programa exactamente las sesiones fijadas en el horario semanal:
 {reglas_sesiones_diarias_md}
-
-   ⚠️ ADVERTENCIA CRÍTICA:
-   Si el Martes o Jueves tienen 2 áreas programadas, DEBES REDACTAR OBLIGATORIAMENTE LAS DOS SESIONES COMPLETAS:
-   • Sesión 1 (90 min): **[Primera Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
-   • Sesión 2 (90 min): **[Segunda Área]**: [Competencia específica] - [Actividad en 1ª persona plural]
-   ¡ESTÁ TOTALMENTE PROHIBIDO EMITIR SOLO UNA SESIÓN EN DÍAS DE DOS ÁREAS! El docente configuró dos áreas para esos días y ambas sesiones deben figurar obligatoriamente en cada casilla de martes y jueves.
-   
-   - REGLA DE FERIADOS: Si en el cronograma semanal coincide un día feriado de los indicados al pie del cuadro de horarios, en la columna correspondiente a ese día coloca claramente: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, sin programar sesiones curriculares dicho día.
 
 7. TABLA DE ENFOQUES TRANSVERSALES.
 8. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
@@ -1026,7 +1059,7 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
 
 def generar_prompt_unidad_sara():
     val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO motivador para la Unidad de Aprendizaje basado en el contexto/problema.'
-    info_feriados = f"Feriados o días no laborables indicados por el docente: {feriados_custom}" if feriados_custom.strip() else f"Identifica los feriados oficiales del calendario escolar peruano MINEDU que correspondan al período de fechas: {fechas_duracion}."
+    info_feriados = obtener_feriados_periodo(fechas_duracion, feriados_custom)
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE completa y detallada (Modelo SARA).
@@ -1038,7 +1071,7 @@ ENTRADA PROVISTA POR EL DOCENTE (PROBLEMA DE CONTEXTO, SITUACIÓN SIGNIFICATIVA 
 CUADRO DE HORARIOS DE ÁREAS DEFINIDO POR EL DOCENTE EN LA PLATAFORMA (DE LUNES A VIERNES):
 {tabla_horario_md}
 
-FERIADOS SEÑALADOS DEL PERÍODO:
+FERIADOS OFICIALES IDENTIFICADOS PARA EL PERÍODO:
 {info_feriados}
 
 REGLA DE PROCESAMIENTO DE LA SITUACIÓN SIGNIFICATIVA Y ACTIVIDADES:
@@ -1124,28 +1157,27 @@ VII. COMPETENCIAS TRANSVERSALES:
 VIII. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
    - Presenta el cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
 {tabla_horario_md}
-   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
+   - **INDICACIÓN OBLIGATORIA DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
      Justo al pie de esta tabla de horarios, agrega un recuadro o detalle titulado:
      `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
-     ({info_feriados})
-     Indica las fechas y conmemoraciones de feriados en el periodo de la unidad. Si no hubiese feriados, déjalo constar expresamente.
+     Indica con fecha exacta y nombre cada feriado del período ({info_feriados}). Si coincide el 8 de octubre, debe figurar explícitamente:
+     `• 08 de octubre: Conmemoración del Combate de Angamos (Feriado Nacional - Sin clases)`.
 
 IX. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
    - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
-   - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
-     | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+   - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA CON SUS FECHAS EXACTAS** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS CON SUS FECHAS NUMÉRICAS:
+     | LUNES (fecha) | MARTES (fecha) | MIÉRCOLES (fecha) | JUEVES (fecha) | VIERNES (fecha) |
 
-   🚨 REGLA ESTRICTA CONTRA LA OMISIÓN DE SESIONES (CERO RESÚMENES):
-   En cada día de la semana DEBES generar exactamente las sesiones que el docente fijó en su horario:
+   🚨 REGLA SUPREMA SOBRE FERIADOS (PREVALECE SOBRE TODAS LAS DEMÁS REGLAS):
+   - Si un día coincide con un FERIADO NACIONAL (ejemplo: 8 de Octubre - Combate de Angamos, 1 de Mayo, Semana Santa, etc.):
+     1. QUEDA TERMINANTEMENTE PROHIBIDO PROGRAMAR SESIONES O CLASES ESE DÍA.
+     2. En la casilla de ese día DEBES escribir ÚNICA Y EXCLUSIVAMENTE:
+        `🚫 FERIADO NACIONAL: [Nombre del Feriado, ej. 8 de Octubre: Combate de Angamos]`
+        `*(Suspensión de labores escolares según calendario oficial)*`
+     3. Esta regla de feriados tiene PRIORIDAD ABSOLUTA sobre la regla de sesiones diarias.
+
+   - En los días regulares (no feriados), programa exactamente las sesiones fijadas en el horario semanal:
 {reglas_sesiones_diarias_md}
-
-   ⚠️ ADVERTENCIA CRÍTICA:
-   Si el Martes o Jueves tienen 2 áreas programadas, DEBES REDACTAR OBLIGATORIAMENTE LAS DOS SESIONES COMPLETAS:
-   • Sesión 1 (90 min): **Primera Área**:  (Actividad en 1ª persona plural)
-   • Sesión 2 (90 min): **Segunda Área**: (Actividad en 1ª persona plural)
-   ¡ESTÁ TOTALMENTE PROHIBIDO EMITIR SOLO UNA SESIÓN EN DÍAS DE DOS ÁREAS! El docente configuró dos áreas para esos días y ambas sesiones deben figurar obligatoriamente en cada casilla de martes y jueves.
-
-   - REGLA DE FERIADOS: Si en algún día de la semana coincide un feriado señalado en la sección anterior, consigna en su casilla: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, omitiendo el desarrollo de sesiones en dicha fecha para mantener coherencia total.
 
 X. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
 - Para el estudiante.
@@ -1217,24 +1249,28 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     sys_inst = (
                         "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
                         "Elaboras Proyectos de Aprendizaje respetando estrictamente el Cuadro de Horarios Semanal configurado por el docente. "
+                        "REGLA SUPREMA DE FERIADOS: Si una fecha del período es feriado nacional oficial en el Perú (como el 8 de octubre - Combate de Angamos), "
+                        "es OBLIGATORIO señalarlo debajo del cuadro de horarios y en la tabla cronológica semanal colocar '🚫 FERIADO NACIONAL' sin programar ninguna sesión en ese día. "
+                        "Esta regla de feriado anula y prevalece sobre la programación habitual de sesiones de ese día. "
                         "REGLA CRÍTICA DE MATRIZ DE APRENDIZAJES: Presenta la matriz de aprendizajes en UN SOLO CUADRO continuo para todo el proyecto, PROHIBIDO fragmentarla en tablas por semana. "
                         "REGLA CRÍTICA DE CORRESPONDENCIA 1 A 1: En la matriz de aprendizajes, es OBLIGATORIO desglosar las actividades sugeridas semana a semana (Semana 1, Semana 2, Semana 3, Semana 4) y redactar EXACTAMENTE UN CRITERIO DE EVALUACIÓN POR CADA ACTIVIDAD SUGERIDA. "
-                        "ATENCIÓN CRÍTICA: En los días configurados con 2 áreas (como martes o jueves), es OBLIGATORIO generar 2 sesiones completas (Sesión 1 y Sesión 2). "
-                        "ESTÁ ESTRICTAMENTE PROHIBIDO emitir solo 1 sesión en días de 2 áreas."
+                        "ATENCIÓN CRÍTICA: En los días regulares configurados con 2 áreas (como martes o jueves), es OBLIGATORIO generar 2 sesiones completas (Sesión 1 y Sesión 2)."
                     )
                 else:
                     prompt_maestro = generar_prompt_unidad_sara()
                     sys_inst = (
                         "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. "
                         "Elaboras Unidades de Aprendizaje completas en formato Markdown. "
+                        "REGLA SUPREMA DE FERIADOS: Si una fecha del período es feriado nacional oficial en el Perú (como el 8 de octubre - Combate de Angamos), "
+                        "es OBLIGATORIO señalarlo debajo del cuadro de horarios y en la tabla cronológica semanal colocar '🚫 FERIADO NACIONAL' sin programar ninguna sesión en ese día. "
+                        "Esta regla de feriado anula y prevalece sobre la programación habitual de sesiones de ese día. "
                         "REGLA CRÍTICA DE MATRIZ DE APRENDIZAJES (SECCIÓN V): Presenta la matriz de propósitos y aprendizajes en UN SOLO CUADRO O TABLA UNIFICADA Y CONTINUA para toda la unidad. QUEDA ESTRICTAMENTE PROHIBIDO separar o dividir la matriz en tablas individuales por cada semana. "
                         "REGLA CRÍTICA DE CORRESPONDENCIA 1 A 1 EN LA MATRIZ: En la columna de actividades sugeridas, desglosa obligatoriamente las actividades semana a semana (Semana 1, Semana 2, Semana 3, Semana 4, etc.), y en la columna de Criterios de Evaluación redacta OBLIGATORIAMENTE UN CRITERIO DE EVALUACIÓN POR CADA ACTIVIDAD SUGERIDA de cada semana. "
                         "REGLA CRÍTICA DE COMPETENCIAS TRANSVERSALES (SECCIÓN VII): Debes presentar las competencias transversales obligatoriamente en un CUADRO O TABLA con columnas: COMPETENCIA TRANSVERSAL | CAPACIDADES | DESEMPEÑOS PRECISADOS. "
                         "REGLA CRÍTICA PARA MATEMÁTICA Y COMUNICACIÓN: Debes incluir OBLIGATORIAMENTE las 4 competencias del área de Matemática y las 3 competencias del área de Comunicación a lo largo de la unidad. "
                         "REGLA CRÍTICA PARA EL ESTÁNDAR Y DESEMPEÑO: Debes copiar el texto completo e íntegro tanto del Estándar de Aprendizaje como del Desempeño oficial del CNEB (RM N.° 649-2016-MINEDU) para el grado/ciclo, sin modificar, resumir, alterar ni recortar ninguna palabra. "
                         "Resalta en NEGRITA (**texto**) únicamente el fragmento o precisión que se moviliza o evalúa en la actividad. El resto del texto del estándar y del desempeño debe permanecer exactamente en texto normal. "
-                        "ATENCIÓN CRÍTICA PARA EL HORARIO: En los días configurados con 2 áreas (como martes y jueves), es OBLIGATORIO generar 2 sesiones completas (Sesión 1 y Sesión 2) en la tabla semanal. "
-                        "QUEDA TERMINANTEMENTE PROHIBIDO poner solo 1 sesión en días que tienen 2 áreas programadas."
+                        "ATENCIÓN CRÍTICA PARA EL HORARIO: En los días regulares configurados con 2 áreas (como martes y jueves), es OBLIGATORIO generar 2 sesiones completas (Sesión 1 y Sesión 2) en la tabla semanal."
                     )
                     
                 with st.spinner(f"🧠 Generando tu {tipo_documento} con Google Gemini ({model_choice})..."):
