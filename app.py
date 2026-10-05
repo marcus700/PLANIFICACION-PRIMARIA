@@ -120,15 +120,6 @@ st.markdown("""
     }
     div.st-key-btn_sesion > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
 
-    div.st-key-btn_ficha > button {
-        background: linear-gradient(135deg, #F97316 0%, #D97706 100%) !important;
-        background-color: #D97706 !important;
-        border-radius: 12px !important;
-        border: none !important;
-        box-shadow: 0 4px 12px rgba(249, 115, 22, 0.35) !important;
-    }
-    div.st-key-btn_ficha > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
-
     div.st-key-btn_afiche > button {
         background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
         background-color: #DC2626 !important;
@@ -139,14 +130,14 @@ st.markdown("""
     div.st-key-btn_afiche > button p { color: #FFFFFF !important; font-weight: 800 !important; font-size: 1.05rem !important; }
 
     /* BOTÓN PRINCIPAL DE GENERACIÓN */
-    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]):not([key="btn_afiche"]) {
+    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_afiche"]) {
         background: linear-gradient(135deg, #2563EB 0%, #1D4ED8 100%) !important;
         background-color: #2563EB !important;
         border-radius: 10px !important;
         border: none !important;
         box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4) !important;
     }
-    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_ficha"]):not([key="btn_afiche"]) p {
+    div.stButton > button:not([key="btn_proyecto"]):not([key="btn_unidad"]):not([key="btn_sesion"]):not([key="btn_afiche"]) p {
         color: #FFFFFF !important;
         font-weight: 800 !important;
         font-size: 1.1rem !important;
@@ -284,6 +275,7 @@ if 'imagen_nanobanana' not in st.session_state: st.session_state['imagen_nanoban
 if 'imagen_bytes' not in st.session_state: st.session_state['imagen_bytes'] = None
 if 'model_choice' not in st.session_state: st.session_state['model_choice'] = "gemini-3.5-flash-lite"
 if 'ultima_sesion_texto' not in st.session_state: st.session_state['ultima_sesion_texto'] = None
+if 'ficha_generada_md' not in st.session_state: st.session_state['ficha_generada_md'] = None
 
 # ==============================================================================
 # ENCABEZADO PRINCIPAL CON SELECTOR DE MODELO GEMINI INTEGRADO A UN LADO
@@ -346,11 +338,11 @@ st.sidebar.info("""
 """)
 
 # ==============================================================================
-# SELECCIÓN DE HERRAMIENTAS DE AULA EN LA PÁGINA PRINCIPAL
+# SELECCIÓN DE HERRAMIENTAS DE AULA EN LA PÁGINA PRINCIPAL (4 HERRAMIENTAS)
 # ==============================================================================
 st.markdown("### 📋 Selecciona la Herramienta de Aula que deseas elaborar:")
 
-col_b1, col_b2, col_b3, col_b4, col_b5 = st.columns(5)
+col_b1, col_b2, col_b3, col_b4 = st.columns(4)
 
 with col_b1:
     if st.button("🚀 Proyecto de Aprendizaje", key="btn_proyecto", use_container_width=True):
@@ -368,11 +360,6 @@ with col_b3:
         st.rerun()
 
 with col_b4:
-    if st.button("📝 Ficha de Aplicación", key="btn_ficha", use_container_width=True):
-        st.session_state['tipo_documento'] = "Ficha de Aplicación / Trabajo (Para Alumnos)"
-        st.rerun()
-
-with col_b5:
     if st.button("🖼️ Afiche Nano Banana", key="btn_afiche", use_container_width=True):
         st.session_state['tipo_documento'] = "Afiche Educativo de la Sesión (Nano Banana)"
         st.rerun()
@@ -383,7 +370,6 @@ COLOR_MAP = {
     "Proyecto de Aprendizaje": "#059669",
     "Unidad de Aprendizaje (Modelo SARA)": "#7C3AED",
     "Sesión de Aprendizaje": "#2563EB",
-    "Ficha de Aplicación / Trabajo (Para Alumnos)": "#D97706",
     "Afiche Educativo de la Sesión (Nano Banana)": "#DC2626"
 }
 banner_color = COLOR_MAP.get(tipo_documento, "#059669")
@@ -634,10 +620,10 @@ def compilar_reglas_diarias(dias_lista):
             )
     return "\n".join(reglas)
 
-if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
+if tipo_documento in ["Sesión de Aprendizaje", "Afiche Educativo de la Sesión (Nano Banana)"]:
     f1, f2, f3, f4 = st.columns(4)
     with f1:
-        num_doc = st.text_input("N.° de Documento / Sesión / Ficha / Afiche:", "01")
+        num_doc = st.text_input("N.° de Documento / Sesión / Afiche:", "01")
     with f2:
         lista_areas = cneb.obtener_lista_areas()
         area_sel = st.selectbox("Área Curricular:", lista_areas if lista_areas else ["Personal Social", "Comunicación", "Matemática", "Ciencia y Tecnología"], index=0)
@@ -796,9 +782,9 @@ else:  # Unidad SARA
 | **Sesión 3 (90 min)** | {limpiar_texto_bloque3(l_a3)} | {limpiar_texto_bloque3(m_a3)} | {limpiar_texto_bloque3(mi_a3)} | {limpiar_texto_bloque3(j_a3)} | {limpiar_texto_bloque3(v_a3)} |
 """
 
-if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
+if tipo_documento in ["Sesión de Aprendizaje", "Afiche Educativo de la Sesión (Nano Banana)"]:
     problema_contexto = st.text_input(
-        "📌 Tema / Título de la Actividad, Ficha de Trabajo o Afiche:",
+        "📌 Tema / Título de la Sesión o Afiche:",
         value="Mis derechos y deberes"
     )
     titulo_opcional = ""
@@ -952,11 +938,11 @@ def generar_prompt_ficha_trabajo():
     contexto_sesion_vinc = ""
     if st.session_state.get('ultima_sesion_texto'):
         contexto_sesion_vinc = f"""
-VINCULACIÓN DIRECTA Y OBLIGATORIA CON LA SESIÓN DE APRENDIZAJE:
-El docente ha elaborado previamente una Sesión de Aprendizaje sobre este tema. Tu tarea OBLIGATORIA es diseñar la FICHA DE APLICACIÓN / TRABAJO directamente articulada con esa sesión:
+VINCULACIÓN DIRECTA Y OBLIGATORIA CON LA SESIÓN DE APRENDIZAJE PREVIAMENTE GENERADA:
+El docente ya generó la Sesión de Aprendizaje. Tu tarea OBLIGATORIA es diseñar la FICHA DE APLICACIÓN / TRABAJO directamente articulada con esa sesión:
 - Emplea los MISMOS propósitos y criterios de evaluación de la sesión.
 - Plantea actividades secuenciadas que permitan al estudiante construir la MISMA evidencia de aprendizaje propuesta en la sesión.
-- Aplica los mismos procesos didácticos y desafíos pedagógicos planteados.
+- Aplica los mismos procesos didácticos y desafíos pedagógicos planteados en la sesión.
 
 --- SESIÓN DE APRENDIZAJE DE REFERENCIA (VINCULAR DIRECTAMENTE) ---
 {st.session_state.get('ultima_sesion_texto')[:3600]}
@@ -983,7 +969,7 @@ INSTRUCCIONES DE DISEÑO PEDAGÓGICO DE LA FICHA:
 2. SECUENCIA DIDÁCTICA VINCULADA A LA SESIÓN:
    - SECCIÓN 1: "ME PREPARO Y DESCUBRO" (Problematización, activación de saberes previos o lectura motivadora inicial de la sesión).
    - SECCIÓN 2: "MANOS A LA OBRA / APLICO LO APRENDIDO" (Ejercicios prácticos, esquemas, situaciones problema o actividades de aplicación directa de los procesos didácticos de {area_sel}).
-   - SECCIÓN 3: "MI RETO FINAL / MI COMPROMISO" (Construcción tangible de la evidencia de aprendizaje de la sesión y toma de decisiones/compromiso personal).
+   - SECCIÓN 3: "MI RETO FINAL / MI PRODUCCIÓN" (Construcción tangible de la evidencia de aprendizaje de la sesión y toma de decisiones/compromiso personal).
 3. EVALUACIÓN FORMATIVA AL FINAL: Incluye obligatoriamente una tabla de Autoevaluación del Estudiante utilizando exactamente los mismos criterios de evaluación de la sesión, con columnas: "Lo logré", "Lo estoy intentando" y "¿Qué necesito mejorar?".
 4. FORMATO: Markdown limpio en tablas y recuadros estructurados para que quede lista para imprimir y fotocopiar. Prohibido usar etiquetas HTML.
 
@@ -1291,7 +1277,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         st.session_state['resultado_md'] = f"⚠️ No se pudo generar la imagen del afiche debido a una restricción de la API de Google AI Studio.\n\n**Detalle técnico:** {err_detallado}"
                         st.error(f"❌ Ocurrió un problema de la API de Google AI Studio al generar la imagen. Detalle técnico: {err_detallado}")
 
-            # SI SE SELECCIONA OTRA HERRAMIENTA (PROYECTO, UNIDAD, SESIÓN, FICHA):
+            # SI SE SELECCIONA SESIÓN, PROYECTO O UNIDAD:
             else:
                 if tipo_documento == "Sesión de Aprendizaje":
                     prompt_maestro = generar_prompt_sesion()
@@ -1301,15 +1287,6 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         "procesos didácticos del área en el Desarrollo, pausa activa de 2 minutos, "
                         "estándar íntegro del CNEB con negrita en lo trabajado y evaluación con escala A, B y C. "
                         "Toda tu respuesta debe estar en formato Markdown limpio y en tablas, sin etiquetas HTML."
-                    )
-                elif tipo_documento == "Ficha de Aplicación / Trabajo (Para Alumnos)":
-                    prompt_maestro = generar_prompt_ficha_trabajo()
-                    sys_inst = (
-                        "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. "
-                        "Creas fichas de trabajo para el estudiante directamente vinculadas y articuladas con la Sesión de Aprendizaje, "
-                        "respetando el mismo propósito, criterios de evaluación, procesos didácticos y evidencia de aprendizaje de la sesión. "
-                        "Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. "
-                        "PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
                     )
                 elif tipo_documento == "Proyecto de Aprendizaje":
                     prompt_maestro = generar_prompt_proyecto()
@@ -1408,8 +1385,9 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     st.session_state['ie_nombre_generado'] = ie_nombre
                     st.session_state['imagen_nanobanana'] = None
                     st.session_state['imagen_bytes'] = None
+                    st.session_state['ficha_generada_md'] = None  # Reiniciar ficha previa si se genera nueva sesión
                     
-                    # GUARDAR MEMORIA DE LA SESIÓN DE APRENDIZAJE PARA VINCULAR DIRECTAMENTE LA FICHA:
+                    # GUARDAR MEMORIA DE LA SESIÓN DE APRENDIZAJE:
                     if tipo_documento == "Sesión de Aprendizaje":
                         st.session_state['ultima_sesion_texto'] = response.text
                     
@@ -1427,49 +1405,146 @@ if st.button(f"✨ Generar {tipo_documento}"):
                 st.error(f"❌ Ocurrió un error con la API de Google AI Studio: {err_str}")
 
 # ==============================================================================
-# DESPLIEGUE DE VISTA PREVIA Y DESCARGA PERMANENTE
+# DESPLIEGUE DE VISTA PREVIA Y ACCIONES DE SESIÓN / DESCARGA PERMANENTE
 # ==============================================================================
 if st.session_state['resultado_md'] is not None:
     st.markdown("---")
     
-    tab_preview, tab_download = st.tabs(["📄 Vista Previa (Permanente)", "📥 Descargar Afiche / Documento"])
-    
-    with tab_preview:
-        if st.session_state.get('imagen_nanobanana') is not None:
-            st.markdown("### 🖼️ Afiche Educativo Ilustrado (Nano Banana AI)")
-            st.image(st.session_state['imagen_nanobanana'], caption=f"Afiche para {grado_seccion} - {problema_contexto}", use_container_width=True)
-            st.markdown("---")
+    # 🎯 SI SE GENERÓ UNA SESIÓN DE APRENDIZAJE: MOSTRAR LAS DOS OPCIONES AL DOCENTE
+    if st.session_state.get('tipo_doc_generado') == "Sesión de Aprendizaje":
+        st.markdown("""
+        <div style="background-color: #EFF6FF; border: 2px solid #2563EB; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px;">
+            <h4 style="margin: 0 0 6px 0; color: #1E3A8A;">🚀 Opciones para tu Sesión de Aprendizaje:</h4>
+            <span style="font-size: 0.93rem; color: #3B82F6;">Puedes generar y descargar el documento de Word de la sesión, o generar a su costado la <b>Ficha de Aplicación</b> directamente vinculada.</span>
+        </div>
+        """, unsafe_allow_html=True)
 
-        st.markdown(st.session_state['resultado_md'])
+        col_op1, col_op2 = st.columns(2)
         
-    with tab_download:
-        if st.session_state.get('tipo_doc_generado') == "Afiche Educativo de la Sesión (Nano Banana)":
-            st.markdown("### 🖼️ Descarga tu Afiche Educativo Ilustrado")
-            if st.session_state.get('imagen_bytes') is not None:
-                st.download_button(
-                    label="💾 Descargar Afiche Ilustrado en Alta Calidad (.jpg)",
-                    data=st.session_state['imagen_bytes'],
-                    file_name=f"Afiche_NanoBanana_{grado_seccion.replace(' ', '_')}.jpg",
-                    mime="image/jpeg",
-                    use_container_width=True
-                )
-                st.success("✨ ¡Tu afiche en JPG está listo para imprimir o enviar por WhatsApp a los alumnos!")
-            else:
-                st.warning("⚠️ No se pudo generar la foto del afiche. Por favor verifica los permisos de tu API Key de Google AI Studio.")
-
-        else:
-            es_horizontal_doc = st.session_state['tipo_doc_generado'] in ["Proyecto de Aprendizaje", "Unidad de Aprendizaje (Modelo SARA)"]
-            
-            buffer_doc = markdown_to_docx(
+        with col_op1:
+            # OPCIÓN 1: GENERAR Y DESCARGAR ARCHIVO DE WORD DE LA SESIÓN
+            buffer_sesion = markdown_to_docx(
                 st.session_state['resultado_md'], 
                 ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre),
-                es_horizontal=es_horizontal_doc
+                es_horizontal=False
             )
-            
             st.download_button(
-                label=f"💾 Descargar {st.session_state['tipo_doc_generado']} en Word (.docx)",
-                data=buffer_doc,
+                label="📄 1. Descargar Sesión en Word (.docx)",
+                data=buffer_sesion,
                 file_name=st.session_state['fname_clean'],
-                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                use_container_width=True,
+                help="Haz clic aquí para guardar tu sesión completa con tablas coloreadas en formato Microsoft Word."
             )
-            st.info("💡 **Nota:** El documento Word generado incluye los recuadros y tablas en tonos pasteles.")
+
+        with col_op2:
+            # OPCIÓN 2: GENERAR FICHA DE APLICACIÓN DE LA SESIÓN PROPUESTA AL COSTADO
+            if st.button("📝 2. Generar Ficha de Aplicación de esta Sesión", key="btn_crear_ficha_sesion", use_container_width=True):
+                if not api_key:
+                    st.error("⚠️ Ingresa tu API Key en la barra lateral.")
+                else:
+                    try:
+                        with st.spinner("🧠 Generando la Ficha de Aplicación vinculada directamente a esta sesión..."):
+                            client_ficha = genai.Client(api_key=api_key)
+                            prompt_ficha = generar_prompt_ficha_trabajo()
+                            sys_inst_ficha = (
+                                "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. "
+                                "Creas fichas de trabajo para el estudiante directamente vinculadas y articuladas con la Sesión de Aprendizaje, "
+                                "respetando el mismo propósito, criterios de evaluación, procesos didácticos y evidencia de aprendizaje de la sesión. "
+                                "Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. "
+                                "PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
+                            )
+                            config_f = types.GenerateContentConfig(system_instruction=sys_inst_ficha, temperature=0.2)
+                            
+                            resp_ficha = None
+                            for mf in [model_choice, "gemini-3.5-flash-lite", "gemini-3.5-flash", "gemini-2.5-flash"]:
+                                try:
+                                    resp_ficha = client_ficha.models.generate_content(model=mf, contents=prompt_ficha, config=config_f)
+                                    if resp_ficha and resp_ficha.text:
+                                        break
+                                except Exception:
+                                    continue
+                                    
+                            if resp_ficha and resp_ficha.text:
+                                st.session_state['ficha_generada_md'] = resp_ficha.text
+                                st.success("✅ ¡Ficha de Aplicación generada con éxito y vinculada a la sesión!")
+                            else:
+                                st.error("❌ No se pudo generar la ficha. Inténtalo de nuevo.")
+                    except Exception as e_f:
+                        st.error(f"❌ Error al generar la ficha: {str(e_f)}")
+
+        # SI YA SE GENERÓ LA FICHA VINCULADA, MOSTRAR SU BOTÓN DE DESCARGA EN WORD
+        if st.session_state.get('ficha_generada_md') is not None:
+            st.markdown("---")
+            col_df1, col_df2 = st.columns([1, 1])
+            with col_df1:
+                st.info("💡 **¡Ficha lista!** Puedes previsualizarla o descargarla en Word:")
+            with col_df2:
+                buffer_ficha = markdown_to_docx(
+                    st.session_state['ficha_generada_md'],
+                    ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre),
+                    es_horizontal=False
+                )
+                st.download_button(
+                    label="💾 Descargar Ficha de Aplicación en Word (.docx)",
+                    data=buffer_ficha,
+                    file_name=f"Ficha_Aplicacion_N{num_doc}_{grado_seccion.replace(' ', '_')}.docx",
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                    use_container_width=True
+                )
+
+        # PESTAÑAS DE VISTA PREVIA
+        pestanias = ["🍎 Sesión de Aprendizaje"]
+        if st.session_state.get('ficha_generada_md') is not None:
+            pestanias.append("📝 Ficha de Aplicación Vinculada")
+            
+        tabs_sesion = st.tabs(pestanias)
+        with tabs_sesion[0]:
+            st.markdown(st.session_state['resultado_md'])
+        if len(pestanias) > 1:
+            with tabs_sesion[1]:
+                st.markdown(st.session_state['ficha_generada_md'])
+
+    # SI ES OTRA HERRAMIENTA (PROYECTO, UNIDAD O AFICHE):
+    else:
+        tab_preview, tab_download = st.tabs(["📄 Vista Previa (Permanente)", "📥 Descargar Afiche / Documento"])
+        
+        with tab_preview:
+            if st.session_state.get('imagen_nanobanana') is not None:
+                st.markdown("### 🖼️ Afiche Educativo Ilustrado (Nano Banana AI)")
+                st.image(st.session_state['imagen_nanobanana'], caption=f"Afiche para {grado_seccion} - {problema_contexto}", use_container_width=True)
+                st.markdown("---")
+
+            st.markdown(st.session_state['resultado_md'])
+            
+        with tab_download:
+            if st.session_state.get('tipo_doc_generado') == "Afiche Educativo de la Sesión (Nano Banana)":
+                st.markdown("### 🖼️ Descarga tu Afiche Educativo Ilustrado")
+                if st.session_state.get('imagen_bytes') is not None:
+                    st.download_button(
+                        label="💾 Descargar Afiche Ilustrado en Alta Calidad (.jpg)",
+                        data=st.session_state['imagen_bytes'],
+                        file_name=f"Afiche_NanoBanana_{grado_seccion.replace(' ', '_')}.jpg",
+                        mime="image/jpeg",
+                        use_container_width=True
+                    )
+                    st.success("✨ ¡Tu afiche en JPG está listo para imprimir o enviar por WhatsApp a los alumnos!")
+                else:
+                    st.warning("⚠️ No se pudo generar la foto del afiche. Por favor verifica los permisos de tu API Key de Google AI Studio.")
+
+            else:
+                es_horizontal_doc = st.session_state['tipo_doc_generado'] in ["Proyecto de Aprendizaje", "Unidad de Aprendizaje (Modelo SARA)"]
+                
+                buffer_doc = markdown_to_docx(
+                    st.session_state['resultado_md'], 
+                    ie_nombre=st.session_state.get('ie_nombre_generado', ie_nombre),
+                    es_horizontal=es_horizontal_doc
+                )
+                
+                st.download_button(
+                    label=f"💾 Descargar {st.session_state['tipo_doc_generado']} en Word (.docx)",
+                    data=buffer_doc,
+                    file_name=st.session_state['fname_clean'],
+                    mime="application/vnd.openxmlformats-officedocument.wordprocessingml.document"
+                )
+                st.info("💡 **Nota:** El documento Word generado incluye los recuadros y tablas en tonos pasteles.")
