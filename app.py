@@ -564,6 +564,8 @@ with c3:
     grado_seccion = st.selectbox("Grado y Sección:", ["1er Grado A", "2do Grado A", "3er Grado A", "4to Grado A", "5to Grado A", "6to Grado A"], index=2)
 
 competencia_sel = ""
+feriados_custom = ""
+
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     f1, f2, f3, f4 = st.columns(4)
     with f1:
@@ -596,6 +598,12 @@ elif tipo_documento == "Proyecto de Aprendizaje":
         duracion_semanas = st.slider("Número de Semanas del Proyecto:", min_value=2, max_value=5, value=4)
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
+    
+    feriados_custom = st.text_input(
+        "📅 Feriados o Días No Laborables durante el período del proyecto (Opcional):",
+        value="",
+        placeholder="Ej: Jueves y Viernes Santo (2 y 3 de abril), 1 de Mayo. Si lo dejas vacío, la IA los identificará automáticamente."
+    )
 
 else:  # Unidad SARA
     f1, f2, f3 = st.columns(3)
@@ -607,6 +615,12 @@ else:  # Unidad SARA
         duracion_semanas = st.slider("Número de Semanas de la Unidad:", min_value=2, max_value=5, value=5)
         area_sel = "Multidisciplinar"
         duracion_sesion = "90 minutos"
+    
+    feriados_custom = st.text_input(
+        "📅 Feriados o Días No Laborables durante el período de la unidad (Opcional):",
+        value="",
+        placeholder="Ej: Jueves y Viernes Santo, 1 de Mayo. Si lo dejas vacío, la IA los identificará automáticamente."
+    )
 
 if tipo_documento in ["Sesión de Aprendizaje", "Ficha de Aplicación / Trabajo (Para Alumnos)", "Afiche Educativo de la Sesión (Nano Banana)"]:
     problema_contexto = st.text_input(
@@ -782,6 +796,7 @@ ESTRUCTURA DE SALIDA REQUERIDA (MARKDOWN PURA EN TABLAS):
 
 def generar_prompt_proyecto():
     val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO innovador y creativo para el proyecto basado en el problema.'
+    info_feriados = f"Feriados o días no laborables indicados por el docente: {feriados_custom}" if feriados_custom.strip() else f"Identifica los feriados oficiales del calendario escolar peruano MINEDU que correspondan al período de fechas: {fechas_duracion}."
 
     return f"""
 Actúa como un docente especialista de Primaria MINEDU Perú. Elabora un PROYECTO DE APRENDIZAJE completo.
@@ -810,24 +825,36 @@ ORDEN ESTRUCTURAL ESTRICTO DE SALIDA (Sigue exactamente esta secuencia):
    - Copia el DESEMPEÑO ÍNTEGRO del CNEB con la parte trabajada en **negrita**.
    - REGLA OBLIGATORIA DE COBERTURA DE ÁREAS EN LA MATRIZ: En cada una de las {duracion_semanas} semanas, debes incluir OBLIGATORIAMENTE filas para TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES SIN EXCEPCIÓN: Comunicación (3 comp.), Matemática (4 comp.), Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría / Competencias Transversales.
 
-5. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 A 3 SESIONES DIARIAS DE 90 MINUTOS EN TURNO ÚNICO - 10 A 15 SESIONES POR SEMANA):
-   - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE PROPÓSITOS.
+5. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
+   - Presenta un cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
+     | HORA / BLOQUE | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+   - Regla obligatoria: Se programan de **2 a 3 áreas como máximo por día** (Turno Único, bloques de 90 min), distribuyendo equilibradamente todas las áreas curriculares (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría).
+   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
+     Justo debajo de esta tabla de horarios, agrega un recuadro o texto destacado titulado:
+     `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
+     ({info_feriados})
+     Indica la fecha exacta y la conmemoración/festividad de cada feriado comprendido en el proyecto. Si no hubiese ningún feriado en ese periodo, indícalo expresamente.
+
+6. SECUENCIA DE ACTIVIDADES CON LOS DÍAS COMO COLUMNAS DE TABLA (2 A 3 SESIONES DIARIAS DE 90 MINUTOS EN TURNO ÚNICO - 10 A 15 SESIONES POR SEMANA):
+   - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
-   - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único (sin dividir en mañana/tarde), indicando el **ÁREA CURRICULAR DESTACADA**:
+   - REGLA CRÍTICA DE COHERENCIA CON EL CUADRO DE HORARIOS: Las actividades programadas en cada casillero diario DEBEN COINCIDIR EXACTAMENTE con las 2 o 3 áreas fijadas en el Cuadro de Horarios previo para ese día.
+   - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único, indicando el **ÁREA CURRICULAR DESTACADA**:
      • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
      • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
      • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades, DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Religión, Arte, Educación Física y Tutoría).
+   - REGLA DE FERIADOS: Si en el cronograma semanal coincide un día feriado de los indicados al pie del cuadro de horarios, en la columna correspondiente a ese día coloca claramente: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, sin programar sesiones curriculares dicho día.
 
-6. TABLA DE ENFOQUES TRANSVERSALES.
-7. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
-8. LISTA CLASIFICADA DE MATERIALES Y RECURSOS.
-9. TABLA VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
+7. TABLA DE ENFOQUES TRANSVERSALES.
+8. PRODUCTO FINAL TANGIBLE DEL PROYECTO.
+9. LISTA CLASIFICADA DE MATERIALES Y RECURSOS.
+10. TABLA VIII: REFLEXIONES SOBRE LOS APRENDIZAJES (Tabla final obligatoria).
 """
 
 def generar_prompt_unidad_sara():
     val_titulo = f'"{titulo_opcional}"' if titulo_opcional.strip() else 'Crea un TÍTULO motivador para la Unidad de Aprendizaje basado en el contexto/problema.'
+    info_feriados = f"Feriados o días no laborables indicados por el docente: {feriados_custom}" if feriados_custom.strip() else f"Identifica los feriados oficiales del calendario escolar peruano MINEDU que correspondan al período de fechas: {fechas_duracion}."
 
     return f"""
 Actúa como docente especialista de Primaria MINEDU Perú. Elabora una UNIDAD DE APRENDIZAJE completa y detallada (Modelo SARA).
@@ -891,21 +918,32 @@ VII. COMPETENCIAS TRANSVERSALES:
 - "Se desenvuelve en los entornos virtuales generados por las TIC" (capacidades y desempeños precisados).
 - "Gestiona su aprendizaje de manera autónoma" (capacidades y desempeños precisados).
 
-VIII. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
-   - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DE TODA LA MATRIZ DE APRENDIZAJES.
+VIII. CUADRO DE HORARIOS DE ÁREAS POR DÍA DE LA SEMANA (LUNES A VIERNES) Y FERIADOS DEL PERÍODO:
+   - Presenta un cuadro / tabla con la **DISTRIBUCIÓN DEL HORARIO SEMANAL DE ÁREAS** a utilizar de lunes a viernes en turno único:
+     | HORA / BLOQUE | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+   - Regla obligatoria: Se programan de **2 a 3 áreas como máximo por día** (Turno Único, bloques de 90 min), cubriendo armónicamente las áreas curriculares (Comunicación, Matemática, Personal Social, Ciencia y Tecnología, Educación Religiosa, Arte y Cultura, Educación Física y Tutoría).
+   - **INDICACIÓN DE FERIADOS EN LA PARTE DE ABAJO DE ESTE CUADRO:**
+     Justo al pie de esta tabla de horarios, agrega un recuadro o detalle titulado:
+     `📌 FERIADOS Y DÍAS NO LABORABLES DEL PERÍODO ({fechas_duracion}):`
+     ({info_feriados})
+     Indica las fechas y conmemoraciones de feriados en el periodo de la unidad. Si no hubiese feriados, déjalo constar expresamente.
+
+IX. PROGRAMACIÓN DE ACTIVIDADES / SECUENCIA CRONOLÓGICA DE ACTIVIDADES SUGERIDAS (SEMANA A SEMANA):
+   - Presenta esta sección OBLIGATORIAMENTE AL TÉRMINO DEL CUADRO DE HORARIOS.
    - Para cada semana (Semana 1 a {duracion_semanas}), coloca el **TÍTULO DE LA SEMANA** y crea una TABLA OBLIGATORIA donde LAS COLUMNAS SEAN LOS DÍAS DE LA SEMANA:
      | LUNES | MARTES | MIÉRCOLES | JUEVES | VIERNES |
+   - REGLA CRÍTICA DE COHERENCIA CON EL CUADRO DE HORARIOS: Las actividades pedagógicas sugeridas para cada día DEBEN GUARDAR ESTRICTA RELACIÓN Y COINCIDENCIA con las 2 o 3 áreas asignadas en el Cuadro de Horarios previo.
    - En cada casillero diario, programa de 2 a 3 sesiones de 90 minutos en turno único (sin dividir en mañana/tarde), indicando el **ÁREA CURRICULAR DESTACADA**:
      • Sesión 1 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
      • Sesión 2 (90 min): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
      • Sesión 3 (90 min, si aplica): **[ÁREA]**: [Competencia específica] - [Actividad en 1ª persona plural]
-   - REGLA OBLIGATORIA DE ÁREAS EN LA SECUENCIA DE ACTIVIDADES: En la tabla semanal de actividades, DEBES DISTRIBUIR Y CONSIDERAR OBLIGATORIAMENTE TODAS Y CADA UNA DE LAS ÁREAS CURRICULARES EN CADA SEMANA SIN EXCEPCIÓN.
+   - REGLA DE FERIADOS: Si en algún día de la semana coincide un feriado señalado en la sección anterior, consigna en su casilla: **`FERIADO / DÍA NO LABORABLE: [Nombre del feriado]`**, omitiendo el desarrollo de sesiones en dicha fecha para mantener coherencia total.
 
-IX. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
+X. MATERIALES BÁSICOS Y RECURSOS A UTILIZAR:
 - Para el estudiante.
 - Para el docente.
 
-X. REFLEXIONES SOBRE LOS APRENDIZAJES:
+XI. REFLEXIONES SOBRE LOS APRENDIZAJES:
 - Incluye la tabla o lista de preguntas de reflexión y metacognición del docente sobre el desarrollo de la unidad.
 """
 
@@ -968,7 +1006,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                     sys_inst = "Eres un Especialista Curricular y Diseñador de Material Educativo de Educación Primaria del MINEDU Perú. Creas fichas de trabajo aplicando el proceso didáctico del área elegida. Muestras 'DATOS INFORMATIVOS' y 'PROPÓSITO DE HOY' obligatoriamente como SUBTÍTULOS FUERA DE LAS TABLAS. PROHIBIDO USAR ETIQUETAS HTML COMO <tr>, <td>, <th>, <table>, <tbody>."
                 elif tipo_documento == "Proyecto de Aprendizaje":
                     prompt_maestro = generar_prompt_proyecto()
-                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú."
+                    sys_inst = "Eres un Especialista Curricular de Educación Primaria del MINEDU Perú. Elaboras Proyectos de Aprendizaje integrando el Cuadro de Horarios Semanal (2 a 3 áreas diarias) con feriados indicados al pie, coherente con la secuencia de actividades."
                 else:
                     prompt_maestro = generar_prompt_unidad_sara()
                     sys_inst = (
@@ -977,6 +1015,7 @@ if st.button(f"✨ Generar {tipo_documento}"):
                         "REGLA CRÍTICA PARA MATEMÁTICA Y COMUNICACIÓN: Debes incluir OBLIGATORIAMENTE las 4 competencias del área de Matemática y las 3 competencias del área de Comunicación a lo largo de la unidad. "
                         "REGLA CRÍTICA PARA EL ESTÁNDAR Y DESEMPEÑO: Debes copiar el texto completo e íntegro tanto del Estándar de Aprendizaje como del Desempeño oficial del CNEB (RM N.° 649-2016-MINEDU) para el grado/ciclo, sin modificar, resumir, alterar ni recortar ninguna palabra. "
                         "Resalta en NEGRITA (**texto**) únicamente el fragmento o precisión que se moviliza o evalúa en la actividad. El resto del texto del estándar y del desempeño debe permanecer exactamente en texto normal. "
+                        "Incorpora el Cuadro de Horarios de Áreas (2 a 3 áreas por día de lunes a viernes) con indicación de feriados en la parte de abajo, asegurando absoluta coherencia con la programación cronológica de actividades. "
                         "Si el docente proporciona su propia Situación Significativa o actividades, utilízalas y respétalas íntegramente; si solo indica un problema breve, genera la Situación Significativa automáticamente."
                     )
                     
